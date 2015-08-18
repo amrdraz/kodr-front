@@ -1,12 +1,12 @@
-import debounce from '/kodr/utils/debounce';
-import ChallengeMixin from '/kodr/mixins/challenge';
+import debounce from 'kodr/utils/debounce';
+import ChallengeMixin from 'kodr/mixins/challenge';
 import Ember from 'ember';
-import Runner from '/kodr/runners/runner';
-import iframeTemplate from '/kodr/demo/iframe';
+import Runner from 'kodr/runners/runner';
+import iframeTemplate from 'kodr/demo/iframe';
 
 
 export default Ember.Controller.extend(ChallengeMixin, {
-    needs: ['challenge', 'arena'],
+    needs: ['challenge', 'arena', 'application'],
     arena: Ember.computed.alias("controllers.arena"),
     breadCrumb: 'edit',
     breadCrumbPath: 'arena.edit',
@@ -18,7 +18,7 @@ export default Ember.Controller.extend(ChallengeMixin, {
         this._super();
     },
     isCreating: function () {
-        return this.get('currentPath').split('.').contains('create');
+        return this.container.lookup('controller:application').get('currentPath').split('.').contains('create');
     }.property('currentPath'),
     // arenaChange: function() {
     //     var arena = this.get('model.arena');
@@ -56,7 +56,7 @@ export default Ember.Controller.extend(ChallengeMixin, {
         var result = this._super(report);
         // console.log(report);
         if(report.score<model.get('exp')) {
-            this.get('console').Write('Awarded ('+report.score+"/"+model.get('exp')+') - Solution to challenge should reach maximum score tests','error');
+            this.EventBus.publish('console.write','Awarded ('+report.score+"/"+model.get('exp')+') - Solution to challenge should reach maximum score tests','error');
             result = false;
         }
 
@@ -75,7 +75,7 @@ export default Ember.Controller.extend(ChallengeMixin, {
         var controller = this;
         var sb = controller.get('sandbox');
 
-        this.trigger('showConsole');
+        this.EventBus.publish('console.show');
         controller.jshint(model.get('solution'), function(code, console, sb) {
             sb.load(iframeTemplate, function() {
                 sb.evaljs(Runner.test(code, model.get('tests')));
@@ -99,7 +99,6 @@ export default Ember.Controller.extend(ChallengeMixin, {
         var that = this;
         if (this.get('isCreating')) {
             return model.save().then(function(ch) {
-                // debugger;
                 that.transitionToRoute('challenge.edit', ch.id);
             }, function(xhr) {
                 console.error(xhr.message);
@@ -114,16 +113,16 @@ export default Ember.Controller.extend(ChallengeMixin, {
             var controller = this;
             var model = controller.get('model');
             if(model.get('isJava')) {
-                controller.trigger('showConsole');
-                controller.get('console').Write('Compiling...\n');
+                controller.EventBus.publish('console.show');
+                controller.EventBus.publish('console.write','Compiling...\n');
                 controller.runInServer(model.get('solution'), model,function (res) {
-                    controller.get('console').Write('Compiled\n',res.sterr?'error':'result');
+                    controller.EventBus.publish('console.write','Compiled\n',res.sterr?'error':'result');
                     if(res.sterr){
-                        controller.get('console').Write(res.sterr,'error');
-                        controller.trigger('lintCode', 'solution',controller.parseSterr(res.sterr));
+                        controller.EventBus.publish('console.write',res.sterr,'error');
+                        controller.EventBus.publish('lintCode', 'solution',controller.parseSterr(res.sterr));
                     } else {
-                        controller.get('console').Write(res.stout);
-                        controller.trigger('lintCode', 'solution',[]);
+                        controller.EventBus.publish('console.write',res.stout);
+                        controller.EventBus.publish('lintCode', 'solution',[]);
                     }
                 });
             } else {
@@ -134,16 +133,16 @@ export default Ember.Controller.extend(ChallengeMixin, {
             var controller = this;
             var model = controller.get('model');
             if(model.get('isJava')) {
-                controller.trigger('showConsole');
-                controller.get('console').Write('Running Tests...\n');
+                controller.EventBus.publish('console.show');
+                controller.EventBus.publish('console.write','Running Tests...\n');
                 controller.testInServer(model.get('solution'), model,function (res) {
-                    controller.get('console').Write('Compiled\n',res.sterr?'error':'result');
+                    controller.EventBus.publish('console.write','Compiled\n',res.sterr?'error':'result');
                     if(res.sterr){
-                        controller.get('console').Write(res.sterr,'error');
-                        controller.trigger('lintCode', 'solution',controller.parseSterr(res.sterr));
+                        controller.EventBus.publish('console.write',res.sterr,'error');
+                        controller.EventBus.publish('lintCode', 'solution',controller.parseSterr(res.sterr));
                     } else {
                         controller.testSuccess(res.report);
-                        controller.trigger('lintCode', 'solution',[]);
+                        controller.EventBus.publish('lintCode', 'solution',[]);
                     }
                 });
             } else {

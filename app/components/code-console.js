@@ -3,17 +3,24 @@ import iframeTemplate from 'kodr/demo/empty';
 import stuff from "kodr/sandbox/stuff";
 
 export default Ember.Component.extend({
+
+    write: function (text, type) {
+        console.log(text);
+        this.get('console').Write(text, type);
+    },
     didInsertElement: function() {
         var controller = this.get('controller');
+        this.EventBus.subscribe('console.write', this, this.write);
         var that = this;
         var header = 'This is a console for you to test your code!\n' +
             'You can either run your code in console to see what happens\n' +
             'When you are ready try submitting your code to see the results\n';
 
         stuff(window.location.origin + '/iframe.html', this.$()[0], function(context) {
-            controller.set('csandbox', context);
+            controller.set('csandbox', context); // this is not working
             context.load(iframeTemplate, function() {
                 var jqconsole = that.$().jqconsole(header, "");
+                that.set('console', jqconsole);
                 controller.set('console', jqconsole);
                 // Abort prompt on Ctrl+Z.
                 jqconsole.RegisterShortcut('Z', function() {
@@ -51,7 +58,7 @@ export default Ember.Component.extend({
                 // Handle a command.
                 var handler = function(command) {
                     if (command) {
-                        controller.sendAction('consoleEval', command);
+                        that.sendAction('consoleEval', command);
                     }
                     jqconsole.Prompt(true, handler, function(command) {
                         // Continue line if can't compile the command.
@@ -75,5 +82,8 @@ export default Ember.Component.extend({
                 handler();
             });
         });
+    },
+    willClearRender: function() {
+        this.EventBus.unsubscribe('console.write', this, this.write);
     }
 });

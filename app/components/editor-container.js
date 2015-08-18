@@ -1,7 +1,9 @@
+/*global CodeMirror*/
 import Ember from 'ember';
-
-export default Ember.View.extend({
+var $ = Ember.$;
+export default Ember.Component.extend({
     showConsole: function() {
+        console.log("here");
         this.$('[href=#console]').tab('show');
     },
     lintCode: function(cmId, errs) {
@@ -9,12 +11,13 @@ export default Ember.View.extend({
         cm.updateLinting(CodeMirror.lintResult(errs));
     },
     didInsertElement: function() {
-        this.get('controller').on('showConsole', this, this.showConsole);
-        this.get('controller').on('lintCode', this, this.lintCode);
+        this.EventBus.subscribe('console.show', this, this.showConsole);
+        this.EventBus.subscribe('lintCode', this, this.lintCode);
+        // this.get('controller').trigger('console.show');
         //refresh code editor tabs when selected
-        Ember.$('[data-toggle="tab"]').on('shown.bs.tab', function(e) {
+        Ember.$('[data-toggle="tab"]').on('shown.bs.tab', function() {
             // debugger;
-            var editor = Ember.$(Ember.$(this).attr('href') + 'Editor');
+            var editor = $($(this).attr('href') + 'Editor');
             if (editor.length !== 0) {
                 editor.data('CodeMirror').refresh();
                 editor.data('CodeMirror').focus();
@@ -22,7 +25,7 @@ export default Ember.View.extend({
         });
     },
     willClearRender: function() {
-        this.get('controller').off('showConsole', this, this.showConsole);
-        this.get('controller').off('lintCode', this, this.lintCode);
+        this.EventBus.unsubscribe('console.show', this, this.showConsole);
+        this.EventBus.unsubscribe('lintCode', this, this.lintCode);
     }
 });

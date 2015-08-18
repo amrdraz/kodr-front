@@ -28,11 +28,5 @@
   "white": false,
   "eqnull": true,
   "esnext": true,
-  "unused": true,
-  "globals": {
-    "toastr": false,
-    "swal": false,
-    "blockies": false,
-    "ga": false
-  }
+  "unused": true
 }

@@ -1,6 +1,6 @@
 <section class="user-controlles row">
   <ul class="nav nav-pills pull-right">
-    <li {{action "save"}} class="{{if isDirty '' 'disabled'}} user-save" >
+    <li {{action "save"}} class="{{if hasDirtyAttributes '' 'disabled'}} user-save" >
       <a href="#"><i class="glyphicon glyphicon-save"></i> Save</a>
     </li>
     {{#unless isCreating}}
@@ -37,7 +37,7 @@
   <div class="form-group">
     <div class="col-lg-12">
       <label for="description" class="control-label">User role</label>
-      {{chosen name="id1"
+      {{ember-selectize name="id1"
         content=model.roles
         value=model.role
         optionValuePath="content"

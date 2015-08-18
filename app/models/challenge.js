@@ -72,11 +72,11 @@ export default DS.Model.extend({
 
     // relationshipChanged: false,
     canSave: function() {
-        return !this.get('isSaving') && this.get('isDirty') || this.get('isNew');
-    }.property('isDirty', 'isSaving', 'isNew'),
+        return !this.get('isSaving') && this.get('hasDirtyAttributes') || this.get('isNew');
+    }.property('hasDirtyAttributes', 'isSaving', 'isNew'),
     canReset: function() {
-        return !this.get('isSaving') && this.get('isDirty') && !this.get('isNew');
-    }.property('isDirty', 'isSaving'),
+        return !this.get('isSaving') && this.get('hasDirtyAttributes') && !this.get('isNew');
+    }.property('hasDirtyAttributes', 'isSaving'),
     canPublish: function() {
         return !this.get('canSave') && !this.get('isPublished') && this.get('valid');
     }.property('canSave')

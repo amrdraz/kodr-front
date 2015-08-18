@@ -8,15 +8,16 @@
   </div>
 </section>
 <section class="row">
-<div class="col-lg-6">
-    <a id="run" {{action "run"}} class="btn btn-default pull-right challenge-run">Run in Console <i class="glyphicon glyphicon-play"></i></a>
-    <a id="rest" {{action "rest"}} class="btn btn-default pull-right challenge-reset"><i class="glyphicon glyphicon-repeat"></i> Reset Challenge</a>
-    <ul class="nav nav-tabs">
-      <li class="active"><a href="#code" data-toggle="tab">Code</a></li>
-    </ul>
-    <div class="tab-content">
-    {{#if model.challenge.isJava }}
-      <pre>{{#if model.challenge.hasInput}}import java.util.Scanner;
+{{#editor-container class="editor-container"}}
+  <div class="col-lg-6">
+      <a id="run" {{action "run"}} class="btn btn-default pull-right challenge-run">Run in Console <i class="glyphicon glyphicon-play"></i></a>
+      <a id="rest" {{action "rest"}} class="btn btn-default pull-right challenge-reset"><i class="glyphicon glyphicon-repeat"></i> Reset Challenge</a>
+      <ul class="nav nav-tabs">
+        <li class="active"><a href="#code" data-toggle="tab">Code</a></li>
+      </ul>
+      <div class="tab-content">
+      {{#if model.challenge.isJava }}
+        <pre>{{#if model.challenge.hasInput}}import java.util.Scanner;
 {{/if}}public class Main {
   public static void main (String[] args) { {{#each model.challenge.inputs as |inp| }}
     {{inp.value}};{{/each}}</pre>
@@ -35,10 +36,10 @@
       <pre>
   }
 }</pre>
-    {{/if}}
-    </div>
-</div>
-<div class="col-lg-6">
+      {{/if}}
+      </div>
+  </div>
+  <div class="col-lg-6">
     <a id="run" {{action "test"}} class="btn {{if model.complete 'btn-success' 'btn-primary'}} pull-right {{if model.canSubmit '' 'disabled'}} challenge-submit">
       {{#if model.complete}}
         {{#if isDirtyish}}
@@ -79,5 +80,6 @@
         {{iframe-sandbox}}
       </div>
     </div>
-</div>  
+  </div>
+{{/editor-container}}
 </section>

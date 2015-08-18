@@ -22,8 +22,8 @@ export default Ember.Controller.extend(ChallengeMixin, {
     },
     // returns true if dirty but unsaved, so that mock trials show complete instead of resubmit
     isDirtyish: function() {
-        return this.get('model.isDirty') && !this.get('model.isNew');
-    }.property('model.isDirty', 'model.isNew'),
+        return this.get('model.hasDirtyAttributes') && !this.get('model.isNew');
+    }.property('model.hasDirtyAttributes', 'model.isNew'),
     
     testError: function (errors) {
         var model = this.get('model');
@@ -65,16 +65,16 @@ export default Ember.Controller.extend(ChallengeMixin, {
             if(challenge.get('isJS')) {
                 controller.send('runInConsole');
             } else {
-                controller.trigger('showConsole');
-                controller.get('console').Write('Compiling...\n');
+                controller.EventBus.publish('console.show');
+                controller.EventBus.publish('console.write', 'Compiling...\n');
                 controller.runInServer(model.get('code'), challenge,function (res) {
-                    controller.get('console').Write('Compiled\n',res.sterr?'error':'result');
+                    controller.EventBus.publish('console.write', 'Compiled\n',res.sterr?'error':'result');
                     if(res.sterr){
-                        controller.get('console').Write(res.sterr,'error');
-                        controller.trigger('lintCode', 'code',controller.parseSterr(res.sterr));
+                        controller.EventBus.publish('console.write', res.sterr,'error');
+                        controller.EventBus.publish('lintCode', 'code',controller.parseSterr(res.sterr));
                     } else {
-                        controller.get('console').Write(res.stout+ '\n');
-                        controller.trigger('lintCode', 'code',[]);
+                        controller.EventBus.publish('console.write', res.stout+ '\n');
+                        controller.EventBus.publish('lintCode', 'code',[]);
                     }
                 });
             }
@@ -98,16 +98,16 @@ export default Ember.Controller.extend(ChallengeMixin, {
                     run: true
                 });
             } else {
-                controller.trigger('showConsole');
-                controller.get('console').Write('Running Tests...\n');
+                controller.EventBus.publish('console.show');
+                controller.EventBus.publish('console.write', 'Running Tests...\n');
                 controller.testInServer(model.get('code'), challenge,function (res) {
-                    controller.get('console').Write('Compiled\n',res.sterr?'error':'result');
+                    controller.EventBus.publish('console.write', 'Compiled\n',res.sterr?'error':'result');
                     if(res.sterr){
-                        controller.get('console').Write(res.sterr,'error');
-                        controller.trigger('lintCode', 'code',controller.parseSterr(res.sterr));
+                        controller.EventBus.publish('console.write', res.sterr,'error');
+                        controller.EventBus.publish('lintCode', 'code',controller.parseSterr(res.sterr));
                     } else {
                         controller.testSuccess(res.report);
-                        controller.trigger('lintCode', 'code',[]);
+                        controller.EventBus.publish('lintCode', 'code',[]);
                     }
                 });
             }

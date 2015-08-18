@@ -1,7 +1,8 @@
 import Ember from 'ember';
 import DS from 'ember-data';
+import EmberValidations from 'ember-validations';
 
-var UserController = Ember.Controller.extend(Ember.Validations.Mixin, {
+var UserController = Ember.Controller.extend(EmberValidations.Mixin, {
     validations: {
         password: {
             length: {

@@ -10,7 +10,7 @@
   <div class="form-group">
     <div class="editable col-lg-12">
       <label for="name" class="control-label">Assign Users</label>
-      {{chosen 
+      {{ember-selectize 
           name="users"
           multiple=true
           content=unassignedUsersOptions
@@ -24,7 +24,7 @@
   <div class="form-group">
     <div class="editable col-lg-12">
       <label for="name" class="control-label">Assign Group</label>
-      {{chosen 
+      {{ember-selectize 
           name="users"
           multiple=true
           content=groupsOptions

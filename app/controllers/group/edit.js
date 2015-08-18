@@ -11,7 +11,7 @@ export default Ember.Controller.extend({
         this.resetGroupOptions();
     },
     isCreating: function () {
-        return get('currentPath').split('.').contains('create');
+        return this.get('currentPath').split('.').contains('create');
     }.property('currentPath'),
     getGroupOptionsFor: function(option) {
         var store = this.store;
@@ -38,10 +38,11 @@ export default Ember.Controller.extend({
     actions: {
         save: function() {
             var that = this;
-            if (this.get('model.isDirty')) {
+            if (this.get('model.hasDirtyAttributes')) {
                 this.get('model').save().then(function (g) {
-                    if (get('currentPath').split('.').contains('create'))
+                    if (this.get('currentPath').split('.').contains('create')) {
                         that.transitionToRoute('group.edit', g);
+                    }
                 });
             }
             if (this.get('selectedTeachers').length) {

@@ -20,7 +20,7 @@
      <div class="form-group">
     <div class="editable col-lg-12">
       <label for="name" class="control-label">Add Teacher</label>
-      {{chosen
+      {{ember-selectize
           name="leaders"
           multiple=true
           content=teacherOptions
@@ -34,7 +34,7 @@
   <div class="form-group">
     <div class="editable col-lg-12">
       <label for="name" class="control-label">Add Student</label>
-      {{chosen
+      {{ember-selectize
           name="subscribers"
           multiple=true
           content=studentOptions

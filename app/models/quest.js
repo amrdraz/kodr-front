@@ -18,11 +18,11 @@ import Requirement from 'kodr/models/requirement';
     }.property('userQuests.@each.relationshipsLoaded'),
 
     canSave: function() {
-        return this.get('isNew') || (!this.get('isSaving') && this.get('isDirty') && !this.get('isPublished'));
-    }.property('isDirty', 'isPublished'),
+        return this.get('isNew') || (!this.get('isSaving') && this.get('hasDirtyAttributes') && !this.get('isPublished'));
+    }.property('hasDirtyAttributes', 'isPublished'),
     canReset: function() {
-        return !this.get('isSaving') && this.get('isDirty') && !this.get('isNew');
-    }.property('isDirty'),
+        return !this.get('isSaving') && this.get('hasDirtyAttributes') && !this.get('isNew');
+    }.property('hasDirtyAttributes'),
     canPublish: function() {
         return !this.get('canSave')&& !this.get('isPublished');
     }.property('canSave')

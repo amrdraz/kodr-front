@@ -15,6 +15,6 @@ export default  DS.Model.extend({
     arenaTrial: DS.belongsTo('arenaTrial'),
 
     canSubmit: function () {
-        return !this.get('complete') || this.get('isDirty');
-    }.property('complete', 'isDirty'),
+        return !this.get('complete') || this.get('hasDirtyAttributes');
+    }.property('complete', 'hasDirtyAttributes'),
 });

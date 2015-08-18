@@ -53,21 +53,20 @@ export default Ember.Mixin.create(Ember.Evented, {
         // var tests = report.tests.length;
         var passes = report.passes.length;
         var failures = report.failures.length;
+        var controller = this;
         var pass = report.passed;
-        var jconsole = this.get('console') || console;
-        jconsole.Write = jconsole.Write || console.log;
         var writeTest = function(test, pass) {
-            jconsole.Write((test.fullName || test.message.replace(/\n/g, "\\n")) + '\n', pass);
+            controller.EventBus.publish('console.write', (test.fullName || test.message.replace(/\n/g, "\\n")) + '\n', pass);
         };
         console.log(report);
-        jconsole.Write("========= Running Submission " + (pass ? 'Passed' : 'Failed') + " ==========\n", pass ? 'result' : 'error');
+        controller.EventBus.publish('console.write', "========= Running Submission " + (pass ? 'Passed' : 'Failed') + " ==========\n", pass ? 'result' : 'error');
 
         if (passes) {
             report.passes.forEach(function(test) {
                 writeTest(test, 'result');
             });
             if (failures) {
-                jconsole.Write('\n-----------------------------------\n\n');
+                controller.EventBus.publish('console.write', '\n-----------------------------------\n\n');
             }
         }
 
@@ -77,9 +76,9 @@ export default Ember.Mixin.create(Ember.Evented, {
                 if (test.failedExpectations) {
                     test.failedExpectations.forEach(function(fail) {
                         if (fail.message.indexOf('Error: Timeout')) {
-                            jconsole.Write('\t' + fail.message.replace(/\n/g, "\\n") + '\n', 'error');
+                            controller.EventBus.publish('console.write', '\t' + fail.message.replace(/\n/g, "\\n") + '\n', 'error');
                         } else {
-                            jconsole.Write('\tTimeout this test ran (' + test.durationSec + 's)\n', 'error');
+                            controller.EventBus.publish('console.write', '\tTimeout this test ran (' + test.durationSec + 's)\n', 'error');
                         }
                     });
                 }
@@ -87,7 +86,7 @@ export default Ember.Mixin.create(Ember.Evented, {
             });
         }
         if (passes || failures) {
-            jconsole.Write("==============================================\n", pass ? 'result' : 'error');
+            controller.EventBus.publish('console.write', "==============================================\n", pass ? 'result' : 'error');
         }
 
         return report.passed;
@@ -169,15 +168,16 @@ export default Ember.Mixin.create(Ember.Evented, {
             console.log('loaded sandbox');
         },
         runInConsole: function() {
-            this.trigger('showConsole');
+            this.EventBus.publish('console.show');
             this.send('consoleEval', this.get('model.' + this.get('evaluates')));
         },
         consoleEval: function(command) {
+            var that = this;
             this.jshint(command, function(code, console, sb) {
                 console.Focus();
                 sb.evaljs(code, function(error, res) {
                     if (error) {
-                        console.Write(error.name + ': ' + error.message + '\n', 'error');
+                        that.trigger('console.write',error.name + ': ' + error.message + '\n', 'error');
                     } else {
                         var run = res !== undefined;
                         console.Write((run ? '==> ' + res : '\n' + code) + '\n', run ? 'result' : 'jqconsole-old-prompt');

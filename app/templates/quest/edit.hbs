@@ -1,9 +1,9 @@
 <section class="quest-controlles row">
   <ul class="nav nav-pills pull-right">
-    <li {{action "save"}} class="{{if shouldSave '' 'disabled'}} quest-save">
+    <li {{action "save"}} class="{{if model.shouldSave '' 'disabled'}} quest-save">
       <a href="#"><i class="glyphicon glyphicon-save"></i> Save</a>
     </li>
-    <li {{action "publish"}} class="{{if canPublish '' 'disabled'}} quest-publish" title="after publishing you can no longer change the value of this quest">
+    <li {{action "publish"}} class="{{if model.canPublish '' 'disabled'}} quest-publish" title="after publishing you can no longer change the value of this quest">
       <a href="#"><i class="glyphicon glyphicon-ok-circle"></i> Publish</a>
     </li>
     <li {{action 'delete' }} class="quest-delete">
@@ -30,24 +30,24 @@
       <label for="name" class="control-label">Add Quest requirement</label>
       <button {{action "add"}} class="btn btn-sm btn-default">add Requirement</button>
         
-      {{#each requirements as |req| }}
+      {{#each model.requirements as |req| }}
       <div class="form-control">
         <button {{action "remove" req }} type="button" class="close"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
         Complete 
-        {{chosen content=modifiers value=req.modifier1 }}
+        {{x-select content=modifiers selection=req.modifier1 action=(action (mut req.modifier1))}}
         
-        {{chosen content=models value=req.model1 }}
+        {{x-select content=models value=req.model1 action=(action (mut req.model1)) }}
         {{#unless req.isAny1 }}
           {{#if req.isChallenge}}
-            {{chosen name="id1"
+            {{ember-selectize name="id1"
                       content=challenges
                       optionValuePath="content.id"
                       optionLabelPath="content.name"
                       value=req.id1
-                      class="requirement-model1 col-md-3"
+                      class="requirement-model1"
                       }}
           {{else}}
-            {{chosen name="id1"
+            {{ember-selectize name="id1"
                       content=arenas
                       optionValuePath="content.id"
                       optionLabelPath="content.name"
@@ -58,10 +58,10 @@
         {{else}}
           {{#if req.isChallenge}}
             in 
-            {{chosen content=modifiers value=req.modifier2 }}
+            {{x-select content=modifiers value=req.modifier2 action=(action (mut req.modifier2)) }}
             {{req.model2}}
             {{#unless req.isAny2 }}
-              {{chosen
+              {{ember-selectize
                         name="id2"
                         content=arenas
                         optionValuePath="content.id"

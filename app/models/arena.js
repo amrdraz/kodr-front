@@ -21,12 +21,12 @@ export default DS.Model.extend({
 
 
     canSave: function() {
-        return !this.get('isSaving') && this.get('isDirty') || this.get('isNew');
-    }.property('isDirty'),
+        return !this.get('isSaving') && this.get('hasDirtyAttributes') || this.get('isNew');
+    }.property('hasDirtyAttributes'),
     canReset: function() {
-        return !this.get('isSaving') && this.get('isDirty') && !this.get('isNew');
-    }.property('isDirty'),
+        return !this.get('isSaving') && this.get('hasDirtyAttributes') && !this.get('isNew');
+    }.property('hasDirtyAttributes'),
     canPublish: function() {
-        return !this.get('isDirty') && !this.get('isPublished');
-    }.property('isDirty', 'isPublished')
+        return !this.get('hasDirtyAttributes') && !this.get('isPublished');
+    }.property('hasDirtyAttributes', 'isPublished')
 });
