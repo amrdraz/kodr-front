@@ -15,7 +15,7 @@ import Requirement from 'kodr/models/requirement';
     isPublished:DS.attr('boolean', {defaultValue:false}),
     users: function () {
         return this.get('userQuests').getEach('user');
-    }.property('userQuests.@each.relationshipsLoaded'),
+    }.property('userQuests.[].relationshipsLoaded'),
 
     canSave: function() {
         return this.get('isNew') || (!this.get('isSaving') && this.get('hasDirtyAttributes') && !this.get('isPublished'));
@@ -37,5 +37,5 @@ import Requirement from 'kodr/models/requirement';
     //         })
     //     });
     //     return dfd;
-    // }.property('users.@each')
+    // }.property('users.[]')
 });

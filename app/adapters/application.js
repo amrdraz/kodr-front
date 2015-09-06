@@ -5,5 +5,8 @@ export default DS.RESTAdapter.extend({
     namespace:'api',
     host: config.APP.API_HOST,
     coalesceFindRequests: true,
+    shouldReloadAll: function () {
+        return true;
+    }
     // shouldBackgroundReloadRecord:false
 });

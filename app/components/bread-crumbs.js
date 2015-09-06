@@ -28,10 +28,10 @@ export default Ember.Component.extend({
     });
   }),
 
-  breadCrumbs: Ember.computed("controllers.@each.breadCrumbs",
-    "controllers.@each.breadCrumb",
-    "controllers.@each.breadCrumbPath",
-    "controllers.@each.breadCrumbModel",
+  breadCrumbs: Ember.computed("controllers.[].breadCrumbs",
+    "controllers.[].breadCrumb",
+    "controllers.[].breadCrumbPath",
+    "controllers.[].breadCrumbModel",
     "pathNames.[]", function() {
     var controllers = this.get("controllers");
     var defaultPaths = this.get("pathNames");

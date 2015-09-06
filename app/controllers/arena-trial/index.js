@@ -1,8 +1,8 @@
 import Ember from 'ember';
 
-export default Ember.ArrayController.extend({
-    // breadCrumb:'arena',
-    // breadCrumbPath:'arenaTrial',
+export default Ember.Controller.extend({
+    breadCrumb:'arena',
+    breadCrumbPath:'arenaTrial',
     needs: ['arenaTrial'],
     arena: Ember.computed.alias("controllers.arenaTrial.model"),
     trials: function() {
@@ -16,7 +16,7 @@ export default Ember.ArrayController.extend({
     },
     currentTrial: function() {
         return this.get('model.trials.firstObject');
-    }.property('arena.challenges.@each'),
+    }.property('arena.challenges.[]'),
     actions: {
         try: function(trial) {
             this.transitionToRoute('trial', trial);

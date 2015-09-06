@@ -33,7 +33,7 @@ export default Ember.Controller.extend(ChallengeMixin, {
     // }.observes('model.arena'),
     // arenas: function() {
     //     return this.get('store').find('arena');
-    // }.property('@each'),
+    // }.property('[]'),
     unPublish: function() {
         if (this.get('model.isPublished')) {
             this.set('model.isPublished', false);
@@ -42,7 +42,7 @@ export default Ember.Controller.extend(ChallengeMixin, {
     publish: function() {
         if (this.get('intentToPublish')) {
             this.set('intentToPublish', false);
-            this.set('isPublished', true);
+            this.set('model.isPublished', true);
         }
     },
     testError: function(error) {
@@ -177,7 +177,7 @@ export default Ember.Controller.extend(ChallengeMixin, {
                 this.set('intentToPublish', true);
                 if (model.get('valid')) {
                     this.publish();
-                    this.save().then(function() {
+                    model.save().then(function() {
                         console.log('published');
                     }).catch(function(err) {
                         console.log(err.stack);

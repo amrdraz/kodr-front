@@ -38,19 +38,17 @@
 {{else}}
 <div class="list-group">
 {{#each published as |arena| }}
-    {{#link-to arenaRoute arena class="arena-name" class="list-group-item"}}     
-        <h4 class="list-group-item-heading">
-            {{!-- <div class="pull-right">
-            {{#link-to 'arena.edit' arena class="btn-default btn-sm arena-edit"}}
-                <i class="glyphicon glyphicon-pencil"></i> Edit
-            {{/link-to}} 
-            {{#link-to 'arenaTrial' arena class="btn-primary btn-sm arena-try"}}
-                <i class="glyphicon glyphicon-play"></i> Try
-            {{/link-to}}
-            </div> --}}
-            
-                    {{arena.name}}            
-        </h4>
+    {{#link-to 'arenaTrial' arena class="arena-name" class="list-group-item"}}   
+    <h4 class="list-group-item-heading">
+        
+        <div class="pull-right">
+        {{#link-to 'arenaTrial' arena class="btn-primary btn-sm arena-try"}}
+            <i class="glyphicon glyphicon-play"></i> Try
+        {{/link-to}}
+        </div>
+        
+        {{arena.name}}            
+    </h4>  
     {{/link-to}}
 {{else}}
     <p>No Arenas are published yet</p>

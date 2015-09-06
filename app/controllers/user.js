@@ -30,7 +30,7 @@ var UserController = Ember.Controller.extend(EmberValidations.Mixin, {
             })
         });
         return dfd;
-    }.property('memberships.@each'),
+    }.property('memberships.[]'),
     activitySeries: function() {
         return [{
             name: 'Quantity',

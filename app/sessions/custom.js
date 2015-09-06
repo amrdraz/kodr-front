@@ -7,7 +7,7 @@ export default Session.extend({
         var userId = this.get('secure.user_id');
         if (!Ember.isEmpty(userId)) {
             return DS.PromiseObject.create({
-              promise: this.container.lookup('store:main').findRecord('user', userId)
+              promise: this.container.lookup('service:store').findRecord('user', userId)
             });
         }
     }.property('secure.user_id'),

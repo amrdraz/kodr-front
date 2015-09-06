@@ -25,7 +25,7 @@ export default Ember.Controller.extend({
             var that = this;
             this.get('model').save().then(function(g) {
                 that.set('requirementsChanged', false);
-                if (this.get('currentPath').split('.').contains('create')) {
+                if (this.container.lookup('controller:application').get('currentPath').split('.').contains('create')) {
                     that.transitionToRoute('quest.edit', g);
                 }
             }).catch(function(xhr) {

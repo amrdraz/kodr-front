@@ -6,7 +6,7 @@ import iframeTemplate from 'kodr/demo/iframe';
 
 export default Ember.Controller.extend(ChallengeMixin, {
     isChallengeTrial: function() {
-        return this.get('currentPath').split('.').contains('challenge');
+        return this.container.lookup('controller:application').get('currentPath').split('.').contains('challenge');
     }.property('currentPath'),
 
     breadCrumb: function() {

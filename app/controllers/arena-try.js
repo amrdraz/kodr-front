@@ -8,7 +8,7 @@ var ArenaTryController = Ember.Controller.extend({
     },
     currentTrial:function () {
         return this.get('model.trials.firstObject');
-    }.property('arena.challenges.@each'),
+    }.property('arena.challenges.[]'),
     actions: {
     }
 });

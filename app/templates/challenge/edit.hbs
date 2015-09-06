@@ -1,12 +1,12 @@
 <section class="challenge-controlles row">
   <ul class="nav nav-pills pull-right">
     <li {{action "reset"}} class="{{if model.canReset '' 'disabled'}}" ><a href="#"><i class="glyphicon glyphicon-repeat challenge-reset"></i> Reset</a></li>
-    {{#unless isPublished }}
+    {{#unless model.isPublished }}
     <li {{action "save"}} class="{{if model.canSave '' 'disabled'}} challenge-save" ><a href="#">
         <i class="glyphicon glyphicon-save"></i> Save</a>
     </li>
     {{/unless}}
-    {{#unless isPublished }}
+    {{#unless model.isPublished }}
       <li {{action "publish"}} class="{{if model.canPublish '' 'disabled'}} challenge-publish"><a href="#"><i class="glyphicon glyphicon-ok-circle"></i> Publish</a></li>
     {{else}}
       <li {{action "save"}} class="{{if model.canSave '' 'disabled'}} challenge-unpublish"><a href="#"><i class="glyphicon glyphicon-save"></i> Save/Re-Publish</a></li>
@@ -47,7 +47,7 @@
       <span class="label label-primary challenge-exp">Estimated difficulty awards: {{model.exp}} Exp</span>
     </div>
   </div>
-  {{#if isJava }}
+  {{#if model.isJava }}
     <div class="form-group">
     <div class="col-md-6">
       <label for="inputs" class="control-label">Inputs</label>

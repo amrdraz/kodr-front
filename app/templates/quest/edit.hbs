@@ -14,30 +14,32 @@
 <section class="quest-settings row">
 <form role="form">
   <div class="form-group">
-    <div class="editable col-lg-12">
+    <div class="col-lg-12">
       <label for="name" class="control-label">Quest name</label>
       {{input id="name" value=model.name class="quest-name form-control"}}
     </div>
   </div>
    <div class="form-group">
-    <div class="editable col-lg-12">
+    <div class="col-lg-12">
       <label for="description" class="control-label">Quest description</label>
       {{textarea id="description" value=model.description class="quest-description form-control"}}
     </div>
   </div>
   <div class="form-group">
-    <div class="editable col-lg-12">
+    <div class="col-lg-12">
       <label for="name" class="control-label">Add Quest requirement</label>
       <button {{action "add"}} class="btn btn-sm btn-default">add Requirement</button>
         
       {{#each model.requirements as |req| }}
-      <div class="form-control">
+      <div class="row">
         <button {{action "remove" req }} type="button" class="close"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-        Complete 
-        {{x-select content=modifiers selection=req.modifier1 action=(action (mut req.modifier1))}}
-        
-        {{x-select content=models value=req.model1 action=(action (mut req.model1)) }}
+        <div class="col-md-12">
+          Complete 
+          {{x-select content=modifiers selection=req.modifier1 action=(action (mut req.modifier1))}}
+          {{x-select content=models value=req.model1 action=(action (mut req.model1)) }}
+        </div>
         {{#unless req.isAny1 }}
+          <div class="col-md-12">
           {{#if req.isChallenge}}
             {{ember-selectize name="id1"
                       content=challenges
@@ -55,25 +57,33 @@
                       class="requirement-model1 col-md-3"
                       }}
           {{/if}}
+          </div>
         {{else}}
           {{#if req.isChallenge}}
+            <div class="col-md-12">
             in 
             {{x-select content=modifiers value=req.modifier2 action=(action (mut req.modifier2)) }}
             {{req.model2}}
+            </div>
             {{#unless req.isAny2 }}
-              {{ember-selectize
-                        name="id2"
-                        content=arenas
-                        optionValuePath="content.id"
-                        optionLabelPath="content.name"
-                        value=req.id2
-                        class="requirement-model2 col-md-3"
-                        }}
-            {{/unless}}
+              <div class="col-md-12">
+                {{ember-selectize
+                          name="id2"
+                          content=arenas
+                          optionValuePath="content.id"
+                          optionLabelPath="content.name"
+                          value=req.id2
+                          class="requirement-model2 col-md-3"
+                          }}
+              </div>
+              {{/unless}}
           {{/if}}
-          times: {{input type='number' value=req.times min=0}}
+          <div class="col-md-12">
+            times: {{input type='number' value=req.times min=0}}
+          </div>
         {{/unless}}
       </div>
+      <hr>
       {{/each}}
     </div>
   </div>

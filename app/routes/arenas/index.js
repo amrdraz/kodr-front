@@ -1,6 +1,7 @@
+import AuthenticatedRouteMixin from 'simple-auth/mixins/authenticated-route-mixin';
 import Ember from 'ember';
 
-export default Ember.Route.extend({
+export default Ember.Route.extend(AuthenticatedRouteMixin,{
   actions: {
     remove: function(model) {
       if(confirm('Are you sure?')) {

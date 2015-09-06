@@ -32,5 +32,5 @@ export default DS.Model.extend({
     }.property('role'),
     canJoinGroups:function () {
         return !this.get('memberships.length') || !this.get('isStudent');
-    }.property('memberships.@each','role')
+    }.property('memberships.[]','role')
 });

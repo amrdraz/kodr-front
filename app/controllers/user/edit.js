@@ -21,7 +21,7 @@ export default Ember.Controller.extend(EmberValidations.Mixin, {
         }
     },
     isCreating: function() {
-        return get('currentPath').split('.').contains('create');
+        return this.container.lookup('controller:application').get('currentPath').split('.').contains('create');
     }.property('currentPath'),
     isCreatingOrNotAdmin:function () {
       return this.get('isCreating') || !this.get('model.isAdmin');

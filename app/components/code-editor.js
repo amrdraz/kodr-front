@@ -4,6 +4,7 @@ import debounce from 'kodr/utils/debounce';
 function getMIME(lang) {
     if (lang === 'java') return 'text/x-java';
     if (lang === 'c') return 'text/x-csrc';
+    if (lang === 'python') return 'text/x-python';
     if (lang === 'cpp') return 'text/x-c++src';
     if (lang === 'c#') return 'text/x-csharp';
     return lang;

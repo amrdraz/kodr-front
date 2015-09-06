@@ -9,7 +9,7 @@ export default  DS.Model.extend({
     complete: DS.attr('boolean'),
     completed: DS.attr('number'),
     report:DS.attr(),
-    challenge: DS.belongsTo('challenge'),
+    challenge: DS.belongsTo('challenge', {async:true}),
     user: DS.belongsTo('user'),
     arena: DS.belongsTo('arena'),
     arenaTrial: DS.belongsTo('arenaTrial'),

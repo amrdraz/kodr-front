@@ -5,11 +5,11 @@ export default Ember.Controller.extend({
     breadCrumbPath: 'arena',
     needs: ['arena'],
     isCreating: function() {
-        return get('currentPath').split('.').contains('create');
+        return this.container.lookup('controller:application').get('currentPath').split('.').contains('create');
     }.property('currentPath'),
     canPublish: function() {
-        return this.get('model.canPublish') && this.get('model.challenges').filterProperty('isPublished', true).length >= 1;
-    }.property('model.challenges.@each.isPublished'),
+        return this.get('model.canPublish') && this.get('model.challenges').filterBy('isPublished', true).length >= 1;
+    }.property('model.challenges.[].isPublished'),
     actions: {
         reset: function() {
             this.get('model').rollback();

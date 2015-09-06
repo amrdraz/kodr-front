@@ -41,7 +41,7 @@ var LoginController = Ember.Controller.extend(EmberValidations.Mixin, {
             var that = this;
             var credentials = that.getProperties('identification', 'password');
             that.get('session').authenticate('authenticator:custom', credentials).then(null, function(error) {
-              that.set('errorMessage', error);
+              that.set('errorMessage', JSON.parse(error));
             });
         },
         verify: function (uid) {

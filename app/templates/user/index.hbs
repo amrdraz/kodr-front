@@ -19,14 +19,6 @@
       </li>
     {{/if}}
 </ul>
-{{!-- 
-<ul class="list-group">
-    <li class="list-group-item text-muted">Activities</li>
-    <li class="list-group-item">Something Happend</li>
-    <li class="list-group-item">Something Happend</li>
-    <li class="list-group-item">Something Happend</li>
-    <li class="list-group-item">Something Happend</li>
-</ul>  --}}
 </section>
 <section class="col-md-8">
     <ul class="nav nav-tabs" role="tablist">
@@ -34,7 +26,7 @@
         {{#unless session.isStudent}}
           <li><a href="#progress" role="tab" data-toggle="tab">Progress</a></li>
         {{/unless}}
-        <li class="active" \><a href="#quests" role="tab" data-toggle="tab">Quests</a></li>
+        <li class="active"><a href="#quests" role="tab" data-toggle="tab">Quests</a></li>
       {{else}}
         <li class="active"><a href="#groups" role="tab" data-toggle="tab">Groups</a></li>
       {{/if}}

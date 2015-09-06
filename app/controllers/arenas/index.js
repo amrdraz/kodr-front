@@ -22,8 +22,8 @@ export default Ember.Controller.extend({
         return this.get('session.isAuthenticated')?'arenaTrial':'arena';
     }.property('session.isAuthenticated'),
     published:function () {
-        return this.get('model').filterProperty('isPublished', true);
-    }.property('@each.isPublished'),
+        return this.get('model').filterBy('isPublished', true);
+    }.property('[].isPublished'),
     actions: {
       
     }

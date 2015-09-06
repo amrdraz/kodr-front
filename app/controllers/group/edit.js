@@ -11,7 +11,7 @@ export default Ember.Controller.extend({
         this.resetGroupOptions();
     },
     isCreating: function () {
-        return this.get('currentPath').split('.').contains('create');
+        return this.container.lookup('controller:application').get('currentPath').split('.').contains('create');
     }.property('currentPath'),
     getGroupOptionsFor: function(option) {
         var store = this.store;
