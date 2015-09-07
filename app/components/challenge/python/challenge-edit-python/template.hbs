@@ -1,12 +1,12 @@
 {{#editor-container}}
  <div class="col-lg-6">
   <div class="row">
-    <a {{action "run"}} class="btn btn-default pull-left challenge-run">{{fa-icon "play"}} Run in Console</a>
-    <a {{action "debug"}} class="btn btn-default pull-left challenge-debug">{{fa-icon "bug"}} Start  Debugger</a>
-    <a {{action "back"}} class="btn btn-default pull-left challenge-back">{{fa-icon "step-backward"}} Back</a>
-    <a {{action "step"}} class="btn btn-default pull-left challenge-step">{{fa-icon "step-forward"}} Step</a>
-    <a {{action "stop"}} class="btn btn-default pull-left challenge-stop">{{fa-icon "stop"}} Stop</a>
-    <a {{action "reset"}} class="btn btn-default pull-left challenge-reset">{{fa-icon "repeat"}} Reset </a>
+    <button {{action "run"}} class="btn btn-default pull-left challenge-run" disabled={{isDebugging}}>{{fa-icon "play"}} Run in Console</button>
+    <button {{action "debug"}} class="btn btn-default pull-left challenge-debug" disabled={{isDebugging}}>{{fa-icon "bug"}} Start  Debugger</button>
+    <button {{action "back"}} class="btn btn-default pull-left challenge-back" disabled={{if isDebugging isFirstStep 'disabled'}}>{{fa-icon "step-backward"}} Back</button>
+    <button {{action "step"}} class="btn btn-default pull-left challenge-step" disabled={{if isDebugging isLastStep 'disabled'}}>{{fa-icon "step-forward"}} Step</button>
+    <button {{action "stop"}} class="btn btn-default pull-left challenge-stop" disabled={{is-not isDebugging}}>{{fa-icon "stop"}} Stop</button>
+    <button {{action "reset"}} class="btn btn-default pull-right challenge-reset">{{fa-icon "repeat"}} Reset </button>
   </div>
   <div class="row">
     <ul class="nav nav-tabs">
