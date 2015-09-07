@@ -1,0 +1,34 @@
+<form role="form">
+  <div class="form-group">
+    <div class="col-md-6">
+      <label for="name" class="control-label">Challenge name</label>
+      {{input id="name" value=model.name class="challenge-name form-control"}}
+    </div>
+  </div>
+  <div class="form-group">
+    <div class=" col-md-6">
+      <label for="language" class="control-label">Language</label>
+      {{ember-selectize
+          class=":challenge-language-select"
+          content=challengeLanguages
+          value=model.language
+      }}
+    </div>
+  </div>
+  <div class="form-group">
+    <div class="col-md-6">
+      <label for="ecp" class="control-label">Difficulty</label>
+      {{ember-selectize
+          class=":challenge-exp-select"
+          content=model.expOptions
+          optionValuePath="content.points"
+          optionLabelPath="content.rank"
+          value=model.exp
+      }}
+      <span class="label label-primary challenge-exp">Estimated difficulty awards: {{model.exp}} Exp</span>
+    </div>
+  </div>
+  {{#if model.language}}
+    {{component (concat 'challenge/' model.language '/challenge-settings-' model.language) model=model }}
+  {{/if}}
+</form>

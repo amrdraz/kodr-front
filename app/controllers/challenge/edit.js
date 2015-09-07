@@ -1,17 +1,13 @@
 import debounce from 'kodr/utils/debounce';
-import ChallengeMixin from 'kodr/mixins/challenge';
 import Ember from 'ember';
-import Runner from 'kodr/runners/runner';
-import iframeTemplate from 'kodr/demo/iframe';
 
 
-export default Ember.Controller.extend(ChallengeMixin, {
+export default Ember.Controller.extend({
     needs: ['challenge', 'arena', 'application'],
     arena: Ember.computed.alias("controllers.arena"),
     breadCrumb: 'edit',
     breadCrumbPath: 'arena.edit',
     evaluates: 'solution',
-    challengeLanguages:['javascript','java'],
     // queryParams: ['arena'],
     // originalArena: null,
     init: function() {
@@ -20,20 +16,6 @@ export default Ember.Controller.extend(ChallengeMixin, {
     isCreating: function () {
         return this.container.lookup('controller:application').get('currentPath').split('.').contains('create');
     }.property('currentPath'),
-    // arenaChange: function() {
-    //     var arena = this.get('model.arena');
-    //     console.log(arena);
-    //     if (this.get('originalArena')!==(arena)){
-    //         // this.set('model.arena', arena);
-    //         // hack should probably observe relationship
-    //         this.set('relationshipChanged', true);
-    //     }
-    //     // arena && arena.get('challenges').pushObject(this.get('model'));
-    //     return arena;
-    // }.observes('model.arena'),
-    // arenas: function() {
-    //     return this.get('store').find('arena');
-    // }.property('[]'),
     unPublish: function() {
         if (this.get('model.isPublished')) {
             this.set('model.isPublished', false);
@@ -45,17 +27,11 @@ export default Ember.Controller.extend(ChallengeMixin, {
             this.set('model.isPublished', true);
         }
     },
-    testError: function(error) {
-        toastr.error('There are Errors check Console');
-        this.set('model.valid', this._super(error));
-        this.unPublish();
-        this.save();
-    },
-    testSuccess: function(report) {
+    test: function(report) {
         var model = this.get('model');
-        var result = this._super(report);
+        var result = report.passed;
         // console.log(report);
-        if(report.score<model.get('exp')) {
+        if(report.score < model.get('exp')) {
             this.EventBus.publish('console.write','Awarded ('+report.score+"/"+model.get('exp')+') - Solution to challenge should reach maximum score tests','error');
             result = false;
         }
@@ -69,21 +45,6 @@ export default Ember.Controller.extend(ChallengeMixin, {
             this.unPublish();
         }
         this.save();
-    },
-    evaluate: function() {
-        var model = this.get('model');
-        var controller = this;
-        var sb = controller.get('sandbox');
-
-        this.EventBus.publish('console.show');
-        controller.jshint(model.get('solution'), function(code, console, sb) {
-            sb.load(iframeTemplate, function() {
-                sb.evaljs(Runner.test(code, model.get('tests')));
-            });
-        }, {
-            sandbox: sb,
-            run: true
-        });
     },
     valueWillChange: function(obj, key){
         this['changing'+key] = obj.get(key);
@@ -110,44 +71,16 @@ export default Ember.Controller.extend(ChallengeMixin, {
     },
     actions: {
         run: debounce(function() {
-            var controller = this;
-            var model = controller.get('model');
-            if(model.get('isJava')) {
-                controller.EventBus.publish('console.show');
-                controller.EventBus.publish('console.write','Compiling...\n');
-                controller.runInServer(model.get('solution'), model,function (res) {
-                    controller.EventBus.publish('console.write','Compiled\n',res.sterr?'error':'result');
-                    if(res.sterr){
-                        controller.EventBus.publish('console.write',res.sterr,'error');
-                        controller.EventBus.publish('lintCode', 'solution',controller.parseSterr(res.sterr));
-                    } else {
-                        controller.EventBus.publish('console.write',res.stout);
-                        controller.EventBus.publish('lintCode', 'solution',[]);
-                    }
-                });
-            } else {
-                this.send('runInConsole');
-            }
+            // var controller = this;
+            // var model = controller.get('model');
+            
         }),
+        test(report) {
+            this.test(report);
+        },
         validate: function() {
             var controller = this;
-            var model = controller.get('model');
-            if(model.get('isJava')) {
-                controller.EventBus.publish('console.show');
-                controller.EventBus.publish('console.write','Running Tests...\n');
-                controller.testInServer(model.get('solution'), model,function (res) {
-                    controller.EventBus.publish('console.write','Compiled\n',res.sterr?'error':'result');
-                    if(res.sterr){
-                        controller.EventBus.publish('console.write',res.sterr,'error');
-                        controller.EventBus.publish('lintCode', 'solution',controller.parseSterr(res.sterr));
-                    } else {
-                        controller.testSuccess(res.report);
-                        controller.EventBus.publish('lintCode', 'solution',[]);
-                    }
-                });
-            } else {
-                this.evaluate();
-            }
+            controller.EventBus.publish('challenge.test');
         },
         reset: function() {
             if(this.get('model.canReset')) { this.get('model').rollback();}
@@ -192,21 +125,6 @@ export default Ember.Controller.extend(ChallengeMixin, {
             this.save().then(function() {
                 console.log('unPublished');
             });
-        },
-        addInput: function() {
-            var controller = this;
-            var model = controller.get('model');
-            if(model.get('isJava')) {
-                model.get("inputs").pushObject(Ember.Object.create({value:""}));
-            }
-        },
-        removeInput: function(inp) {
-            var controller = this;
-            var model = controller.get('model');
-            if(model.get('isJava')) {
-                model.get("inputs").removeObject(inp);
-            }
-        },
-
+        }
     }
 });

@@ -1,0 +1,68 @@
+{{#editor-container class="editor-container"}}
+  <div class="col-lg-6">
+      <a id="run" {{action "run"}} class="btn btn-default pull-right challenge-run">Run in Console <i class="glyphicon glyphicon-play"></i></a>
+      <a id="rest" {{action "rest"}} class="btn btn-default pull-right challenge-reset"><i class="glyphicon glyphicon-repeat"></i> Reset Challenge</a>
+      <ul class="nav nav-tabs">
+        <li class="active"><a href="#code" data-toggle="tab">Code</a></li>
+      </ul>
+      <div class="tab-content">
+        <pre>{{#if model.challenge.hasInput}}import java.util.Scanner;
+{{/if}}public class Main {
+  public static void main (String[] args) { {{#each model.challenge.inputs as |inp| }}
+    {{inp.value}};{{/each}}</pre>
+      <div class="tab-pane fade in active" id="code">
+        {{code-editor
+          name="codeEditor"
+          id="codeEditor"
+          class="col-lg-12"
+          model=model
+          lint=true
+          highlight=model.challenge.language
+          attr='code' }}
+      </div>
+      <pre>
+  }
+}</pre>
+      </div>
+  </div>
+  <div class="col-lg-6">
+    <a id="run" {{action "test"}} class="btn {{if model.complete 'btn-success' 'btn-primary'}} pull-right {{if model.canSubmit '' 'disabled'}} challenge-submit">
+      {{#if model.complete}}
+        {{#if isDirtyish}}
+          Re-Submit <i class="glyphicon glyphicon-play"></i>
+        {{else}}
+          Completed <i class="glyphicon glyphicon-ok"></i>
+        {{/if}}
+      {{else}}
+        Submit <i class="glyphicon glyphicon-play"></i>
+      {{/if}}
+    </a>
+    <ul class="nav nav-tabs">
+      <li class="active"><a href="#console" data-toggle="tab">Console</a></li>
+        {{#if model.challenge.hasInput}}
+          <li class=""><a href="#input" data-toggle="tab">Test Input</a></li>
+        {{/if}}
+    </ul>
+    <div class="tab-content">
+      <div class="tab-pane fade in active" id="console">
+        {{code-console}}
+      </div>
+      {{#if model.challenge.hasInput}}
+       <div class="tab-pane fade" id="input">
+        {{code-editor
+          name="inputEditor"
+          id="inputEditor"
+          class="col-lg-12"
+          model=model
+          attr='input' }}
+      </div>
+      {{/if}}
+      <div class="tab-pane fade" id="results">
+        {{results}}
+      </div>
+      <div id="sandbox">
+        {{iframe-sandbox}}
+      </div>
+    </div>
+  </div>
+{{/editor-container}}

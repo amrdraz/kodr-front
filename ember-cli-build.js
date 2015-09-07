@@ -49,6 +49,9 @@ module.exports = function(defaults) {
     app.import('bower_components/socket.io-client/socket.io.js');
     app.import('bower_components/ember-sockets/dist/ember-sockets.js');
 
+    app.import('vendor/brython/www/src/brython.js');
+    app.import('vendor/debugger/main.js');
+
     app.import('bower_components/bootstrap-sass-official/assets/javascripts/bootstrap.js');
 
     // app.import('bower_components/katex/dist/katex.min.css');

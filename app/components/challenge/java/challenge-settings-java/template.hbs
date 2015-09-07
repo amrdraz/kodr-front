@@ -1,0 +1,10 @@
+<div class="form-group">
+    <div class="col-md-6">
+      <label for="inputs" class="control-label">Inputs</label>
+      {{#each model.inputs as |inp| }}
+            {{input value=inp.value class="challenge-name form-control"}}
+            <button type="button" {{action "removeInput" inp }} class="close"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+      {{/each}}
+      <button {{action "addInput" }}class="btn btn-primary">+ Add</button>
+    </div>
+</div>

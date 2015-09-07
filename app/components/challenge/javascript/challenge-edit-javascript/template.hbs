@@ -1,0 +1,67 @@
+{{#editor-container}}
+ <div class="col-lg-6">
+  <a id="run" {{action "runInConsole"}} class="btn btn-default pull-right challenge-run"><i class="glyphicon glyphicon-play"></i> Run in Console</a>
+  <ul class="nav nav-tabs">
+    <li><a href="#import" data-toggle="tab">Import</a></li>
+    <li class="active"><a href="#solution" data-toggle="tab">Solution</a></li>
+    <li><a href="#setup" data-toggle="tab">Setup</a></li>
+    <li><a href="#tests" data-toggle="tab">Test</a></li>
+  </ul>
+  <div class="tab-content">
+    <div class="tab-pane fade in active" id="solution">
+      {{code-editor
+          name="solutionEditor"
+          id="solutionEditor"
+          class="col-lg-12"
+          model=model
+          lint=true
+          attr='solution' }}
+    </div>
+    <div class="tab-pane fade " id="setup">
+      {{code-editor
+        name="setup"
+        id="setupEditor"
+        class="col-lg-12"
+        model=model
+        attr='setup' }}
+    </div>
+    <div class="tab-pane fade" id="tests">
+      {{code-editor
+          name="testsEditor"
+          id="testsEditor"
+          class="col-lg-12"
+          model=model
+          attr='tests' }}
+    </div>
+  </div>
+</div>
+<div class="col-lg-6">
+  <ul class="nav nav-tabs">
+    <li class="active"><a href="#description" data-toggle="tab">Description</a></li>
+    <li><a href="#descriptionPreview" data-toggle="tab">Description Preview</a></li>
+    <li><a href="#console" data-toggle="tab">Console</a></li>
+  </ul>
+  <div class="tab-content">
+    <div class="tab-pane  fade in active" id="description">
+      {{code-editor
+        name="description"
+        id="descriptionEditor"
+        class="col-lg-12"
+        model=model
+        attr='description'
+        highlight='markdown'
+        }}
+    </div>
+
+    <div class="tab-pane fade" id="descriptionPreview">
+      {{marked-math model=model observable='description' }}
+    </div>
+    <div class="tab-pane fade" id="console">
+      {{code-console}}
+    </div>
+    <div id="sandbox">
+      {{iframe-sandbox}}
+    </div>
+  </div>
+</div>
+{{/editor-container}}
