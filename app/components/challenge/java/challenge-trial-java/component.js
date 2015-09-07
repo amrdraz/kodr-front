@@ -1,13 +1,11 @@
 import Ember from 'ember';
-import ChallengeCommon from 'kodr/mixins/challenge/challenge-common-java';
+import ChallengeCommon from 'kodr/mixins/challenge/java/challenge-common-java';
 
 export default Ember.Component.extend(ChallengeCommon, {
-    tagName:'section',
-    classNames:['row'],
     evaluatedModelProperty:'code',
     actions: {
         run: function () {
-            this.run();
+            this.runCode();
         },
         test: function () {
            this.validate();

@@ -1,1 +1,6 @@
-{{yield}}
+{{component (concat 'challenge/' model.challenge.language '/challenge-trial-' model.challenge.language)
+    model=model
+    run="run"
+    rest="rest"
+    test="test"
+    }}
