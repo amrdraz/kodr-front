@@ -8,9 +8,14 @@ export default Ember.Component.extend({
         console.log(text);
         this.get('console').Write(text, type);
     },
+    clear: function () {
+        this.get('console').Clear();
+    },
     didInsertElement: function() {
+        var component = this;
         var controller = this.get('controller');
         this.EventBus.subscribe('console.write', this, this.write);
+        this.EventBus.subscribe('console.clear', this, this.clear);
         var that = this;
         var header = 'This is a console for you to test your code!\n' +
             'You can either run your code in console to see what happens\n' +
@@ -37,7 +42,7 @@ export default Ember.Component.extend({
                     jqconsole.MoveToEnd();
                     handler();
                 });
-                // Move to line end Ctrl+E.
+                // Clear Console Ctrl+K.
                 jqconsole.RegisterShortcut('K', function() {
                     jqconsole.Clear();
                     handler();
@@ -58,7 +63,7 @@ export default Ember.Component.extend({
                 // Handle a command.
                 var handler = function(command) {
                     if (command) {
-                        that.sendAction('consoleEval', command);
+                        that.sendAction(component.get('eval'), command);
                     }
                     jqconsole.Prompt(true, handler, function(command) {
                         // Continue line if can't compile the command.
@@ -85,5 +90,6 @@ export default Ember.Component.extend({
     },
     willClearRender: function() {
         this.EventBus.unsubscribe('console.write', this, this.write);
+        this.EventBus.unsubscribe('console.clear', this, this.clear);
     }
 });

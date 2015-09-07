@@ -10,24 +10,45 @@ function getMIME(lang) {
     return lang;
 }
 
+function getMode(lang) {
+    switch(lang) {
+        case 'java':
+        case 'javascript':
+            return {
+                name: getMIME(lang),
+                globalVars: true,
+                singleLineStringErrors: false
+            };
+        case 'python':
+            return {
+                name: "python",
+                version: 3,
+                singleLineStringErrors: false
+            };
+        default:
+            return {
+                name: lang,
+                globalVars: true,
+                singleLineStringErrors: false
+            };
+    }
+}
+
 export default Ember.Component.extend({
     tagName: 'textarea',
     check_syntax: function(code, result_cb) {
         // this.spy('set',result_cb);
     },
-    didInsertElement: function() {
+    didInsertElement: function() {        
         var model = this.get('model');
         var highlight = this.get('highlight') && getMIME(this.get('highlight'));
         var config = {
             autofocus: true,
             lineNumbers: true,
+            indentUnits: 4,
             lineWrapping: true,
             styleActiveLine: true,
-            mode: {
-                name: (highlight || getMIME(model.get('language'))),
-                globalVars: true,
-                singleLineStringErrors: false
-            }
+            mode:getMode(model.get('language') || highlight)
         };
         var attr = this.get('attr') || 'content';
         var lint = this.get('lint');
@@ -48,7 +69,7 @@ export default Ember.Component.extend({
             }
         };
         this.changeMode = function() {
-            editor.setOption("mode", getMIME(model.get('language')));
+            editor.setOption("mode", getMode(model.get('language')));
         };
         model.addObserver(attr, model, this.updateEditor);
         !highlight && model.addObserver('language', model, this.changeMode);

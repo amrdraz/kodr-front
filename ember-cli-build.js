@@ -5,6 +5,9 @@ module.exports = function(defaults) {
     /* global require, module */
 
     var app = new EmberApp(defaults, {
+        emberCliFontAwesome: {
+            useScss: true
+        },
         sassOptions: {
             includePaths: [
                 'bower_components/bootstrap-sass-official/assets/stylesheets/',
@@ -38,6 +41,7 @@ module.exports = function(defaults) {
     app.import('bower_components/codemirror/lib/codemirror.js');
     app.import('bower_components/codemirror/mode/javascript/javascript.js');
     app.import('bower_components/codemirror/mode/clike/clike.js');
+    app.import('bower_components/codemirror/mode/python/python.js');
     app.import('bower_components/codemirror/mode/markdown/markdown.js');
     app.import('bower_components/codemirror/addon/edit/matchbrackets.js');
     app.import('bower_components/codemirror/addon/selection/active-line.js');
