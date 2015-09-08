@@ -4,9 +4,12 @@
         start_debugger: startDebugger,
         stop_debugger: stopDebugger,
         step_debugger: stepDebugger,
-        step_back_debugger: stepBackRecording,
+        step_to_first_step: stepBackRecording,
+        step_to_last_step: setStepToLast,
+        step_first_debugger: setStepToFirst,
         can_step: canStep,
         set_step: setStep,
+        set_no_input_trace: setNoInputTrace,
         set_trace: setTrace,
         set_trace_call: setTraceCall,
         set_step_limit: setStepLimit,
@@ -15,17 +18,20 @@
         is_executing: isExecuting,
         is_last_step: isLastStep,
         is_first_step: isFirstStep,
+        did_error_occure: getDidErrorOccure,
         get_current_step: getStep,
         get_current_state: getCurrentState,
         get_recorded_states: getRecordedStates,
-        on_debugging_started: eventCallbackSetter('debugStarted'),
-        on_debugging_end: eventCallbackSetter('debugEnded'),
-        on_debugging_error: eventCallbackSetter('debugError'),
-        on_step_update: eventCallbackSetter('stepUpdate'),
+        on_input_while_debugging: callbackSetter('handleInput'),
+        on_debugging_started: callbackSetter('debugStarted'),
+        on_debugging_end: callbackSetter('debugEnded'),
+        on_debugging_error: callbackSetter('debugError'),
+        on_step_update: callbackSetter('stepUpdate'),
     };
     var $B = win.__BRYTHON__;
     var _b_ = $B.builtins;
     var traceCall = 'Brython_Debugger.set_trace';
+    var noInputTrace = false;
     var debugging = false; // flag indecting debugger was started
     var stepLimit = 10000; // Solving the halting problem by limiting the number of steps to run
 
@@ -33,6 +39,7 @@
     var myInterpreter = null;
 
     var isRecorded = false;
+    var didErrorOccure = false;
     var weStopDebugOnRuntimeError = false;
     var parserReturn = null; // object returned when done parsing
     var recordedStates = [];
@@ -42,10 +49,10 @@
     var currentStep = 0;
     var noop = function() {};
 
-    var events = ['stepUpdate', 'debugStarted', 'debugError', 'debugEnded'];
-    var events_cb = {};
+    var events = ['stepUpdate', 'debugStarted', 'debugError', 'debugEnded', 'handleInput'];
+    var callbacks = {};
     events.forEach(function(key) {
-        events_cb[key] = noop;
+        callbacks[key] = noop;
     });
 
     // used in trace injection
@@ -55,9 +62,9 @@
     var INPUT_RGX = /getattr\(\$B.builtins\[\"input\"\],\"__call__\"\)\(((?:\"(.)*\")|\d*)\)/g; // only works for string params
     var HALT = "HALT";
 
-    function eventCallbackSetter(key) {
+    function callbackSetter(key) {
         return function(cb) {
-            events_cb[key] = cb;
+            callbacks[key] = cb;
         };
     }
 
@@ -70,6 +77,15 @@
     function setTraceCall(name) {
         traceCall = name;
     }
+    /**
+     * Set the value of noInputTrace
+     * a flag that stops the debugger from injecting input trace calls into the code
+     * will cause the program to stop if you're in record more and did not change the default input function or input stream
+     * @param {Boolean} bool wheather input trace calls should be injected into the code
+     */
+    function setNoInputTrace(bool) {
+        noInputTrace = bool;
+    }
 
     /**
      * is the debugger in record mode, exposed as is_recorded
@@ -79,6 +95,17 @@
         return isRecorded;
     }
 
+    /**
+     * If an error is thrown during the debugging session this value is true
+     * @return {Boolean}
+     */
+    function getDidErrorOccure() {
+        return didErrorOccure;
+    }
+    /**
+     * Is this a debugging session active
+     * @return {Boolean} 
+     */
     function isDebugging() {
         return debugging;
     }
@@ -109,6 +136,13 @@
      */
     function setStepLimit(n) {
         stepLimit = (n===undefined)?10000:n;
+    }
+
+    function setStepToLast () {
+       setStep(recordedStates.length-1);
+    }
+    function setStepToFirst () {
+       setStep(0);
     }
 
     /**
@@ -144,11 +178,26 @@
         updateStep();
     }
 
+    /**
+     * record input in case of rerun
+     * @param  {Object} state current step state
+     * @return {String}       Value of input
+     */
     function recordInput(state) {
-        var inp = _b_.input(state.arg);
+        var inp = callbacks['handleInput'](state.arg);
         recordedInputs[state.id] = inp;
         return recordedInputs[state.id];
     }
+
+    /**
+     * Dfault function to handle input while debugging
+     * can be replaced externallyfrom this default
+     * @param  {String} arg String to show user
+     * @return {String}     Value of input
+     */
+    callbacks['handleInput'] = function  handleInput(arg) {
+        return _b_.input(arg);
+    };
 
     /**
      * Is this last step
@@ -171,7 +220,7 @@
     function debuggingStarted() {
         debugging = true;
         linePause = false;
-        events_cb.debugStarted(Debugger);
+        callbacks.debugStarted(Debugger);
     }
 
     /**
@@ -181,7 +230,7 @@
      */
     function updateStep() {
         currentState = recordedStates[currentStep];
-        events_cb.stepUpdate(currentState);
+        callbacks.stepUpdate(currentState);
     }
 
 
@@ -189,9 +238,11 @@
      * Fire when exiting debug mode
      */
     function stopDebugger() {
-        debugging = false;
-        resetOutErr();
-        events_cb.debugEnded(Debugger);
+        if(debugging) {
+            debugging = false;
+            resetOutErr();
+            callbacks.debugEnded(Debugger);
+        }
     }
 
     /**
@@ -212,6 +263,7 @@
             next_line_no: +($B.last(err.$stack)[1].$line_info.split(',')[0]),
             module_name: +($B.last(err.$stack)[1].$line_info.split(',')[1])
         };
+        didErrorOccure = true;
         if (getRecordedStates().length > 0) {
             if(getRecordedStates().length>=stepLimit) {
                 trace.type = 'infinit_loop';
@@ -222,7 +274,7 @@
         } else {
             trace.type = 'syntax_error';
         }
-        events_cb.debugError(trace, Debugger);
+        callbacks.debugError(trace, Debugger);
     }
 
     /**
@@ -318,6 +370,10 @@
         state.id = state.id + recordedStates.length;
         if (recordedInputs[state.id]!==undefined) {
             return recordedInputs[state.id];
+        } else if(stdInChanged()) {
+            // ignore input trace until it's back to the original
+            // by handeling input now
+            return callbacks['handleInput'](state.arg); 
         } else {
             state.line_no = getLastRecordedState().line_no;
             state.frame = getLastRecordedState().frame;
@@ -326,6 +382,15 @@
             throw HALT;
         }
     }
+
+    /**
+     * detect whether stdin changed
+     * @return {Boolean} whether stdIn was changed while running the code
+     */
+    function stdInChanged() {
+        return $B.imported.sys.stdin !== $B.modules._sys.stdin;
+    }
+
     /**
      * These states are only there to update the previouse states of where they should point
      * they are not recorded
@@ -342,6 +407,7 @@
         recordedOut = [];
         recordedErr = [];
         if (!rerun) {
+            didErrorOccure = false;
             isRecorded = false;
             currentStep = 0;
             recordedInputs = {};
@@ -571,16 +637,18 @@
         newCode += ';$B.leave_frame(' + codesplit[1];
 
         //  inject input trace if applicable
-        var re = new RegExp(INPUT_RGX.source, 'g');
-        var inputLine = getNextInput(newCode, re);
-        while (inputLine !== null) {
-            code = newCode.substr(0, inputLine.index);
-            var inJect = traceCall + "({event:'input', arg:" + inputLine.param + ", id:'" + inputLine.index + "'})";
-            code += inJect;
-            index = inputLine.index + inputLine.string.length;
-            code += newCode.substr(index);
-            newCode = code;
-            inputLine = getNextInput(newCode, re);
+        if(!noInputTrace) {
+            var re = new RegExp(INPUT_RGX.source, 'g');
+            var inputLine = getNextInput(newCode, re);
+            while (inputLine !== null) {
+                code = newCode.substr(0, inputLine.index);
+                var inJect = traceCall + "({event:'input', arg:" + inputLine.param + ", id:'" + inputLine.index + "'})";
+                code += inJect;
+                index = inputLine.index + inputLine.string.length;
+                code += newCode.substr(index);
+                newCode = code;
+                inputLine = getNextInput(newCode, re);
+            }
         }
 
         // console.log('debugger:\n\n' + code);
@@ -764,6 +832,7 @@
 
     var realStdOut = $B.stdout;
     var realStdErr = $B.stderr;
+    var realStdIn = $B.stdin;
 
     function createOut(cname, std, next) {
         var $io = {

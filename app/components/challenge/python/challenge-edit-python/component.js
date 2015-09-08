@@ -118,12 +118,15 @@ export default Ember.Component.extend({
 
         this.EventBus.publish('editor.lint', this.get('evaluatedModelProperty'), [err]);
     },
+    testCode(code, testCode) {
+        console.log(code, testCode);
+    },
     actions: {
         run() {
             this.runCode(this.get('model').get(this.get('evaluatedModelProperty')));
         },
         test() {
-            this.sendAction(this.get('run'));
+            this.testCode(this.get('model').get(this.get('evaluatedModelProperty')), this.get('model.tests'));
         },
         step() {
             this.stepDebugger();
@@ -142,7 +145,7 @@ export default Ember.Component.extend({
         },
     },
     didInsertElement() {
-        window.brython(10);
+        window.brython(1);
         $B.brython_path = window.location.origin + "/brython/www/src/";
         // $B.path = [
         //     window.location.origin + "/brython/www/src"
@@ -157,10 +160,34 @@ export default Ember.Component.extend({
             },
             flush: function() {}
         };
-        $B.stdout = cout;
-        $B.stderr = cout;
+        $B.stdout = $B.modules._sys.stdin = cout;
+        $B.stderr = $B.modules._sys.stdin = cout;
+        $B.stdin = $B.modules._sys.stdin = {
+            __class__: $io,
+            __original__:true,
+            closed: false,
+            len:1, pos:0,
+            read: function () {
+                return prompt();
+            },
+            readline: function() {
+                return prompt();
+            }
+        };
+        _b_.input = function input(arg) {
+            var stdin = ($B.imported.sys && $B.imported.sys.stdin || $B.stdin);
+            // $B.stdout.write(arg);
+            if (stdin.__original__) { return prompt(arg); }
+            var val = _b_.getattr(stdin, 'readline')();
+            val = val.split('\n')[0];
+            if (stdin.len === stdin.pos){
+                _b_.getattr(stdin, 'close')();
+            }
+            // $B.stdout.write(val+'\n');
+            return val;
+        };
 
-        this.set('Debugger', Debugger);
+        window.Brython_Tester.init();
 
         Debugger.on_debugging_started(component.debug_started.bind(component));
         Debugger.on_debugging_end(component.debug_stoped.bind(component));
