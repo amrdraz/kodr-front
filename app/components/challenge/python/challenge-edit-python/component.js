@@ -142,7 +142,11 @@ export default Ember.Component.extend({
         },
     },
     didInsertElement() {
-        window.brython(1);
+        window.brython(10);
+        $B.brython_path = window.location.origin + "/brython/www/src/";
+        // $B.path = [
+        //     window.location.origin + "/brython/www/src"
+        // ];
         var component = this;
 
         var cout = {
