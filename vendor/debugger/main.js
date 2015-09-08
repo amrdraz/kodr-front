@@ -677,6 +677,7 @@
      * @return {[type]}      [description]
      */
     function runNoTrace (code) {
+        resetDebugger();
         var module_name = '__main__';
         $B.$py_module_path[module_name] = window.location.href;
         try {
