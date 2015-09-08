@@ -15,12 +15,15 @@
     "ember-resolver": "~0.1.18",
     "ember-simple-auth": "~0.8.0",
     "ember-sockets": "~0.7.1",
+    "font-awesome": "~4.4.0",
     "highcharts": "~4.1.7",
+    "highlight": "~8.8.0",
     "jq-console": "~2.11.0",
     "jquery": "^1.11.3",
     "jshint": "~2.8.0",
     "katex": "~0.4.3",
     "loader.js": "ember-cli/loader.js#3.2.1",
+    "lodash": "~3.10.1",
     "marked": "~0.3.3",
     "modernizr": "~2.8.3",
     "qunit": "~1.18.0",
@@ -28,7 +31,6 @@
     "selectize": "~0.12.1",
     "socket.io-client": "1.0.6",
     "sweetalert": "https://github.com/t4t5/sweetalert.git#~1.0.1",
-    "toastr": "~2.1.1",
-    "font-awesome": "~4.4.0"
+    "toastr": "~2.1.1"
   }
 }

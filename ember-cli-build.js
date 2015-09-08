@@ -23,6 +23,7 @@ module.exports = function(defaults) {
 
     app.import('bower_components/modernizr/modernizr.js');
 
+    app.import('bower_components/lodash/lodash.js');
 
     app.import('bower_components/toastr/toastr.css');
     app.import('bower_components/toastr/toastr.js');

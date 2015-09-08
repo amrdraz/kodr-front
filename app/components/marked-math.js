@@ -70,7 +70,7 @@ export default Ember.Component.extend({
         this.marked.setOptions({
             renderer: new marked.Renderer(),
             highlight: function(code) {
-                return highlight.highlightAuto(code).value;
+                return window.hljs.highlightAuto(code).value;
             },
             gfm: true,
             tables: true,

@@ -1,16 +1,18 @@
 import Ember from 'ember';
+import ChallengeCommon from 'kodr/mixins/challenge/challenge-common';
 
 
 var $B = window.__BRYTHON__;
 var _b_ = $B.builtins;
 var Debugger = window.Brython_Debugger;
+var Tester = window.Brython_Tester;
 var $io = {
     __class__: $B.$type,
     __name__: 'io'
 };
 $io.__mro__ = [$io, _b_.object.$dict];
 
-export default Ember.Component.extend({
+export default Ember.Component.extend(ChallengeCommon, {
     canStep: false,
     isDebugging: false,
     isLastStep: false,
@@ -22,10 +24,10 @@ export default Ember.Component.extend({
     clearConsole() {
         this.EventBus.publish('console.clear');
     },
-    clearLint(){
-        this.EventBus.publish('editor.lint', this.get('evaluatedModelProperty'), []);
+    clearLint(editor) {
+        this.EventBus.publish('editor.lint', editor || this.get('evaluatedModelProperty'), []);
     },
-    goToLine(line){
+    goToLine(line) {
         this.EventBus.publish('editor.line', this.get('evaluatedModelProperty'), line);
     },
     resetSrc() {
@@ -104,45 +106,53 @@ export default Ember.Component.extend({
             this.writeToConsole(err.data + '\n');
             Debugger.stop_debugger();
         }
-        // {
-        //         line_no: (line) - 1,
-        //         column_no_start: column_no_start || 0,
-        //         column_no_stop: column_no_stop || 200,
-        //         message: msg,
-        //         fragment: fragment || '',
-        //         severity: "error"
-        //     }
         err.column_no_start = 0;
         err.column_no_stop = 200;
         err.severity = 'error';
 
         this.EventBus.publish('editor.lint', this.get('evaluatedModelProperty'), [err]);
     },
-    testCode(code, testCode) {
-        console.log(code, testCode);
+    testCode(obj) {
+        this.clearConsole();
+        this.clearLint('tests');
+        this.EventBus.publish('console.show');
+        var report = Tester.run_test(obj);
+        this.printReport(report);
+        this.sendAction(this.get("test"), report);
+    },
+    test_error(err) {
+        this.writeToConsole(err.data + '\n');
+        err.column_no_start = 0;
+        err.column_no_stop = 200;
+        err.severity = 'error';
+        this.EventBus.publish('editor.lint', "tests", [err]);
     },
     actions: {
         run() {
-            this.runCode(this.get('model').get(this.get('evaluatedModelProperty')));
-        },
-        test() {
-            this.testCode(this.get('model').get(this.get('evaluatedModelProperty')), this.get('model.tests'));
-        },
-        step() {
-            this.stepDebugger();
-        },
-        back() {
-            this.stepBackDebugger();
-        },
-        debug() {
-            this.startDebugger(this.get('model').get(this.get('evaluatedModelProperty')));
-        },
-        stop() {
-            this.stopDebugger();
-        },
-        reset() {
-            this.sendAction(this.get('run'));
-        },
+                this.runCode(this.get('model').get(this.get('evaluatedModelProperty')));
+            },
+            test() {
+                this.testCode({
+                    code: this.get('model').get(this.get('evaluatedModelProperty')),
+                    test: this.get('model.tests'),
+                    exp: this.get('model.exp')
+                });
+            },
+            step() {
+                this.stepDebugger();
+            },
+            back() {
+                this.stepBackDebugger();
+            },
+            debug() {
+                this.startDebugger(this.get('model').get(this.get('evaluatedModelProperty')));
+            },
+            stop() {
+                this.stopDebugger();
+            },
+            reset() {
+                this.sendAction(this.get('run'));
+            },
     },
     didInsertElement() {
         window.brython(1);
@@ -164,10 +174,11 @@ export default Ember.Component.extend({
         $B.stderr = $B.modules._sys.stdin = cout;
         $B.stdin = $B.modules._sys.stdin = {
             __class__: $io,
-            __original__:true,
+            __original__: true,
             closed: false,
-            len:1, pos:0,
-            read: function () {
+            len: 1,
+            pos: 0,
+            read: function() {
                 return prompt();
             },
             readline: function() {
@@ -177,23 +188,25 @@ export default Ember.Component.extend({
         _b_.input = function input(arg) {
             var stdin = ($B.imported.sys && $B.imported.sys.stdin || $B.stdin);
             // $B.stdout.write(arg);
-            if (stdin.__original__) { return prompt(arg); }
+            if (stdin.__original__) {
+                return prompt(arg);
+            }
             var val = _b_.getattr(stdin, 'readline')();
             val = val.split('\n')[0];
-            if (stdin.len === stdin.pos){
+            if (stdin.len === stdin.pos) {
                 _b_.getattr(stdin, 'close')();
             }
             // $B.stdout.write(val+'\n');
             return val;
         };
 
-        window.Brython_Tester.init();
-
         Debugger.on_debugging_started(component.debug_started.bind(component));
         Debugger.on_debugging_end(component.debug_stoped.bind(component));
         Debugger.on_debugging_error(component.debug_error.bind(component));
         Debugger.on_step_update(component.debug_step.bind(component));
 
+        Tester.init();
+        Tester.on_test_error(component.test_error.bind(component));
     },
     willClearRender() {
 

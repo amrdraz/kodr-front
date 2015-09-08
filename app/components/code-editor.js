@@ -36,19 +36,15 @@ function getMode(lang) {
 
 export default Ember.Component.extend({
     tagName: 'textarea',
-    check_syntax: function(code, result_cb) {
-        // this.spy('set',result_cb);
-    },
     didInsertElement: function() {        
         var model = this.get('model');
-        var highlight = this.get('highlight') && getMIME(this.get('highlight'));
         var config = {
             autofocus: true,
             lineNumbers: true,
             indentUnits: 4,
             lineWrapping: true,
             styleActiveLine: true,
-            mode:getMode(model.get('language') || highlight)
+            mode:getMode(this.get('language') || model.get('language'))
         };
         var attr = this.get('attr') || 'content';
         var lint = this.get('lint');
@@ -72,7 +68,7 @@ export default Ember.Component.extend({
             editor.setOption("mode", getMode(model.get('language')));
         };
         model.addObserver(attr, model, this.updateEditor);
-        !highlight && model.addObserver('language', model, this.changeMode);
+        !this.get('language') && model.addObserver('language', model, this.changeMode);
 
         editor.on('change', debounce(function(cm) {
             model.set(attr, cm.getValue());

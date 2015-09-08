@@ -6,43 +6,61 @@
     var Test = win.Brython_Tester = {
         init: init,
         get_code: getCode,
-        set_code:setCode,
+        set_code: setCode,
         set_input: setInput,
-        unset_input:unsetInput,
-        get_report:getReport,
-        run_code:runCode,
-        report:appendToReport,
-        pass:pass,
-        fail:fail,
-        expect:expect,
-        matches:matches,
-        contains:contains,
+        unset_input: unsetInput,
+        get_report: getReport,
+        run_code: runCode,
+        run_test: runTest,
+        add_test: appendTestToReport,
+        pass: pass,
+        fail: fail,
+        expect: expect,
+        matches: matches,
+        contains: contains,
+        on_test_error: callbackSetter('testError'),
     };
 
     var $B = window.__BRYTHON__;
     var _b_ = $B.builtins;
     var Debugger = window.Brython_Debugger;
-    var $io = {
-        __class__: $B.$type,
-        __name__: 'io'
-    };
-    $io.__mro__ = [$io, _b_.object.$dict];
+    var _ = window._;
+
+    var noop = function() {};
+    var events = ['testError'];
+    var callbacks = {};
+    events.forEach(function(key) {
+        callbacks[key] = noop;
+    });
+
+    function callbackSetter(key) {
+        return function(cb) {
+            callbacks[key] = cb;
+        };
+    }
 
     var DEFAULT_PASS_MESSAGE = "Passed Test";
     var DEFAULT_FAIL_MESSAGE = "Failed Test";
     var DEFAULT_SCORE = 0;
 
     var did_set_input = false;
+    var did_set_output = false;
     var code, scope;
-    var report = {};
+    var report = {
+        passed: false,
+        score: 0,
+        passes: [],
+        failures: [],
+        tests: []
+    };
 
-    function init () {
+    function init() {
         restTest();
         scope = {
-            __name__:"__main__"
+            __name__: "__main__"
         };
-        $B.$__import__("io",scope, {}, []);
-        scope.StringIO = _b_.getattr($B.imported.io,"StringIO");
+        $B.$__import__("io", scope, {}, []);
+        scope.StringIO = _b_.getattr($B.imported.io, "StringIO");
     }
 
     function defineModule(name, mod) {
@@ -67,7 +85,13 @@
     }
 
     function restTest() {
-        report = [];
+        report = report = {
+            passed: false,
+            score: 0,
+            passes: [],
+            failures: [],
+            tests: []
+        };
         code = "";
     }
 
@@ -77,9 +101,21 @@
      */
     function setInput(stdin) {
         did_set_input = true;
-        scope.stdin = _b_.getattr(scope.StringIO,"__call__")(stdin);
+        scope.stdin = _b_.getattr(scope.StringIO, "__call__")(stdin);
         scope.__stdin__ = $B.stdin;
         $B.stdin = $B.modules._sys.stdin = scope.stdin;
+    }
+    /**
+     * Sets output stream during test in order to supress the regular output
+     */
+    function setOutput() {
+        did_set_output = true;
+        scope.stdout = _b_.getattr(scope.StringIO, "__call__")("");
+        scope.stderr = _b_.getattr(scope.StringIO, "__call__")("");
+        scope.__stdout__ = $B.stdout;
+        scope.__stderr__ = $B.stderr;
+        $B.stdout = $B.modules._sys.stdout = scope.stdout;
+        $B.stderr = $B.modules._sys.stderr = scope.stderr;
     }
 
     /**
@@ -89,29 +125,117 @@
         did_set_input = false;
         $B.stdin = $B.modules._sys.stdin = scope.__stdin__;
     }
+    /**
+     * unsets the input stream back to normal
+     */
+    function unsetOutput() {
+        did_set_output = false;
+        $B.stdout = $B.modules._sys.stdout = scope.__stdout__;
+        $B.stderr = $B.modules._sys.stderr = scope.__stderr__;
+    }
 
-    function runCode(code) {
-        Test.set_code(code);
-        if(!did_set_input) {
+    function runCode() {
+        if (!did_set_input) {
             setInput("");
         }
+        setOutput();
+        Debugger.unset_events();
         Debugger.set_no_input_trace(true);
-        Debugger.start_debugger(code);
+        Debugger.start_debugger(code, true);
         Debugger.step_to_last_step();
-        var state = Debugger.get_current_state;
+        var state = Debugger.get_current_state();
+        Debugger.stop_debugger();
+        Debugger.reset_events();
         unsetInput();
+        unsetOutput();
         // some processing
         return state;
     }
 
-    function appendToReport(pass, msg, point, tag) {
+    /**
+     * Run test code that tests the set code
+     * should not be used inside the test code
+     * @return {Array} report of test run
+     */
+    function runTest(options) {
+        restTest();
+        setCode(options.code);
+        var test = "import Test;" + options.test;
+        var module_name = '__main__';
+        $B.$py_module_path[module_name] = window.location.href;
+        try {
+            var root = $B.py2js(test, module_name, module_name, '__builtins__');
+
+            var js = root.to_js();
+            if ($B.debug > 1) {
+                console.log(js);
+            }
+
+            var None = _b_.None;
+            var getattr = _b_.getattr;
+            var setattr = _b_.setattr;
+            var delattr = _b_.delattr;
+
+            if ($B.async_enabled) {
+                js = $B.execution_object.source_conversion(js);
+
+                //console.log(js)
+                eval(js);
+            } else {
+                // Run resulting Javascript
+                eval(js);
+            }
+        } catch (exc) {
+            $B.leave_frame();
+            $B.leave_frame();
+            if (exc.$py_error) {
+                errorWhileTesting(exc);
+            } else {
+                throw exc;
+            }
+        }
+
+        var tests = report.tests;
+        report.passes = _.filter(tests, 'pass');
+        report.failures = _.reject(tests, 'pass');
+        report.score = _.reduce(tests, function(sum, t) {
+            return sum + t.score;
+        }, 0);
+        report.score = Math.max(0, Math.min(report.score, options.exp));
+        report.passed = report.passes.length === tests.length;
+
+        return report;
+    }
+
+    /**
+     * Fire when an error occurrs while parsing or during runtime
+     */
+    function errorWhileTesting(err) {
+        var trace = {
+            type: 'runtime_error',
+            data: _b_.getattr(err, 'info') + '\n' + _b_.getattr(err, '__name__') + ": " + err.$message + '\n',
+            stack: err.$stack,
+            message: err.$message,
+            name: _b_.getattr(err, '__name__'),
+            frame: $B.last(err.$stack),
+            err: err,
+            line_no: +($B.last(err.$stack)[1].$line_info.split(',')[0]),
+            module_name: +($B.last(err.$stack)[1].$line_info.split(',')[1])
+        };
+        if (trace.name === "SyntaxError") {
+            trace.type = 'syntax_error';
+        }
+        callbacks['testError'](trace, Test);
+    }
+
+    function appendTestToReport(pass, msg, point, tag) {
         var rep = {
-            "pass": pass ,
-            "message": msg ,
+            "pass": pass,
+            "message": msg,
             "score": point || DEFAULT_SCORE,
             tag: tag
         };
-        report.push(rep);
+        report.tests.push(rep);
     }
 
     function isObject(obj) {
@@ -127,7 +251,7 @@
         if (point < 0) { // you can not award negative points for pass
             point = 0;
         }
-        appendToReport(true, msg || DEFAULT_PASS_MESSAGE, point, tag);
+        appendTestToReport(true, msg || DEFAULT_PASS_MESSAGE, point, tag);
         return true;
     }
 
@@ -140,7 +264,7 @@
         if (point < 0) { // you can not award negative points for pass
             point = 0;
         }
-        appendToReport(false, msg || DEFAULT_FAIL_MESSAGE, point, tag);
+        appendTestToReport(false, msg || DEFAULT_FAIL_MESSAGE, point, tag);
         return false;
     }
 
@@ -154,7 +278,7 @@
      * @param tag      String tag assissiated with test
      */
     function matches(test, expected, msg, failmsg, score, tag) {
-        if(isObject(test)) {
+        if (isObject(test)) {
             expected = test.expected;
             msg = test.msg;
             failmsg = test.failmsg;
@@ -194,7 +318,7 @@
      * @param tag      tag assissiated with test
      */
     function expect(test, expected, msg, failmsg, score, tag) {
-        if(isObject(test)) {
+        if (isObject(test)) {
             expected = test.expected;
             msg = test.msg;
             failmsg = test.failmsg;
@@ -202,7 +326,7 @@
             tag = test.tag;
             test = test.test;
         }
-        if (test===expected) {
+        if (test === expected) {
             return Test.pass(msg, score, tag);
         } else {
             return Test.fail(failmsg || "Expected " + test + " to equal " + expected + "", score, tag);
