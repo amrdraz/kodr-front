@@ -11,7 +11,7 @@ export default Ember.Mixin.create(Ember.Evented, {
         var writeTest = function(test, pass) {
             controller.EventBus.publish('console.write', (test.fullName || test.message.replace(/\n/g, "\\n")) + '\n', pass);
         };
-        console.log(report);
+        // console.log(report);
         controller.EventBus.publish('console.write', "========= Running Submission " + (pass ? 'Passed' : 'Failed') + " ==========\n", pass ? 'result' : 'error');
 
         if (passes) {

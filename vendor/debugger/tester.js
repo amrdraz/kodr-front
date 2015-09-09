@@ -196,8 +196,8 @@
         }
 
         var tests = report.tests;
-        report.passes = _.filter(tests, 'pass');
-        report.failures = _.reject(tests, 'pass');
+        report.passes = _.filter(tests, 'passed');
+        report.failures = _.reject(tests, 'passed');
         report.score = _.reduce(tests, function(sum, t) {
             return sum + t.score;
         }, 0);
@@ -228,109 +228,158 @@
         callbacks['testError'](trace, Test);
     }
 
-    function appendTestToReport(pass, msg, point, tag) {
-        var rep = {
-            "pass": pass,
-            "message": msg,
-            "score": point || DEFAULT_SCORE,
-            tag: tag
+    function appendTestToReport(test) {
+        test.message = test.message || DEFAULT_PASS_MESSAGE;
+        test.fail_message = test.fail_message || DEFAULT_FAIL_MESSAGE;
+        test.score = test.score || DEFAULT_SCORE;
+        test.message = (test.passed)?test.message:test.fail_message;
+        report.tests.push(test);
+        return test.passed;
+    }
+
+    function pass() {
+        var obj = processPassFailArguments.apply(this, arguments);
+        obj.passed = true;
+        obj.score = obj.score?Math.min(obj.score, 0):DEFAULT_SCORE;
+        return appendTestToReport(obj);
+    }
+
+    function fail() {
+        var obj = processPassFailArguments.apply(this, arguments);
+        obj.passed = false;
+        obj.score = obj.score?Math.max(obj.score, 0):DEFAULT_SCORE;
+        return appendTestToReport(obj);
+    }
+
+    function matches() {
+        var obj = processArguments.apply(this, arguments);
+        var re = new RegExp(obj.expect);
+        obj.passed = re.test(obj.test);
+        return appendTestToReport(obj);
+    }
+
+    function contains() {
+        var obj = processArguments.apply(this, arguments);
+        obj.expect = "[\\s\\S]*" + obj.expect + "[\\s\\S]*";
+        return Test.matches(obj);
+    }
+
+    function expect() {
+        var obj = processArguments.apply(this, arguments);
+        obj.passed = _.isEqual(obj.test,obj.expect);
+        return appendTestToReport(obj);
+    }
+
+     /**
+     * Process argumetns that come into test and return them as object
+     * @param (String) message  message to write on success or fail
+     * @param (Number) score    score awarded for test
+     * @param (String) tag      tag assissiated with test
+     */
+    function processPassFailArguments () {
+        if (_.isObject(arguments[0])) {
+            return arguments[0];
+        }
+        var obj = {};
+        switch(arguments.length){
+        case 1:
+            if(_.isNumber(arguments[0])) {
+                obj.score = arguments[0];
+            }
+            break;
+        case 2:
+            if(_.isNumber(arguments[0])) {
+                obj.score = arguments[0];
+                obj.tag = arguments[1];
+            } else {
+                obj.message = obj.fail_message = arguments[0];
+                obj.score = arguments[1];
+            }
+            break;
+        default:
+            obj.message = obj.fail_message = arguments[0];
+            obj.score = arguments[1];
+            obj.tag = arguments[2];
+        }
+        return obj;
+    }
+
+    /**
+     * Process argumetns that come into test and return them as object
+     * @param test          String test value
+     * @param expect      String excpected value of test value
+     * @param message       String message to write on success
+     * @param fail_message  String message to write on failure
+     * @param score         Number score awarded for test
+     * @param tag           String tag assissiated with test
+     */
+    function processArguments () {
+        var test, expect, message, fail_message, score, tag, defaultMsg;
+        if (_.isObject(arguments[0])) {
+            var obj = arguments[0];
+            obj = $B.pyobj2jsobj(obj);
+            obj.test = cutLastNewLine(obj.test);
+            defaultMsg = "Expected " + obj.test + " to be " + obj.expect + "";
+            obj.message = obj.message || defaultMsg;
+            obj.fail_message = obj.fail_message || defaultMsg;
+            return obj;
+        }
+        test = $B.pyobj2jsobj(arguments[0]);
+        test = cutLastNewLine(test);
+        expect = $B.pyobj2jsobj(arguments[1]);
+        defaultMsg = "Expected " + test + " to be " + expect + "";
+        switch(arguments.length) {
+        case 3:
+            if(_.isNumber(arguments[2])) {
+                score = arguments[2];
+                message = fail_message = defaultMsg;
+            } else {
+                message = arguments[2];
+                fail_message = defaultMsg;
+            }
+            break;
+        case 4:
+            if(_.isNumber(arguments[2])) {
+                score = arguments[2];
+                message = fail_message = defaultMsg;
+                tag = arguments[3];
+            } else {
+                message = arguments[2];
+                if (_.isNumber(arguments[3])) {
+                    score = arguments[3];
+                    fail_message = defaultMsg;
+                } else {
+                    fail_message = arguments[3];
+                }
+            }
+            break;
+        default:
+            message = arguments[2];
+            if (_.isNumber(arguments[3])) {
+                score = arguments[3];
+                fail_message = defaultMsg;
+                tag = arguments[4];
+            } else {
+                fail_message = arguments[3];
+                score = arguments[4];
+                tag = arguments[5];
+            }
+        }
+        return {
+            test:test,
+            expect:expect,
+            message:message,
+            fail_message:fail_message,
+            score:score,
+            tag:tag
         };
-        report.tests.push(rep);
     }
 
-    function isObject(obj) {
-        return obj && obj instanceof Object && !(obj instanceof Array);
-    }
-
-    function pass(msg, point, tag) {
-        if (isObject(msg)) {
-            point = msg.point || 0;
-            tag = msg.tag;
-            msg = msg.msg;
+    function cutLastNewLine(test) {
+        if(_.isString(test) && /\n$/.test(test)) {
+            return test.substr(0, test.length-1);
         }
-        if (point < 0) { // you can not award negative points for pass
-            point = 0;
-        }
-        appendTestToReport(true, msg || DEFAULT_PASS_MESSAGE, point, tag);
-        return true;
-    }
-
-    function fail(msg, point, tag) {
-        if (isObject(msg)) {
-            point = msg.point || 0;
-            tag = msg.tag;
-            msg = msg.msg;
-        }
-        if (point < 0) { // you can not award negative points for pass
-            point = 0;
-        }
-        appendTestToReport(false, msg || DEFAULT_FAIL_MESSAGE, point, tag);
-        return false;
-    }
-
-    /**
-     * Tests using regular expresion whether a given String matches another string
-     * @param test     String test
-     * @param expected String regexp
-     * @param msg      String msg to write on success
-     * @param failmsg  String msg to write on failure
-     * @param s        int    score awarded for test
-     * @param tag      String tag assissiated with test
-     */
-    function matches(test, expected, msg, failmsg, score, tag) {
-        if (isObject(test)) {
-            expected = test.expected;
-            msg = test.msg;
-            failmsg = test.failmsg;
-            score = test.score;
-            tag = test.tag;
-            test = test.test;
-        }
-        var re = new RegExp(expected);
-        if (re.test(test)) {
-            return Test.pass(msg, score, tag);
-        } else {
-            msg = failmsg || "Expected " + test + " to match " + expected + "";
-            return Test.fail(msg, score, tag);
-        }
-    }
-
-    /**
-     * Tests whether a given String contains another string using matches
-     * @param user     String user string to test
-     * @param expected String substring in the given user string
-     * @param msg      String msg to write on success
-     * @param failmsg  String msg to write on failure
-     * @param s        int    score awarded for test
-     * @param tag      String tag assissiated with test
-     */
-    function contains(user, expected, msg, failmsg, score, tag) {
-        return Test.matches(user, "[\\s\\S]*" + expected + "[\\s\\S]*", msg, failmsg, score, tag);
-    }
-
-    /**
-     * Tests whether a given Object matches another using equals method
-     * @param test     Object to equate
-     * @param expected expected result
-     * @param msg      msg to write on success
-     * @param failmsg  msg to write on failure
-     * @param s        score awarded for test
-     * @param tag      tag assissiated with test
-     */
-    function expect(test, expected, msg, failmsg, score, tag) {
-        if (isObject(test)) {
-            expected = test.expected;
-            msg = test.msg;
-            failmsg = test.failmsg;
-            score = test.score;
-            tag = test.tag;
-            test = test.test;
-        }
-        if (test === expected) {
-            return Test.pass(msg, score, tag);
-        } else {
-            return Test.fail(failmsg || "Expected " + test + " to equal " + expected + "", score, tag);
-        }
+        return test;
     }
 
     defineModule("Test", Test);

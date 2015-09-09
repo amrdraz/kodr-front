@@ -1,1 +1,53 @@
-{{yield}}
+{{#editor-container}}
+ <div class="col-lg-6">
+  <div class="row">
+    <button {{action "run"}} class="btn btn-default pull-left challenge-run" disabled={{isDebugging}}>{{fa-icon "play"}} Run in Console</button>
+    <button {{action "debug"}} class="btn btn-default pull-left challenge-debug" disabled={{isDebugging}}>{{fa-icon "bug"}} Start  Debugger</button>
+    <button {{action "back"}} class="btn btn-default pull-left challenge-back" disabled={{if isDebugging isFirstStep 'disabled'}}>{{fa-icon "step-backward"}} Back</button>
+    <button {{action "step"}} class="btn btn-default pull-left challenge-step" disabled={{if isDebugging isLastStep 'disabled'}}>{{fa-icon "step-forward"}} Step</button>
+    <button {{action "stop"}} class="btn btn-default pull-left challenge-stop" disabled={{is-not isDebugging}}>{{fa-icon "stop"}} Stop</button>
+    <button {{action "reset"}} class="btn btn-default pull-right challenge-reset">{{fa-icon "repeat"}} Reset </button>
+  </div>
+  <div class="row">
+    <ul class="nav nav-tabs">
+      <li class="active"><a href="#code" data-toggle="tab">Code</a></li>
+    </ul>
+    <div class="tab-content">
+      <div class="tab-pane fade in active" id="code">
+        {{code-editor
+            name="codeEditor"
+            id="codeEditor"
+            class="col-lg-12"
+            model=model
+            lint=true
+            attr='code' }}
+      </div>
+    </div>
+  </div>
+</div>
+<div class="col-lg-6">
+  <div class="row">
+    <a id="run" {{action "test"}} class="btn {{if model.complete 'btn-success' 'btn-primary'}} pull-right {{if model.canSubmit '' 'disabled'}} challenge-submit">
+      {{#if model.complete}}
+        {{#if isDirtyish}}
+          Re-Submit <i class="glyphicon glyphicon-play"></i>
+        {{else}}
+          Completed <i class="glyphicon glyphicon-ok"></i>
+        {{/if}}
+      {{else}}
+        Submit <i class="glyphicon glyphicon-play"></i>
+      {{/if}}
+    </a>
+  </div>
+  <div class="row">
+    <ul class="nav nav-tabs">
+      <li><a href="#console" data-toggle="tab">Console</a></li>
+    </ul>
+    <div class="tab-content">
+      <div class="tab-pane fade" id="console">
+        {{py-console}}
+      </div>
+    </div>
+  </div>
+</div>
+{{/editor-container}}

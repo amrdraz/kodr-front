@@ -22,11 +22,11 @@ module.exports = function(environment) {
         contentSecurityPolicy : {
             'default-src': "'none'",
             'frame-src': "'self' 'unsafe-inline'",
-            'script-src': "'self' 'unsafe-inline' 'unsafe-eval' https://cdn.mathjax.org http://www.google-analytics.com https://ssl.google-analytics.com", // Allow scripts from https://cdn.mxpnl.com
+            'script-src': "'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com https://cdn.mathjax.org http://www.google-analytics.com https://ssl.google-analytics.com", // Allow scripts from https://cdn.mxpnl.com
             'font-src': "'self' https://fonts.gstatic.com", // Allow fonts to be loaded from http://fonts.gstatic.com
             'connect-src': "'self' http://localhost:9000/ ws://localhost:4200 http://custom-api.local", // Allow data (ajax/websocket) from api.mixpanel.com and custom-api.local
             'img-src': "'self' data: http://www.google-analytics.com",
-            'style-src': "'self' 'unsafe-inline' http://fonts.googleapis.com", // Allow inline styles and loaded CSS from http://fonts.googleapis.com 
+            'style-src': "'self' 'unsafe-inline' https://cdnjs.cloudflare.com http://fonts.googleapis.com", // Allow inline styles and loaded CSS from http://fonts.googleapis.com 
             'media-src': "'self'"
         }
     };
