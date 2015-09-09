@@ -13,11 +13,13 @@
         run_code: runCode,
         run_test: runTest,
         add_test: appendTestToReport,
-        pass: pass,
+        ok: pass,
         fail: fail,
         expect: expect,
+        expect_for: expectFor,
         matches: matches,
         contains: contains,
+        exists: exists,
         on_test_error: callbackSetter('testError'),
     };
 
@@ -142,14 +144,13 @@
         Debugger.unset_events();
         Debugger.set_no_input_trace(true);
         Debugger.start_debugger(code, true);
-        Debugger.step_to_last_step();
-        var state = Debugger.get_current_state();
+        var history = Debugger.get_session();
         Debugger.stop_debugger();
         Debugger.reset_events();
         unsetInput();
         unsetOutput();
         // some processing
-        return state;
+        return history;
     }
 
     /**
@@ -211,9 +212,15 @@
      * Fire when an error occurrs while parsing or during runtime
      */
     function errorWhileTesting(err) {
+        var info = "";
+        try {
+            info = _b_.getattr(err, 'info');
+        } catch (er) {
+            // guess it doesn't work here
+        }
         var trace = {
             type: 'runtime_error',
-            data: _b_.getattr(err, 'info') + '\n' + _b_.getattr(err, '__name__') + ": " + err.$message + '\n',
+            data: info + '\n' + _b_.getattr(err, '__name__') + ": " + err.$message + '\n',
             stack: err.$stack,
             message: err.$message,
             name: _b_.getattr(err, '__name__'),
@@ -240,14 +247,14 @@
     function pass() {
         var obj = processPassFailArguments.apply(this, arguments);
         obj.passed = true;
-        obj.score = obj.score?Math.min(obj.score, 0):DEFAULT_SCORE;
+        obj.score = obj.score?Math.max(obj.score, 0):DEFAULT_SCORE;
         return appendTestToReport(obj);
     }
 
     function fail() {
         var obj = processPassFailArguments.apply(this, arguments);
         obj.passed = false;
-        obj.score = obj.score?Math.max(obj.score, 0):DEFAULT_SCORE;
+        obj.score = obj.score?Math.min(obj.score, 0):DEFAULT_SCORE;
         return appendTestToReport(obj);
     }
 
@@ -255,18 +262,41 @@
         var obj = processArguments.apply(this, arguments);
         var re = new RegExp(obj.expect);
         obj.passed = re.test(obj.test);
+        obj.message = obj.message || obj.test+" matches "+obj.expect;
+        obj.fail_message = obj.fail_message || "Expected "+obj.test+" to match " + obj.expect;
         return appendTestToReport(obj);
     }
 
     function contains() {
         var obj = processArguments.apply(this, arguments);
-        obj.expect = "[\\s\\S]*" + obj.expect + "[\\s\\S]*";
-        return Test.matches(obj);
+        obj.passed = _.includes(obj.test, obj.expect);
+        obj.message = obj.message || obj.test+" contains "+obj.expect;
+        obj.fail_message = obj.fail_message || "Expected "+obj.test+" to contain " + obj.expect;
+        return _.includes(obj.test, obj.expect);
     }
 
     function expect() {
         var obj = processArguments.apply(this, arguments);
         obj.passed = _.isEqual(obj.test,obj.expect);
+        obj.message = obj.message || obj.test+" equals "+obj.expect;
+        obj.fail_message = obj.fail_message || "Expected "+obj.test+" to equal " + obj.expect;
+        return appendTestToReport(obj);
+    }
+
+    function expectFor() {
+        var premessage = [].shift.call(arguments) || 'inputs';
+        var obj = processArguments.apply(this, arguments);
+        obj.passed = _.isEqual(obj.test,obj.expect);
+        obj.message = obj.message || "Expected For "+premessage+": "+obj.expect + " got " + obj.test;
+        obj.fail_message = obj.fail_message || "Expected For "+premessage+": "+obj.expect + " got " + obj.test;
+        return appendTestToReport(obj);
+    }
+
+    function exists() {
+        var obj = processArguments.apply(this, arguments);
+        obj.passed = (true && obj.test[obj.expect]);
+        obj.message = obj.message || obj.expect+" is defined";
+        obj.fail_message = obj.fail_message || obj.expect+" does not exist";
         return appendTestToReport(obj);
     }
 
@@ -314,40 +344,32 @@
      * @param tag           String tag assissiated with test
      */
     function processArguments () {
-        var test, expect, message, fail_message, score, tag, defaultMsg;
-        if (_.isObject(arguments[0])) {
+        var test, expect, message, fail_message, score, tag;
+        if (arguments.length===1) {
             var obj = arguments[0];
             obj = $B.pyobj2jsobj(obj);
             obj.test = cutLastNewLine(obj.test);
-            defaultMsg = "Expected " + obj.test + " to be " + obj.expect + "";
-            obj.message = obj.message || defaultMsg;
-            obj.fail_message = obj.fail_message || defaultMsg;
             return obj;
         }
         test = $B.pyobj2jsobj(arguments[0]);
         test = cutLastNewLine(test);
         expect = $B.pyobj2jsobj(arguments[1]);
-        defaultMsg = "Expected " + test + " to be " + expect + "";
         switch(arguments.length) {
         case 3:
             if(_.isNumber(arguments[2])) {
                 score = arguments[2];
-                message = fail_message = defaultMsg;
             } else {
                 message = arguments[2];
-                fail_message = defaultMsg;
             }
             break;
         case 4:
             if(_.isNumber(arguments[2])) {
                 score = arguments[2];
-                message = fail_message = defaultMsg;
                 tag = arguments[3];
             } else {
                 message = arguments[2];
                 if (_.isNumber(arguments[3])) {
                     score = arguments[3];
-                    fail_message = defaultMsg;
                 } else {
                     fail_message = arguments[3];
                 }
@@ -357,7 +379,6 @@
             message = arguments[2];
             if (_.isNumber(arguments[3])) {
                 score = arguments[3];
-                fail_message = defaultMsg;
                 tag = arguments[4];
             } else {
                 fail_message = arguments[3];

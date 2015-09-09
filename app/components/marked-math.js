@@ -37,7 +37,7 @@ export default Ember.Component.extend({
         if (this.mjRunning) { return; }
         var text = this.get('model').get(this.get('observable'));
         if (text === this.oldtext) { return; }
-        text = this.Escape(text); //Escape tags before doing stuff
+        // text = this.Escape(text); //Escape tags before doing stuff
         this.buffer.innerHTML = this.oldtext = text;
         this.mjRunning = true;
         // MathJax.InputJax.TeX is undefined first time the page loads

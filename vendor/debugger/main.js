@@ -4,9 +4,9 @@
         start_debugger: startDebugger,
         stop_debugger: stopDebugger,
         step_debugger: stepDebugger,
-        step_to_first_step: stepBackRecording,
+        step_back_debugger: stepBackRecording,
         step_to_last_step: setStepToLast,
-        step_first_debugger: setStepToFirst,
+        step_to_first_step: setStepToFirst,
         can_step: canStep,
         set_step: setStep,
         set_no_input_trace: setNoInputTrace,
@@ -19,6 +19,7 @@
         is_last_step: isLastStep,
         is_first_step: isFirstStep,
         did_error_occure: getDidErrorOccure,
+        get_session: getSessionHistory,
         get_current_step: getStep,
         get_current_state: getCurrentState,
         get_recorded_states: getRecordedStates,
@@ -269,10 +270,16 @@
      * Fire when an error occurrs while parsing or during runtime
      */
     function errorWhileDebugging(err) {
+        var info = "";
+        try {
+            info = _b_.getattr(err, 'info');
+        } catch (er) {
+            // guess it doesn't work here
+        }
         var trace = {
             event: 'line',
             type: 'runtime_error',
-            data: _b_.getattr(err, 'info') + '\n' + _b_.getattr(err, '__name__') + ": " + err.$message + '\n',
+            data: info + '\n' + _b_.getattr(err, '__name__') + ": " + err.$message + '\n',
             stack: err.$stack,
             message: err.$message,
             name: _b_.getattr(err, '__name__'),
@@ -848,6 +855,31 @@
                 interpreter.createNativeFunction(wrapper));
 
         };
+    }
+
+    function getSessionHistory() {
+        var last_state = getLastRecordedState();
+        if (last_state) {
+            return {
+                states: getRecordedStates(),
+                prints: recordedOut,
+                stdout: last_state.stdout,
+                locals: last_state.frame[1],
+                globals: last_state.frame[3],
+                error: didErrorOccure
+            };
+        } else {
+            return {
+                states:[],
+                prints:[],
+                stdout:"SyntaxError In Code",
+                stderr:"SyntaxError In Code",
+                locals:{},
+                globals:{},
+                error: didErrorOccure,
+            };
+        }
+        
     }
 
     var realStdOut = $B.stdout;
