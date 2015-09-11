@@ -1,6 +1,7 @@
 // import LoginControllerMixin from 'simple-auth/mixins/login-controller-mixin';
 import EmberValidations from 'ember-validations';
 import Ember from 'ember';
+var toastr = window.toastr;
 
 var LoginController = Ember.Controller.extend(EmberValidations.Mixin, {
     authenticator: 'simple-auth-authenticator:oauth2-password-grant',

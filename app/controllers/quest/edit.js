@@ -8,8 +8,6 @@ export default Ember.Controller.extend({
     init: function() {
         this._super();
     },
-    modifiers: ['any', 'specific'],
-    models: ['Arena', 'Challenge'],
     challenges: function() {
         return this.get('store').findAll('challenge');
     }.property(),
@@ -58,7 +56,10 @@ export default Ember.Controller.extend({
                 id2: null,
             }));
         },
-        remove: function(req) {
+        requirementChanged() {
+            this.set('requirementsChanged', true);
+        },
+        removeReq: function(req) {
             this.get('model.requirements').removeObject(req);
         }
     }

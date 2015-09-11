@@ -26,12 +26,30 @@
         {{input type="text" class="form-control" value=username autofocus="autofocus"}}
       </div>
       <div class="form-group">
-        <label for="email" class="control-label">Email</label>
-        {{input type="text" class="form-control" value=email}}
-      </div>
-      <div class="form-group">
         <label for="uniId" class="control-label">Uni ID</label>
         {{input type="text" class="form-control" value=uniId}}
+      </div>
+      <div class="form-group">
+        <label for="lectureGroup" class="control-label">Lecture Group</label>
+        {{ember-selectize name="id1"
+                      content=lectureGroups
+                      optionValuePath="content"
+                      optionLabelPath="content"
+                      value=lectureGroup
+                      multiple=false
+                      class="requirement-model1"
+                      }}
+      </div>
+      <div class="form-group">
+        <label for="lectureGroup" class="control-label">Lab Group</label>
+        {{ember-selectize name="id1"
+                      multiple=false
+                      content=labGroups
+                      optionValuePath="content"
+                      optionLabelPath="content"
+                      value=labGroup
+                      class="requirement-model1"
+                      }}
       </div>
       <div class="form-group">
         <label for="password" class="control-label">Password</label>
@@ -42,7 +60,29 @@
         <label for="passwordConfirmation" class="control-label">Confirm Password</label>
         {{input type="password" class="form-control" value=passwordConfirmation}}
       </div>
-      <button type="submit" class="btn btn-success" disabled="{{if isProcessing}}"><i class="fa fa-rocket"></i> Sign up</button>
+      <div class="well">
+        <p>
+          The GUC is constantly trying to help its students by by improving and developing its curriculum and teaching pedagogy. In order for us to provide you with the best learning experience, this system logs your activity and tries to monitor your learning. 
+        </p>
+        <p>
+          Accordingly by signing up on this system you acknowledge that your activities will be logged and used for the purpose of research. <strong>The data collected will not affect your grades</strong>; however, using the system will help you practice and improve your performance, which will subsequently affect your grade in a good way.
+          </p>
+        <p>
+          While using the system you will be randomly assigned to an experimental feature, meant to improve your learning. This will be used for the purpose of learning research, you can opt out of participating in the user settings.
+        </p>
+        <hr>
+        In order for us to properly assess your learning experience, we ask that you agree to the following <strong>honor code</strong>.
+        <br><br>
+        <ol class="">
+          <li>I will register for only one account.</li>
+          <li>My answers to homework, questions, challenges, and other assessments will be my own work (except for when I am explicitly permit collaboration).</li>
+          <li>I will not make solutions to homework, questions, challenges, and other assessments available to anyone else (except to the extent an assessments explicitly permits sharing solutions). This includes both solutions written by me, as well as any solutions provided by the course staff or others.</li>
+          <li>I will not engage in any other activities that will dishonestly improve my results or dishonestly improve or hurt the results of others.</li>
+        </ol>
+        <br>
+        <label>{{input type="checkbox" checked=hasHonor}} I understand and agree to follow the honor code</label>
+      </div>
+      <button type="submit" class="btn btn-success" disabled="{{isProcessing}}"><i class="fa fa-rocket"></i> Sign up</button>
     </form>
   </div>
 </div>

@@ -1,13 +1,20 @@
 <section class="user-controlles row">
   <ul class="nav nav-pills pull-right">
-    <li {{action "save"}} class="{{if hasDirtyAttributes '' 'disabled'}} user-save" >
+    <li {{action "save"}} class="{{if model.hasDirtyAttributes '' 'disabled'}} user-save" >
       <a href="#"><i class="glyphicon glyphicon-save"></i> Save</a>
     </li>
     {{#unless isCreating}}
-    <li {{action "activate"}} class="{{if activated 'disabled' user-publish}}">
-      <a href="#"><i class="glyphicon glyphicon-ok-circle"></i> Activate</a>
-    </li>
-    <li {{action 'delete' }} class="{{if isAdmin 'disabled'}} user-delete">
+
+    {{#unless model.activated}}
+      <li {{action "activate"}} class="user-activate">
+        <a href="#"><i class="glyphicon glyphicon-ok-circle"></i> Activate</a>
+      </li>
+      <li {{action "verify"}} class="user-verify">
+        <a href="#"><i class="glyphicon glyphicon-send"></i> Send Verification Email</a>
+      </li>
+    {{/unless}}
+
+    <li {{action 'delete' }} class="{{if model.isAdmin 'disabled'}} user-delete">
       <a href="#"><i class="glyphicon glyphicon-remove"></i> Delete</a>
     </li>      
     {{/unless}}

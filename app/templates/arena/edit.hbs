@@ -9,7 +9,7 @@
     {{#unless model.isPublished }}
       <li {{action "publish"}} class="{{if model.canPublish '' 'disabled'}} arean-publish" title="to publish challenge, you need to at least have one published challenge"><a href="#"><i class="glyphicon glyphicon-ok-circle"></i> Publish</a></li>
     {{else}}
-      <li {{action "publish"}} class="{{if model.canSave '' 'disabled' arean-unpublish}}"><a href="#"><i class="glyphicon glyphicon-save"></i> Save/Re-Publish</a></li>
+      <li {{action "publish"}} class="{{if model.canSave '' 'disabled'}} arean-unpublish"><a href="#"><i class="glyphicon glyphicon-save"></i> Save/Re-Publish</a></li>
       <li {{action "unPublish"}} class=""><a href="#"><i class="glyphicon glyphicon-ban-circle"></i> Un-Publish</a></li>
     {{/unless}}
     <li {{action 'delete' }} class="arean-delete"><a href="#"><i class="glyphicon glyphicon-remove"></i> Delete</a></li>
@@ -31,6 +31,11 @@
       value=model.description
     }}
   </div>
+  <div class="form-group col-lg-12">
+    <label for="requirements" class="control-label">Requires</label>
+    <p>No Requirement</p>
+  </div>
+
 </form>
 </section>
 <section class="arean-challenges row">

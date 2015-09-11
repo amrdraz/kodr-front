@@ -1,4 +1,5 @@
 import Ember from 'ember';
+var toastr = window.toastr;
 
 export default Ember.Controller.extend({
     breadCrumb: 'arena',

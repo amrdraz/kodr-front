@@ -1,5 +1,6 @@
 import debounce from 'kodr/utils/debounce';
 import Ember from 'ember';
+var toastr = window.toastr;
 
 
 export default Ember.Controller.extend({

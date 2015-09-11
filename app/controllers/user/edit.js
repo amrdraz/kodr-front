@@ -1,5 +1,6 @@
 import Ember from 'ember';
 import EmberValidations from 'ember-validations';
+var toastr = window.toastr;
 
 export default Ember.Controller.extend(EmberValidations.Mixin, {
     // needs: ['group'],
@@ -23,9 +24,9 @@ export default Ember.Controller.extend(EmberValidations.Mixin, {
     isCreating: function() {
         return this.container.lookup('controller:application').get('currentPath').split('.').contains('create');
     }.property('currentPath'),
-    isCreatingOrNotAdmin:function () {
-      return this.get('isCreating') || !this.get('model.isAdmin');
-    }.property('isCreating','isAdmin'),
+    isCreatingOrNotAdmin: function() {
+        return this.get('isCreating') || !this.get('model.isAdmin');
+    }.property('isCreating', 'isAdmin'),
     actions: {
         save: function() {
             var that = this;
@@ -38,15 +39,25 @@ export default Ember.Controller.extend(EmberValidations.Mixin, {
                     toastr.error(xhr.message);
                 });
             } else {
-               return model.save();
+                return model.save();
             }
         },
         activate: function() {
-          Ember.$.post('api/users/'+this.get('model.id')+'/verify').done(function (res) {
-              toastr.success(res.message);
-          }).fail(function (xhr) {
-              toastr.error(xhr.responseText);
-          });
+            Ember.$.ajax({
+                url: 'api/users/' + this.get('model.id') + '/activate',
+                method:'PUT'
+            }).done(function(res) {
+                toastr.success(res.message);
+            }).fail(function(xhr) {
+                toastr.error(xhr.responseText);
+            });
+        },
+        verify: function() {
+            Ember.$.post('api/users/' + this.get('model.id') + '/verify').done(function(res) {
+                toastr.success(res.message);
+            }).fail(function(xhr) {
+                toastr.error(xhr.responseText);
+            });
         },
         delete: function() {
             this.get('model').destroyRecord();

@@ -1,4 +1,7 @@
 import Ember from 'ember';
+var toastr = window.toastr;
+var swal = window.swal;
+
 
 export default Ember.Controller.extend({
     isChallengeTrial: function() {

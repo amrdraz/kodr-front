@@ -1,5 +1,5 @@
 import Ember from 'ember';
-
+var toastr = window.toastr;
 
 var ApplicationController = Ember.Controller.extend({
     updateCurrentPath: function() {
@@ -8,8 +8,9 @@ var ApplicationController = Ember.Controller.extend({
     sockets: {
         notification: function(user, type, value) {
             console.log(arguments);
-            if(this.get('session.isTeacher'))
+            if(this.get('session.isTeacher')) {
                 toastr.info('@' + user.username + ' was just awarded ' + value + ' ' + type);
+            }
         },
         // When EmberSockets makes a connection to the Socket.IO server.
         connect: function() {

@@ -1,6 +1,8 @@
 import Ember from 'ember';
 import DS from 'ember-data';
 import EmberValidations from 'ember-validations';
+var toastr = window.toastr;
+
 
 var UserController = Ember.Controller.extend(EmberValidations.Mixin, {
     validations: {

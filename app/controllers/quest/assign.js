@@ -1,6 +1,7 @@
 /* global toastr */
 import Ember from 'ember';
 import DS from 'ember-data';
+var toastr = window.toastr;
 
 export default Ember.Controller.extend({
     breadCrumb: 'quest',

@@ -1,5 +1,7 @@
 import ChallengeCommon from 'kodr/mixins/challenge/challenge-common';
 import Ember from 'ember';
+var toastr = window.toastr;
+
 
 export default Ember.Mixin.create(ChallengeCommon, {
     runInServer(code, model, cb) {

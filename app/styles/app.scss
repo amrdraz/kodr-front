@@ -50,9 +50,13 @@ html, body {
     position: relative;
     height: 100%;
 }
+input.ember-view {
+    height: initial;
+}
 body {
     padding-top: 60px;
 }
+
 #wrap {
     min-height: 100%;
     height: auto !important;

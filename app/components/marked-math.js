@@ -1,4 +1,4 @@
-/* global marked, MathJax, highlight */
+/* global marked, MathJax */
 import Ember from 'ember';
 
 export default Ember.Component.extend({
@@ -54,12 +54,12 @@ export default Ember.Component.extend({
         
     },
 
-    renderMathMark: function () {
-        var text = this.get('model').get(this.get('observable'));
-        if (text === this.oldtext) { return; }
-        text = this.Escape(text);
-        this.preview.innerHTML = marked(katex.renderToString(text));
-    },
+    // renderMathMark: function () {
+    //     var text = this.get('model').get(this.get('observable'));
+    //     if (text === this.oldtext) { return; }
+    //     text = this.Escape(text);
+    //     this.preview.innerHTML = marked(katex.renderToString(text));
+    // },
 
     didInsertElement: function() {
         this.marked = marked;

@@ -15,10 +15,10 @@ import config from 'kodr/config/environment';
     m.parentNode.insertBefore(a, m)
 })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
 
-ga('create', 'UA-58026837-1', 'auto');
-ga('send', 'pageview');
+window.ga('create', 'UA-58026837-1', 'auto');
+window.ga('send', 'pageview');
 
-toastr.options = {
+window.toastr.options = {
     "closeButton": true,
     "debug": false,
     "positionClass": "toast-bottom-right",
@@ -31,11 +31,11 @@ toastr.options = {
     "showMethod": "fadeIn",
     "hideMethod": "fadeOut"
 };
-
+var emberSockets;
 try {
-    var emberSockets = EmberSockets; //cause I removed EmberSocket during testing
+    emberSockets = window.EmberSockets; //cause I removed EmberSocket during testing
 } catch (e) {
-    var emberSockets = Ember.Object;
+    emberSockets = Ember.Object;
 }
 
 var App;
