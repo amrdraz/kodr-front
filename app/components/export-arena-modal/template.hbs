@@ -1,0 +1,19 @@
+{
+    title:"{{model.name}}",
+    challanges:[
+    {{#each model.challenges as |challenge|}}
+        {
+            name:"{{challenge.name}}",
+            settings:{{challenge.settings}},
+            content:{
+                code:"{{challenge.code}}",
+                solution:"{{challenge.solution}}",
+                tests:"{{challenge.tests}}",
+                setup:"{{challenge.setup}}",
+                description:"{{challenge.description}}"
+            }
+        },
+    {{/each}}
+    ]
+}
+

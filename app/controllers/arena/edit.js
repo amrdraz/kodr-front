@@ -65,6 +65,9 @@ export default Ember.Controller.extend({
                 challenge.save();
 
             }
+        },
+        'export': function(){
+            
         }
 
     }

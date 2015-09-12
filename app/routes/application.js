@@ -5,7 +5,7 @@ var toastr = window.toastr;
 
 export default Ember.Route.extend(ApplicationRouteMixin, {
     actions: {
-        loading: function(/*transition, originRoute*/) {
+        loading: function( /*transition, originRoute*/ ) {
             // displayLoadingSpinner();
             // this.woof.info('did you know that the best programs are lazy ones');
             // substate implementation when returning `true`
@@ -15,8 +15,21 @@ export default Ember.Route.extend(ApplicationRouteMixin, {
             console.log(reason.stack);
             toastr.error(reason.responseText);
         },
-        authorizationFailed: function () {
+        authorizationFailed: function() {
             // stops Ember Simple Auth default redirect behavior on 401 errors
+        },
+        showModal: function(name, model) {
+            this.render(name, {
+                into: 'application',
+                outlet: 'modal',
+                model: model
+            });
+        },
+        removeModal: function() {
+            this.disconnectOutlet({
+                outlet: 'modal',
+                parentView: 'application'
+            });
         }
     }
 });

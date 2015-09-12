@@ -1,6 +1,7 @@
 <section class="arean-controlles row">
   <ul class="nav nav-pills pull-right">
-    <li {{action "reset"}} class="{{if model.canReset '' 'disabled'}}"><a href="#"><i class="glyphicon glyphicon-repeat arean-reset"></i> Reset</a></li>
+    <li {{action "showModal" 'modals/export-arena-modal' model}} class="arean-export"><a href="#"><i class="glyphicon glyphicon-upload"></i> Export Challanges</a></li>
+    <li {{action "reset"}} class="{{if model.canReset '' 'disabled'}} arean-reset"><a href="#"><i class="glyphicon glyphicon-repeat"></i> Reset</a></li>
     {{#unless model.isPublished }}
     <li {{action "save"}} class="{{if model.canSave '' 'disabled'}} arean-save" ><a href="#">
         <i class="glyphicon glyphicon-save"></i> Save</a>

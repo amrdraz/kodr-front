@@ -1,0 +1,51 @@
+<button {{action "remove" }} type="button" class="close"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+
+<div class="col-md-12">
+  Complete 
+  {{x-select content=modifiers selection=model.modifier1 action=(action (mut model.modifier1))}}
+  {{x-select content=models value=model.model1 action=(action (mut model.model1)) }}
+</div>
+{{#unless model.isAny1 }}
+  <div class="col-md-12">
+  {{#if model.isChallenge}}
+    {{ember-selectize name="id1"
+              content=challenges
+              optionValuePath="content.id"
+              optionLabelPath="content.name"
+              value=model.id1
+              class="requirement-model1"
+              }}
+  {{else}}
+    {{ember-selectize name="id1"
+              content=arenas
+              optionValuePath="content.id"
+              optionLabelPath="content.name"
+              value=model.id1
+              class="requirement-model1 col-md-3"
+              }}
+  {{/if}}
+  </div>
+{{else}}
+  {{#if model.isChallenge}}
+    <div class="col-md-12">
+    in 
+    {{x-select content=modifiers value=model.modifier2 action=(action (mut model.modifier2)) }}
+    {{model.model2}}
+    </div>
+    {{#unless model.isAny2 }}
+      <div class="col-md-12">
+        {{ember-selectize
+                  name="id2"
+                  content=arenas
+                  optionValuePath="content.id"
+                  optionLabelPath="content.name"
+                  value=model.id2
+                  class="requirement-model2 col-md-3"
+                  }}
+      </div>
+      {{/unless}}
+  {{/if}}
+  <div class="col-md-12">
+    times: {{input type='number' value=model.times min=0}}
+  </div>
+{{/unless}}
