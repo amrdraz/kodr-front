@@ -19,7 +19,7 @@ export default Ember.Controller.extend({
         // });
     },
     arenaRoute: function () {
-        return this.get('session.isAuthenticated')?'arenaTrial':'arena';
+        return this.get('session.isAuthenticated')?'userArena':'arena';
     }.property('session.isAuthenticated'),
     published:function () {
         return this.get('model').filterBy('isPublished', true);

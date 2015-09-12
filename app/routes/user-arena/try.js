@@ -13,7 +13,7 @@ export default Ember.Route.extend(AuthenticatedRouteMixin,{
     // afterModel: function() {
     // },
     // model: function() {
-    //     var arena = this.modelFor('arenaTrial');
+    //     var arena = this.modelFor('userArena');
     //     // record.save();
     //     return record.save();
     // }

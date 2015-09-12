@@ -11,8 +11,8 @@ export default Ember.Route.extend(AuthenticatedRouteMixin,{
     // renderTemplate: function() {},
     // beforeModel: function() {},
     model: function(params) {
-        return this.store.createRecord('arenaTrial', {
-            arena:this.modelFor('arenaTrial')
+        return this.store.createRecord('userArena', {
+            arena:this.modelFor('userArena')
         }).save();
     }
 });

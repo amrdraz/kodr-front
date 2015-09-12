@@ -4,7 +4,7 @@ var attr = DS.attr;
 export default DS.Model.extend({
     exp: attr('number'),
     completed: attr('number'),
-    user:DS.belongsTo('user', {inverse: 'arenasTried'}),
+    user:DS.belongsTo('user', {inverse: 'userArenas'}),
     arena:DS.belongsTo('arena', {inverse: 'users'}),
-    trials: DS.hasMany('trials', {inverse: 'arenaTrial'}),
+    trials: DS.hasMany('trials', {inverse: 'userArena'}),
 });

@@ -12,7 +12,7 @@ export default Ember.Controller.extend({
         return this.get('isChallengeTrial') ? 'edit' : 'arena';
     }.property('isChallengeTrial'),
     breadCrumbPath: function() {
-        return this.get('isChallengeTrial') ? 'arena.edit' : 'arenaTrial';
+        return this.get('isChallengeTrial') ? 'arena.edit' : 'userArena';
     }.property('isChallengeTrial'),
     needs: ['challenge'],
     //

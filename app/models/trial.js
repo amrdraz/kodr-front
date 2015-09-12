@@ -12,7 +12,7 @@ export default  DS.Model.extend({
     challenge: DS.belongsTo('challenge', {async:true}),
     user: DS.belongsTo('user'),
     arena: DS.belongsTo('arena'),
-    arenaTrial: DS.belongsTo('arenaTrial'),
+    userArena: DS.belongsTo('userArena'),
 
     canSubmit: function () {
         return !this.get('complete') || this.get('hasDirtyAttributes');

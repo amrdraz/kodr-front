@@ -15,7 +15,7 @@ export default Ember.Route.extend({
 
     // model: function() {
     //     var arena = this.modelFor('arena');
-    //     var record = this.store.createRecord('arenaTrial', {
+    //     var record = this.store.createRecord('userArena', {
     //         arena:arena,
     //     });
     //     // record.save();

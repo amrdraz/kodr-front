@@ -2,9 +2,9 @@ import Ember from 'ember';
 
 export default Ember.Controller.extend({
     breadCrumb:'arena',
-    breadCrumbPath:'arenaTrial',
-    needs: ['arenaTrial'],
-    arena: Ember.computed.alias("controllers.arenaTrial.model"),
+    breadCrumbPath:'userArena',
+    needs: ['userArena'],
+    arena: Ember.computed.alias("controllers.userArena.model"),
     trials: function() {
         return Ember.ArrayProxy.createWithMixins(Ember.SortableMixin, {
             sortProperties: ['order'],

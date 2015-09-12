@@ -17,7 +17,7 @@ export default DS.Model.extend({
     arenas: hasMany('arena', {async: true, inverse: 'author'}),
     
     trials: hasMany('trial',{async: true, inverse: 'user'}),
-    arenasTried: hasMany('arenaTrial',{async: true, inverse: 'user'}),
+    userArenas: hasMany('userArena',{async: true, inverse: 'user'}),
 
     memberships: hasMany('member',{async: true, inverse: 'user'}),
 

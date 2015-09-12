@@ -1,7 +1,7 @@
 import AuthenticatedRouteMixin from 'simple-auth/mixins/authenticated-route-mixin';
 import Ember from 'ember';
 
-var ArenaTrialRoute = Ember.Route.extend(AuthenticatedRouteMixin,{
+var UserArenaRoute = Ember.Route.extend(AuthenticatedRouteMixin,{
   // activate: function() {},
   // deactivate: function() {},
   // setupController: function(controller, model) {},
@@ -14,4 +14,4 @@ var ArenaTrialRoute = Ember.Route.extend(AuthenticatedRouteMixin,{
     }
 });
 
-export default ArenaTrialRoute;
+export default UserArenaRoute;

@@ -10,12 +10,12 @@ export default Ember.Route.extend({
     // renderTemplate: function() {},
     // beforeModel: function() {
     //     var challenge = this.modelFor('challenge');
-    //     this.transitionTo('arenaTrial.challenge', );
+    //     this.transitionTo('userArena.challenge', );
     // },
     // afterModel: function() {},
 
     // model: function() {
-    //     var arenaTrial = this.modelFor('arenaTrial');
+    //     var userArena = this.modelFor('userArena');
     //     return challenge;
     // }
 });

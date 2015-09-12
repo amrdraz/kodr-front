@@ -57,7 +57,7 @@ Router.map(function() {
     this.resource('users', function() {
         this.route('create');
     });
-    this.resource('arenaTrial', {
+    this.resource('userArena', {
         path: '/arena/:arena_id' //used to load arena trial
     }, function() {
         this.resource('trial', {

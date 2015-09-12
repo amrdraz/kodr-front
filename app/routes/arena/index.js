@@ -1,3 +1,4 @@
+
 import AuthenticatedRouteMixin from 'simple-auth/mixins/authenticated-route-mixin';
 import Ember from 'ember';
 
@@ -16,7 +17,7 @@ export default Ember.Route.extend(AuthenticatedRouteMixin,{
 
     // model: function() {
     //     var arena = this.modelFor('arena');
-    //     var record = this.store.createRecord('arenaTrial', {
+    //     var record = this.store.createRecord('userArena', {
     //         arena:arena,
     //     });
     //     // record.save();
