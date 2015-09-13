@@ -5,23 +5,27 @@ export default DS.Model.extend({
     name: attr('string', {
         defaultValue: "New Challenge"
     }),
-    "import": attr('string'),
-    inputs: attr('javaInput', {defaultValue:[]}),
-    setup: attr('string', {
-        defaultValue: "// Starting Code leave blank if you want Student to start from scratch\n"
-    }),
-    solution: attr('string', {
-        defaultValue: "// Challenge Solution goes here\n"
-    }),
-    tests: attr('string', {
-        defaultValue: "// $userOut, $test.expect(), $test.pass(), $test.fail(), $main()"
-    }),
-    // structure: attr('string', {defaultValue:"// Challenge Code Structure\n"}),
-    // callbacks: attr('string', {defaultValue:"// callbacks for structure variables if any\n{}"}),
-    language: attr('string', {defaultValue:'java'}),
-    description: attr('string', {
-        defaultValue: "A new Challenge"
-    }),
+    type: attr('string', {defaultValue:'python'}),
+    order: attr('number', {defaultValue:0}),
+    group: attr('string', {defaultValue:null}),
+    exp: attr('number', {defaultValue:10}),
+    blueprint: attr(),
+
+        "import": attr('string'),
+        inputs: attr('javaInput', {defaultValue:[]}),
+        setup: attr('string', {
+            defaultValue: ""
+        }),
+        solution: attr('string', {
+            defaultValue: ""
+        }),
+        tests: attr('string', {
+            defaultValue: ""
+        }),
+        description: attr('string', {
+            defaultValue: "A new Challenge"
+        }),
+
     status: attr('string', {
         defaultValue: "unPublished"
     }),
@@ -41,9 +45,11 @@ export default DS.Model.extend({
         inverse: 'challenges'
     }),
 
-    order: attr('number', {defaultValue:0}),
-    exp: attr('number', {defaultValue:10}),
-    expOptions: [{
+    expOptions: [
+    {
+        rank:'none',
+        points: 0,
+    }, {
         rank: "direct",
         points: 10
     }, {
@@ -64,11 +70,14 @@ export default DS.Model.extend({
     }],
 
     isJava: function () {
-        return this.get('language')==='java';
-    }.property('language'),
+        return this.get('type')==='java';
+    }.property('type'),
     isJS: function () {
-        return this.get('language')==='javascript';
-    }.property('language'),
+        return this.get('type')==='javascript';
+    }.property('type'),
+    isPython: function () {
+        return this.get('type')==='python';
+    }.property('type'),
 
     // relationshipChanged: false,
     canSave: function() {

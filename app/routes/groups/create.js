@@ -5,7 +5,7 @@ export default Ember.Route.extend(AuthenticatedRouteMixin,{
   controllerName: 'group.edit',
   // activate: function() {},
   deactivate: function() {
-    var model = this.modelFor('groups.create');
+    var model = this.modelFor('challenges.create');
     if(model && model.get('isNew')) {
       model.deleteRecord();
     }

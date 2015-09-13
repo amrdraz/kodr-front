@@ -26,6 +26,9 @@
                 {{#link-to 'challenge.try' challenge class=":challenge-try"}}
                     <i class="glyphicon glyphicon-play"></i> Try
                 {{/link-to}}
+                {{#link-to 'challenge.copy' challenge class=":challenge-copy"}}
+                    Copy
+                {{/link-to}}
                 <a {{action "removeChallenge" challenge }} href="#" class="challenge-remove">
                     <i class="glyphicon glyphicon-remove"></i> Remove 
                 </a>

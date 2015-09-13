@@ -1,12 +1,13 @@
 import Ember from 'ember';
 import debounce from 'kodr/utils/debounce';
+var CodeMirror = window.CodeMirror;
 
 function getMIME(lang) {
-    if (lang === 'java') return 'text/x-java';
-    if (lang === 'c') return 'text/x-csrc';
-    if (lang === 'python') return 'text/x-python';
-    if (lang === 'cpp') return 'text/x-c++src';
-    if (lang === 'c#') return 'text/x-csharp';
+    if (lang === 'java') {return 'text/x-java';}
+    if (lang === 'c') {return 'text/x-csrc';}
+    if (lang === 'python') {return 'text/x-python';}
+    if (lang === 'cpp') {return 'text/x-c++src';}
+    if (lang === 'c#') {return 'text/x-csharp';}
     return lang;
 }
 
@@ -44,7 +45,7 @@ export default Ember.Component.extend({
             indentUnits: 4,
             lineWrapping: true,
             styleActiveLine: true,
-            mode:getMode(this.get('language') || model.get('language'))
+            mode:getMode(this.get('type') || model.get('type'))
         };
         var attr = this.get('attr') || 'content';
         var lint = this.get('lint');
@@ -65,10 +66,10 @@ export default Ember.Component.extend({
             }
         };
         this.changeMode = function() {
-            editor.setOption("mode", getMode(model.get('language')));
+            editor.setOption("mode", getMode(model.get('type')));
         };
         model.addObserver(attr, model, this.updateEditor);
-        !this.get('language') && model.addObserver('language', model, this.changeMode);
+        if(!this.get('type')) { model.addObserver('type', model, this.changeMode);}
 
         editor.on('change', debounce(function(cm) {
             model.set(attr, cm.getValue());
@@ -80,7 +81,7 @@ export default Ember.Component.extend({
     },
     willDestroyElement: function() {
         this.get('model').removeObserver(this.get('attr'), this.get('model'), this.updateEditor);
-        !this.get('highlight') && this.get('model').removeObserver('language', this.get('model'), this.changeMode);
+        if(!this.get('type')) { this.get('model').removeObserver('type', this.get('model'), this.changeMode); }
         // this.get('lint') && this.get('controller').off('spy', this, this.spy);
     }
 });

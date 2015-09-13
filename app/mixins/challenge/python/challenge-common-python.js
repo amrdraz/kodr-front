@@ -40,7 +40,8 @@ export default Ember.Mixin.create(ChallengeCommon, {
         this.EventBus.publish('console.show');
         var t0 = Date.now();
         Debugger.run_no_debugger(src);
-        this.writeToConsole('\n<completed in ' + ((Date.now() - t0) * 1000.0) + ' ms >\n');
+        // should send activity event about runtime
+        // this.writeToConsole('\n<completed in ' + ((Date.now() - t0) * 1000.0) + ' ms >\n');
 
     },
     startDebugger(src) {

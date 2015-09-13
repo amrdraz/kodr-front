@@ -10,7 +10,7 @@ export default Ember.Mixin.create(ChallengeCommon, {
             type: 'POST',
             data: {
                 code: code,
-                language: 'java',
+                type: 'java',
                 inputs: model.get('inputs')?model.get('inputs').mapBy("value"):model.get('challenge.inputs')
             }
         }).done(cb).fail(function(err) {
@@ -19,7 +19,7 @@ export default Ember.Mixin.create(ChallengeCommon, {
     },
     testInServer(code, model, cb) {
         model = model.get('inputs')?model:model.get('challenge');
-        var data = (model.getProperties(['language', 'tests', 'exp']));
+        var data = (model.getProperties(['type', 'tests', 'exp']));
         data.inputs = model.get('inputs').mapBy("value");
         Ember.$.ajax({
             url: '/api/challenges/test',

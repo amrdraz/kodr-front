@@ -14,9 +14,10 @@ export default Ember.Controller.extend({
     init: function() {
         this._super();
     },
-    isCreating: function () {
-        return this.container.lookup('controller:application').get('currentPath').split('.').contains('create');
-    }.property('currentPath'),
+    isNew: function () {
+        var path = this.container.lookup('controller:application').get('currentPath').split('.');
+        return path.contains('create') || path.contains('copy');
+    },
     unPublish: function() {
         if (this.get('model.isPublished')) {
             this.set('model.isPublished', false);
@@ -59,9 +60,9 @@ export default Ember.Controller.extend({
     save: function() {
         var model = this.get('model');
         var that = this;
-        if (this.get('isCreating')) {
+        if (this.isNew()) {
             return model.save().then(function(ch) {
-                that.transitionToRoute('challenge.edit', ch.id);
+                that.transitionToRoute('challenge.edit', ch);
             }, function(xhr) {
                 console.error(xhr.message);
                 toastr.error(xhr.message);

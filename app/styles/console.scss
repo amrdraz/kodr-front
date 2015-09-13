@@ -39,11 +39,11 @@ $prompt:#FC0;
     font-weight: bold;
     color: $prompt;
     padding-left:20px;
-    background: url(../images/sprite.png) -13px -583px no-repeat;
+    background: url(../img/sprite.png) -13px -583px no-repeat;
     margin-left: -8px;
     .jqconsole-blurred & {
         color: #B91;
-        background: url(../images/sprite.png) -13px -615px no-repeat;
+        background: url(../img/sprite.png) -13px -615px no-repeat;
     }
 }
 $old-prompt: #D60;
@@ -52,12 +52,12 @@ $old-prompt: #D60;
     color: $old-prompt;
     padding-left:20px;
     margin-left: -8px;
-    background: url(../images/sprite.png) -13px -647px no-repeat;
+    background: url(../img/sprite.png) -13px -647px no-repeat;
     position: relative;
     left: -8px;
     .jqconsole-blurred & {
         color: #B41;
-        background: url(../images/sprite.png) -13px -679px no-repeat;
+        background: url(../img/sprite.png) -13px -679px no-repeat;
     }
 }
 .jqconsole-cursor {
