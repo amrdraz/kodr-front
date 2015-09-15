@@ -5,26 +5,24 @@ export default DS.Model.extend({
     name: attr('string', {
         defaultValue: "New Challenge"
     }),
-    type: attr('string', {defaultValue:'python'}),
-    order: attr('number', {defaultValue:0}),
-    group: attr('string', {defaultValue:null}),
-    exp: attr('number', {defaultValue:10}),
-    blueprint: attr(),
+    type: attr('string', {
+        defaultValue: 'python'
+    }),
+    order: attr('number', {
+        defaultValue: 0
+    }),
+    group: attr('string', {
+        defaultValue: null
+    }),
+    exp: attr('number', {
+        defaultValue: 10
+    }),
+    blueprint: attr('mixed'),
 
-        "import": attr('string'),
-        inputs: attr('javaInput', {defaultValue:[]}),
-        setup: attr('string', {
-            defaultValue: ""
-        }),
-        solution: attr('string', {
-            defaultValue: ""
-        }),
-        tests: attr('string', {
-            defaultValue: ""
-        }),
-        description: attr('string', {
-            defaultValue: "A new Challenge"
-        }),
+    // "import": attr('string'),
+    // inputs: attr('javaInput', {
+    //     defaultValue: []
+    // }),
 
     status: attr('string', {
         defaultValue: "unPublished"
@@ -45,9 +43,8 @@ export default DS.Model.extend({
         inverse: 'challenges'
     }),
 
-    expOptions: [
-    {
-        rank:'none',
+    expOptions: [{
+        rank: 'none',
         points: 0,
     }, {
         rank: "direct",
@@ -69,24 +66,43 @@ export default DS.Model.extend({
         points: 320
     }],
 
-    isJava: function () {
-        return this.get('type')==='java';
+    isJava: function() {
+        return this.get('type') === 'java';
     }.property('type'),
-    isJS: function () {
-        return this.get('type')==='javascript';
+    isJS: function() {
+        return this.get('type') === 'javascript';
     }.property('type'),
-    isPython: function () {
-        return this.get('type')==='python';
+    isPython: function() {
+        return this.get('type') === 'python';
     }.property('type'),
+
+    contentChanged: false,
 
     // relationshipChanged: false,
     canSave: function() {
-        return !this.get('isSaving') && this.get('hasDirtyAttributes') || this.get('isNew');
-    }.property('hasDirtyAttributes', 'isSaving', 'isNew'),
+        return !this.get('isSaving') && this.get('hasDirtyAttributes') || this.get('isNew') || this.get('contentChanged');
+    }.property('hasDirtyAttributes', 'isSaving', 'isNew', 'contentChanged'),
     canReset: function() {
         return !this.get('isSaving') && this.get('hasDirtyAttributes') && !this.get('isNew');
     }.property('hasDirtyAttributes', 'isSaving'),
     canPublish: function() {
         return !this.get('canSave') && !this.get('isPublished') && this.get('valid');
-    }.property('canSave')
+    }.property('canSave'),
+
+    updateBlueprint: function() {
+        this.notifyPropertyChange('blueprint');
+    }.property('blueprint.isDirty'),
+    set: function(keyName, value) {
+        this._super(keyName, value);
+        if (keyName.indexOf('blueprint.') > -1) {
+            // a property of `blueprint` has changed => notify observers of `blueprint`
+            this.notifyPropertyChange('blueprint');
+            this.set('contentChanged', true);
+        }
+    },
+    setUnknownProperty() {
+        this._super.apply(this, arguments);
+        // console.log(arguments);
+    }
+
 });

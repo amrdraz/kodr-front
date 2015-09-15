@@ -1,0 +1,7 @@
+{{#bs-modal title='Import Challenges' ok='importChallenges' close='removeModal'}}
+  <form {{action 'ok' on='submit' target=view}}>
+    <div class="form-group">
+      {{textarea value=importString}}
+    </div>
+  </form>
+{{/bs-modal}}

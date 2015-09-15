@@ -9,6 +9,7 @@ export default Ember.Controller.extend({
     breadCrumb: 'edit',
     breadCrumbPath: 'arena.edit',
     evaluates: 'solution',
+    importString:"",
     // queryParams: ['arena'],
     // originalArena: null,
     init: function() {
@@ -48,15 +49,6 @@ export default Ember.Controller.extend({
         }
         this.save();
     },
-    valueWillChange: function(obj, key){
-        this['changing'+key] = obj.get(key);
-        // console.log('changing',key, obj.get(key));
-    }.observesBefore('model.solution', 'model.setup', 'model.tests'),
-    invalidate: function (obj, key) {
-        // console.log('to',key, obj.get(key));
-        var change  = this['changing'+key] === obj.get(key);
-        this.set('model.valid', change && this.get('model.valid'));
-    }.observes('model.solution', 'model.setup', 'model.tests'),
     save: function() {
         var model = this.get('model');
         var that = this;
@@ -68,7 +60,12 @@ export default Ember.Controller.extend({
                 toastr.error(xhr.message);
             });
         } else {
-            return model.save();
+            return model.save().then(function (ch) {
+                model.set('contentChanged', false);
+            }, function(xhr) {
+                console.error(xhr.message);
+                toastr.error(xhr.message);
+            });
         }
     },
     actions: {

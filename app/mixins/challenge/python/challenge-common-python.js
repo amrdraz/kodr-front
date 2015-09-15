@@ -31,7 +31,7 @@ export default Ember.Mixin.create(ChallengeCommon, {
     },
     resetSrc() {
         var component = this;
-        component.get('models').set(component.get('evaluatedModelProperty'), "");
+        component.get('model.blueprint').set(component.get('evaluatedModelProperty'), "");
         component.goToLine(0);
     },
     runCode(src) {
@@ -128,7 +128,7 @@ export default Ember.Mixin.create(ChallengeCommon, {
     },
     actions: {
         run() {
-                this.runCode(this.get('model').get(this.get('evaluatedModelProperty')));
+                this.runCode(this.get('model.blueprint').get(this.get('evaluatedModelProperty')));
             },
             test() {
                 this.testEvent();
@@ -140,7 +140,7 @@ export default Ember.Mixin.create(ChallengeCommon, {
                 this.stepBackDebugger();
             },
             debug() {
-                this.startDebugger(this.get('model').get(this.get('evaluatedModelProperty')));
+                this.startDebugger(this.get('model.blueprint').get(this.get('evaluatedModelProperty')));
             },
             stop() {
                 this.stopDebugger();
@@ -204,11 +204,28 @@ export default Ember.Mixin.create(ChallengeCommon, {
         Tester.init();
         Tester.on_test_error(component.test_error.bind(component));
     },
-    registerEvents: function () {
+    contentChanged(model, key) {
+        console.log(model.get(key));
+        model.set('contentChanged', true);
+    },
+    watchValues: function() {
+        var model = this.get('model');
+        model.addObserver('blueprint.solution', model, this.contentChanged);
+        model.addObserver('blueprint.setup', model, this.contentChanged);
+        model.addObserver('blueprint.tests', model, this.contentChanged);
+        model.addObserver('blueprint.description', model, this.contentChanged);
+    }.on('didInsertElement'),
+    registerEvents: function() {
         this.EventBus.subscribe('challenge.test', this, this.testEvent);
     }.on('didInsertElement'),
-    unregisterEvents: function () {
+    unWatchValues: function() {
+        var model = this.get('model');
+        model.removeObserver('blueprint.solution', model, this.contentChanged);
+        model.removeObserver('blueprint.setup', model, this.contentChanged);
+        model.removeObserver('blueprint.tests', model, this.contentChanged);
+        model.removeObserver('blueprint.description', model, this.contentChanged);
+        }.on('willClearRender'),
+    unregisterEvents: function() {
         this.EventBus.unsubscribe('challenge.test', this, this.testEvent);
     }.on('willClearRender')
 });
-

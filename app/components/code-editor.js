@@ -45,7 +45,7 @@ export default Ember.Component.extend({
             indentUnits: 4,
             lineWrapping: true,
             styleActiveLine: true,
-            mode:getMode(this.get('type') || model.get('type'))
+            mode:getMode(this.get('language') || model.get('language'))
         };
         var attr = this.get('attr') || 'content';
         var lint = this.get('lint');
@@ -66,10 +66,10 @@ export default Ember.Component.extend({
             }
         };
         this.changeMode = function() {
-            editor.setOption("mode", getMode(model.get('type')));
+            editor.setOption("mode", getMode(model.get('language')));
         };
         model.addObserver(attr, model, this.updateEditor);
-        if(!this.get('type')) { model.addObserver('type', model, this.changeMode);}
+        if(!this.get('language')) { model.addObserver('language', model, this.changeMode);}
 
         editor.on('change', debounce(function(cm) {
             model.set(attr, cm.getValue());
@@ -81,7 +81,7 @@ export default Ember.Component.extend({
     },
     willDestroyElement: function() {
         this.get('model').removeObserver(this.get('attr'), this.get('model'), this.updateEditor);
-        if(!this.get('type')) { this.get('model').removeObserver('type', this.get('model'), this.changeMode); }
+        if(!this.get('language')) { this.get('model').removeObserver('language', this.get('model'), this.changeMode); }
         // this.get('lint') && this.get('controller').off('spy', this, this.spy);
     }
 });

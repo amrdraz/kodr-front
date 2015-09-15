@@ -14,5 +14,7 @@ export default Ember.Route.extend(AuthenticatedRouteMixin,{
     model: function() {
         var challenge = this.modelFor('challenge');
         return challenge;
+    },
+    actions :{
     }
 });

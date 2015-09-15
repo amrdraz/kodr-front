@@ -1,5 +1,7 @@
-/* global marked, MathJax */
 import Ember from 'ember';
+
+var MathJax = window.MathJax;
+var marked = window.marked;
 
 export default Ember.Component.extend({
     classNames: ['preview'],
@@ -11,11 +13,16 @@ export default Ember.Component.extend({
     //  Get the preview and buffer DIV's
     //
     PreviewDone: function() {
-        this.mjRunning = false;
-        var text = this.buffer.innerHTML;
-        // replace occurrences of &gt; at the beginning of a new line
-        // with > again, so Markdown blockquotes are handled correctly
-        text = text.replace(/^&gt;/mg, '>');
+        var text;
+        if(MathJax) {
+            this.mjRunning = false;
+            text = this.buffer.innerHTML;
+            // replace occurrences of &gt; at the beginning of a new line
+            // with > again, so Markdown blockquotes are handled correctly
+            text = text.replace(/^&gt;/mg, '>');
+        } else {
+            text = this.get('model').get(this.get('observable'));
+        }
         this.preview.innerHTML = marked(text);
     },
     Escape: function(html, encode) {
@@ -70,7 +77,11 @@ export default Ember.Component.extend({
         this.marked.setOptions({
             renderer: new marked.Renderer(),
             highlight: function(code) {
-                return window.hljs.highlightAuto(code).value;
+                if(window.hljs){
+                    return window.hljs.highlightAuto(code).value;
+                } else {
+                    return code;
+                }
             },
             gfm: true,
             tables: true,
@@ -80,8 +91,13 @@ export default Ember.Component.extend({
             smartLists: true,
             smartypants: false
         });
-        var callback = this.callback = MathJax.Callback(["CreatePreview", this]);
-        callback.autoReset = true;
+        var callback;
+        if(MathJax) {
+            callback = this.callback = MathJax.Callback(["CreatePreview", this]);
+            callback.autoReset = true;
+        } else {
+            callback = this.callback = this.PreviewDone.bind(this);
+        }
         // var that = this;
         // this. once = function () {
         //     if(!that.isDestroyed){

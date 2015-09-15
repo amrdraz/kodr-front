@@ -60,10 +60,6 @@ export default Ember.Controller.extend({
         },
         test(report){
             this.test(report);
-        },
-        rest() {
-            var model = this.get('model');
-            model.set('code', model.get('challenge.setup'));
         }
     }
 });

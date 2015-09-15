@@ -20,7 +20,7 @@
             name="solutionEditor"
             id="solutionEditor"
             class="col-lg-12"
-            model=model
+            model=model.blueprint
             lint=true
             attr='solution' }}
       </div>
@@ -29,7 +29,7 @@
           name="setup"
           id="setupEditor"
           class="col-lg-12"
-          model=model
+          model=model.blueprint
           attr='setup' }}
       </div>
       <div class="tab-pane fade" id="tests">
@@ -37,7 +37,7 @@
             name="testsEditor"
             id="testsEditor"
             class="col-lg-12"
-            model=model
+            model=model.blueprint
             lint=true
             attr='tests' }}
       </div>
@@ -60,14 +60,14 @@
           name="description"
           id="descriptionEditor"
           class="col-lg-12"
-          model=model
+          model=model.blueprint
           attr='description'
-          type='markdown'
+          language='markdown'
           }}
       </div>
 
       <div class="tab-pane fade" id="descriptionPreview">
-        {{marked-math model=model observable='description' }}
+        {{marked-math model=model.blueprint observable='description' }}
       </div>
       <div class="tab-pane fade" id="console">
         {{py-console}}
