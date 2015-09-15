@@ -17,6 +17,7 @@ export default Ember.Mixin.create(ChallengeCommon, {
     isLastStep: false,
     isFirstStep: false,
     evaluatedModelProperty: 'solution',
+    evaluatedModelObject: 'blueprint',
     writeToConsole(data, type) {
         this.EventBus.publish('console.write', data, type);
     },
@@ -31,7 +32,7 @@ export default Ember.Mixin.create(ChallengeCommon, {
     },
     resetSrc() {
         var component = this;
-        component.get('model.blueprint').set(component.get('evaluatedModelProperty'), "");
+        component.this.get('model').get(this.get('evaluatedModelObject')).set(component.get('evaluatedModelProperty'), "");
         component.goToLine(0);
     },
     runCode(src) {
@@ -128,7 +129,7 @@ export default Ember.Mixin.create(ChallengeCommon, {
     },
     actions: {
         run() {
-                this.runCode(this.get('model.blueprint').get(this.get('evaluatedModelProperty')));
+                this.runCode(this.get('model').get(this.get('evaluatedModelObject')).get(this.get('evaluatedModelProperty')));
             },
             test() {
                 this.testEvent();
@@ -140,7 +141,7 @@ export default Ember.Mixin.create(ChallengeCommon, {
                 this.stepBackDebugger();
             },
             debug() {
-                this.startDebugger(this.get('model.blueprint').get(this.get('evaluatedModelProperty')));
+                this.startDebugger(this.get('model').get(this.get('evaluatedModelObject')).get(this.get('evaluatedModelProperty')));
             },
             stop() {
                 this.stopDebugger();

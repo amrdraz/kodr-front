@@ -10,17 +10,18 @@
   </div>
   <div class="row">
     <ul class="nav nav-tabs">
-      <li class="active"><a href="#code" data-toggle="tab">Code</a></li>
+      <li class="active"><a href="#solution" data-toggle="tab">Code</a></li>
     </ul>
     <div class="tab-content">
-      <div class="tab-pane fade in active" id="code">
+      <div class="tab-pane fade in active" id="solution">
         {{code-editor
-            name="codeEditor"
-            id="codeEditor"
-            class="col-lg-12"
-            model=model
-            lint=true
-            attr='code' }}
+          name="solutionEditor"
+          id="solutionEditor"
+          class="col-lg-12"
+          model=model.work
+          lint=true
+          attr='solution'
+        }}
       </div>
     </div>
   </div>

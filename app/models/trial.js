@@ -1,7 +1,8 @@
 import DS from 'ember-data';
 
 export default  DS.Model.extend({
-    code: DS.attr('string'),
+    work: DS.attr('mixed'),
+    blueprint: DS.attr('mixed'),
     input: DS.attr('string'),
     times: DS.attr('number'),
     exp: DS.attr('number'),

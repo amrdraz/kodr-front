@@ -4,7 +4,7 @@
     <h2 class="panel-title">{{model.challenge.name}}</h2>
 </div>
   <div class="panel-body">
-    {{marked-math model=model.challenge observable='description' }}
+    {{marked-math model=model.challenge.blueprint observable='description' }}
   </div>
 </section>
 {{component (concat 'challenge/challenge-trial-')

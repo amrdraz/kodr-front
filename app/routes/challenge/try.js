@@ -1,7 +1,9 @@
+import AuthenticatedRouteMixin from 'simple-auth/mixins/authenticated-route-mixin';
+import Mixed from 'kodr/models/mixed';
 import Ember from 'ember';
 
 
-export default Ember.Route.extend({
+export default Ember.Route.extend(AuthenticatedRouteMixin, {
     // activate: function() {},
     // deactivate: function() {},
     setupController: function(controller, model) {
@@ -15,10 +17,15 @@ export default Ember.Route.extend({
 
     model: function() {
         var challenge = this.modelFor('challenge');
-        var record = this.store.createRecord('trial', {
+        var trial = {
             challenge: challenge,
-            code: challenge.get('setup')
-        });
+            work: Mixed.create({solution:challenge.get('blueprint.setup')}),
+            blueprint: challenge.get('blueprint')
+        };
+        if(this.get('session.flags') && this.get('session.flags.isControl')) {
+            trial.work.set('solution', '');
+        }
+        var record = this.store.createRecord('trial', trial);
         return record;
 
     }
