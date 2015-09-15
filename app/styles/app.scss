@@ -127,4 +127,21 @@ body {
 .unselectable {
     user-select: none;
 }
+
+.past-text pre {
+    position:relative;
+    cursor: pointer;
+}
+
+.past-text pre:before {
+    content: "\f03c";
+    font-family: FontAwesome;
+    position: absolute;
+    top: 2px;
+    font-size: 14px;
+    right: 4px;
+}
+.past-text pre:hover:before {
+    color: $brand-primary;
+}
 @import "./console";

@@ -42,9 +42,16 @@
   </div>
   <div class="row">
     <ul class="nav nav-tabs">
+      <li class="active" ><a href="#description" data-toggle="tab">Description</a></li>
       <li><a href="#console" data-toggle="tab">Console</a></li>
     </ul>
     <div class="tab-content">
+      <div class="tab-pane fade in active" id="description">
+        <br>
+        {{#editor-copy target="solutionEditor"}}
+          {{marked-math model=model.challenge.blueprint observable='description' }}
+        {{/editor-copy}}
+      </div>
       <div class="tab-pane fade" id="console">
         {{py-console}}
       </div>

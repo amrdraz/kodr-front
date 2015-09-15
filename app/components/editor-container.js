@@ -16,10 +16,15 @@ export default Ember.Component.extend({
                 scroll: true
         });
     },
+    editorPast(cmId, text){
+        var cm = Ember.$('#'+cmId).data('CodeMirror');
+        cm.getDoc().replaceRange(text, cm.getDoc().getCursor());
+    },
     didInsertElement: function() {
         this.EventBus.subscribe('console.show', this, this.showConsole);
         this.EventBus.subscribe('editor.lint', this, this.editorLint);
         this.EventBus.subscribe('editor.line', this, this.editorLine);
+        this.EventBus.subscribe('editor.past', this, this.editorPast);
         // this.get('controller').trigger('console.show');
         //refresh code editor tabs when selected
         Ember.$('[data-toggle="tab"]').on('shown.bs.tab', function() {
@@ -35,5 +40,6 @@ export default Ember.Component.extend({
         this.EventBus.unsubscribe('console.show', this, this.showConsole);
         this.EventBus.unsubscribe('editor.lint', this, this.editorLint);
         this.EventBus.unsubscribe('editor.line', this, this.editorLine);
+        this.EventBus.subscribe('editor.past', this, this.editorPast);
     }
 });
