@@ -9,12 +9,13 @@ export default Ember.Component.extend({
     buffer: null, // filled in by Init below
     mjRunning: false, // true when MathJax is processing
     oldText: null, // used to check if an update is needed
+    math: false,
     //
     //  Get the preview and buffer DIV's
     //
     PreviewDone: function() {
-        var text;
-        if(MathJax) {
+        var text = "";
+        if(this.get('math') && MathJax) {
             this.mjRunning = false;
             text = this.buffer.innerHTML;
             // replace occurrences of &gt; at the beginning of a new line
@@ -75,6 +76,10 @@ export default Ember.Component.extend({
         // element for MathJax
         this.buffer = this.$('<div>')[0];
 
+        if(!this.get('model').get(this.get('observable'))) {
+            this.get('model').set(this.get('observable'), "");
+        }
+
         this.marked.setOptions({
             renderer: new marked.Renderer(),
             highlight: function(code) {
@@ -93,7 +98,7 @@ export default Ember.Component.extend({
             smartypants: false
         });
         var callback;
-        if(MathJax) {
+        if(this.get('math') && MathJax) {
             callback = this.callback = MathJax.Callback(["CreatePreview", this]);
             callback.autoReset = true;
         } else {

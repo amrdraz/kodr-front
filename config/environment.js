@@ -19,7 +19,7 @@ module.exports = function(environment) {
             API_HOST: 'https://mail.kodr.in' // default settins
         },
 
-        contentSecurityPolicy : {
+        contentSecurityPolicy: {
             'default-src': "'none'",
             'frame-src': "'self' 'unsafe-inline'",
             'script-src': "'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com https://cdn.mathjax.org http://www.google-analytics.com https://ssl.google-analytics.com", // Allow scripts from https://cdn.mxpnl.com
@@ -54,7 +54,7 @@ module.exports = function(environment) {
     }
 
     if (environment === 'production') {
-
+        
     }
 
 
@@ -63,6 +63,6 @@ module.exports = function(environment) {
         authorizer: 'simple-auth-authorizer:oauth2-bearer',
         crossOriginWhitelist: [ENV.APP.API_HOST]
     };
-    
+
     return ENV;
 };

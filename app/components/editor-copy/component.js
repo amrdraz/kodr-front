@@ -8,7 +8,8 @@ export default Ember.Component.extend({
         component.$().on('click','pre', function () {
             var code = Ember.$(this).text();
             component.EventBus.publish('challenge.event.copy.example');
-            component.EventBus.publish('editor.past', target, code);
+            // component.EventBus.publish('editor.past', target, code);
+            component.EventBus.publish('challenge.run', target, code);
             console.log(code);
         });
     }

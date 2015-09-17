@@ -144,4 +144,9 @@ body {
 .past-text pre:hover:before {
     color: $brand-primary;
 }
+
+#description {
+    max-height: 400px;
+    overflow-y: scroll;
+}
 @import "./console";

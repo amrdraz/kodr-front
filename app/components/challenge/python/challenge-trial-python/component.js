@@ -11,16 +11,29 @@ export default Ember.Component.extend(ChallengeCommon, {
             exp: this.get('model.challenge.exp')
         });
     },
-    typing: _.debounce(function () {
+    runEvent(target, code){
+        this.runCode(code);
+    },
+    typingTimer: null,
+    endTyping(){
         var model = this.get('model');
-        console.log("typing", Date.now(), model.get('work.solution'));
-    }, 200),
+        this.typingTimer = null;
+        var endTime = Date.now();
+        console.log("startTyping", this.startTyping ,"endTyping", endTime, model.get('work.solution'));
+    },
+    typing: function () {
+        clearTimeout(this.typingTimer);
+        if(!this.typingTimer) {
+            this.startTyping = Date.now();
+        }
+        this.typingTimer =  _.delay(this.endTyping.bind(this), 3000);
+    },
     watchEvents: function () {
         var model = this.get('model');
-        model.addObserver('work.solution', model, this.typing);
+        model.addObserver('work.solution', this, this.typing);
     }.on("didInsertElement"),
     unWatchEvents: function () {
         var model = this.get('model');
-        model.removeObserver('work.solution', model, this.typing);
+        model.removeObserver('work.solution', this, this.typing);
     }.on("willClearRender")
 });

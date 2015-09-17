@@ -6,6 +6,12 @@ export default Ember.Object.extend({
       this.set('original', this.__ember_meta__.proto);
       this._super.apply(this, arguments);  
     },
+    set(path, value){
+          this._super(path, value);
+          if(this.propertyKeys && path!=="propertyKeys" && path!=="original" && !this.propertyKeys.contains(path)) {
+            this.propertyKeys.push(path);
+          }
+    },
     propertyKeys: null,
     original: null,
     toJSON() {

@@ -20,26 +20,29 @@
             name="solutionEditor"
             id="solutionEditor"
             class="col-lg-12"
-            model=model.blueprint
+            model=model
             lint=true
-            attr='solution' }}
+            language="python"
+            attr='blueprint.solution' }}
       </div>
       <div class="tab-pane fade " id="setup">
         {{code-editor
           name="setup"
           id="setupEditor"
           class="col-lg-12"
-          model=model.blueprint
-          attr='setup' }}
+          model=model
+          language="python"
+          attr='blueprint.setup' }}
       </div>
       <div class="tab-pane fade" id="tests">
         {{code-editor
             name="testsEditor"
             id="testsEditor"
             class="col-lg-12"
-            model=model.blueprint
+            model=model
             lint=true
-            attr='tests' }}
+            language="python"
+            attr='blueprint.tests' }}
       </div>
     </div>
   </div>
@@ -60,8 +63,8 @@
           name="description"
           id="descriptionEditor"
           class="col-lg-12"
-          model=model.blueprint
-          attr='description'
+          model=model
+          attr='blueprint.description'
           language='markdown'
           }}
       </div>

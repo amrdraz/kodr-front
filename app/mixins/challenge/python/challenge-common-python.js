@@ -205,28 +205,14 @@ export default Ember.Mixin.create(ChallengeCommon, {
         Tester.init();
         Tester.on_test_error(component.test_error.bind(component));
     },
-    contentChanged(model, key) {
-        console.log(model.get(key));
-        model.set('contentChanged', true);
-    },
-    watchValues: function() {
-        var model = this.get('model');
-        model.addObserver('blueprint.solution', model, this.contentChanged);
-        model.addObserver('blueprint.setup', model, this.contentChanged);
-        model.addObserver('blueprint.tests', model, this.contentChanged);
-        model.addObserver('blueprint.description', model, this.contentChanged);
-    }.on('didInsertElement'),
+    testEvent(){},
+    runEvent(){},
     registerEvents: function() {
         this.EventBus.subscribe('challenge.test', this, this.testEvent);
+        this.EventBus.subscribe('challenge.run', this, this.runEvent);
     }.on('didInsertElement'),
-    unWatchValues: function() {
-        var model = this.get('model');
-        model.removeObserver('blueprint.solution', model, this.contentChanged);
-        model.removeObserver('blueprint.setup', model, this.contentChanged);
-        model.removeObserver('blueprint.tests', model, this.contentChanged);
-        model.removeObserver('blueprint.description', model, this.contentChanged);
-        }.on('willClearRender'),
     unregisterEvents: function() {
         this.EventBus.unsubscribe('challenge.test', this, this.testEvent);
+        this.EventBus.unsubscribe('challenge.run', this, this.runEvent);
     }.on('willClearRender')
 });

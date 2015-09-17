@@ -103,6 +103,10 @@
      */
     function setInput(stdin) {
         did_set_input = true;
+        stdin = $B.pyobj2jsobj(stdin);
+        if(_.isArray(stdin)) {
+            stdin = stdin.join("\n");
+        }
         scope.stdin = _b_.getattr(scope.StringIO, "__call__")(stdin);
         scope.__stdin__ = $B.stdin;
         $B.stdin = $B.modules._sys.stdin = scope.stdin;

@@ -1,4 +1,5 @@
 import DS from 'ember-data';
+import Mixed from 'kodr/models/mixed';
 
 var attr = DS.attr;
 export default DS.Model.extend({
@@ -17,7 +18,23 @@ export default DS.Model.extend({
     exp: attr('number', {
         defaultValue: 10
     }),
-    blueprint: attr('mixed'),
+    blueprint: attr('mixed', {
+        defaultValue: function(model) {
+            var obj = {};
+            switch(model.get("type")){
+            case "python":
+                obj = {
+                    language:"python",
+                    description:"",
+                    solution:"",
+                    setup:"",
+                    tests:"",
+                };
+                break;
+            }
+            return Mixed.create(obj);
+        }
+    }),
 
     // "import": attr('string'),
     // inputs: attr('javaInput', {
@@ -89,9 +106,6 @@ export default DS.Model.extend({
         return !this.get('canSave') && !this.get('isPublished') && this.get('valid');
     }.property('canSave'),
 
-    updateBlueprint: function() {
-        this.notifyPropertyChange('blueprint');
-    }.property('blueprint.isDirty'),
     set: function(keyName, value) {
         this._super(keyName, value);
         if (keyName.indexOf('blueprint.') > -1) {
@@ -99,10 +113,6 @@ export default DS.Model.extend({
             this.notifyPropertyChange('blueprint');
             this.set('contentChanged', true);
         }
-    },
-    setUnknownProperty() {
-        this._super.apply(this, arguments);
-        // console.log(arguments);
     }
 
 });

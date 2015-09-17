@@ -1,4 +1,5 @@
 import AuthenticatedRouteMixin from 'simple-auth/mixins/authenticated-route-mixin';
+import Mixed from 'kodr/models/mixed';
 import Ember from 'ember';
 
 
@@ -23,6 +24,7 @@ export default Ember.Route.extend(AuthenticatedRouteMixin,{
   model: function() {
       var challenge = this.modelFor('challenge').serialize();
       challenge.arena = this.modelFor('arena');
+      challenge.blueprint = Mixed.create(challenge.blueprint);
       challenge.isPublished = false;
       console.log(challenge);
 

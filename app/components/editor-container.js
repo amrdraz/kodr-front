@@ -21,6 +21,7 @@ export default Ember.Component.extend({
         cm.getDoc().replaceRange(text, cm.getDoc().getCursor());
     },
     didInsertElement: function() {
+        var that = this;
         this.EventBus.subscribe('console.show', this, this.showConsole);
         this.EventBus.subscribe('editor.lint', this, this.editorLint);
         this.EventBus.subscribe('editor.line', this, this.editorLine);
@@ -34,6 +35,8 @@ export default Ember.Component.extend({
                 editor.data('CodeMirror').refresh();
                 editor.data('CodeMirror').focus();
             }
+        }).on('click', function () {
+            that.EventBus.publish("challenge.event.tab.select", $(this).attr("href").substr(1));
         });
     },
     willClearRender: function() {
