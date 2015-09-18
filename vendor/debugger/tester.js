@@ -154,7 +154,10 @@
         unsetInput();
         unsetOutput();
         // some processing
-        return history;
+        Object.keys(history).forEach(function (key) {
+            history[key] = $B.jsobj2pyobj(history[key]);
+        });
+        return $B.jsobj2pyobj(history);
     }
 
     /**
@@ -244,6 +247,11 @@
         test.fail_message = test.fail_message || DEFAULT_FAIL_MESSAGE;
         test.score = test.score || DEFAULT_SCORE;
         test.message = (test.passed)?test.message:test.fail_message;
+        
+        delete test.test;
+        delete test.expect;
+        delete test.fail_message;
+
         report.tests.push(test);
         return test.passed;
     }
@@ -267,7 +275,7 @@
         var re = new RegExp(obj.expect);
         obj.passed = re.test(obj.test);
         obj.message = obj.message || obj.test+" matches "+obj.expect;
-        obj.fail_message = obj.fail_message || "Expected "+obj.test+" to match " + obj.expect;
+        obj.fail_message = obj.fail_message || "Expected `"+obj.test+"` to match `" + obj.expect+"`";
         return appendTestToReport(obj);
     }
 
@@ -276,14 +284,14 @@
         obj.passed = _.includes(obj.test, obj.expect);
         obj.message = obj.message || obj.test+" contains "+obj.expect;
         obj.fail_message = obj.fail_message || "Expected "+obj.test+" to contain " + obj.expect;
-        return _.includes(obj.test, obj.expect);
+        return appendTestToReport(obj);
     }
 
     function expect() {
         var obj = processArguments.apply(this, arguments);
         obj.passed = _.isEqual(obj.test,obj.expect);
         obj.message = obj.message || obj.test+" equals "+obj.expect;
-        obj.fail_message = obj.fail_message || "Expected "+obj.test+" to equal " + obj.expect;
+        obj.fail_message = obj.fail_message || "Expected `"+obj.test+"` to equal `" + obj.expect+"`";
         return appendTestToReport(obj);
     }
 
@@ -298,7 +306,7 @@
 
     function exists() {
         var obj = processArguments.apply(this, arguments);
-        obj.passed = (true && obj.test[obj.expect]);
+        obj.passed = (true && obj.test[obj.expect]!==undefined);
         obj.message = obj.message || obj.expect+" is defined";
         obj.fail_message = obj.fail_message || obj.expect+" does not exist";
         return appendTestToReport(obj);

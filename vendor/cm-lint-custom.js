@@ -2,12 +2,13 @@
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
 (function(mod) {
-  if (typeof exports == "object" && typeof module == "object") // CommonJS
+  if (typeof(exports) === "object" && typeof(module) === "object") { // CommonJS
     mod(require("../../lib/codemirror"));
-  else if (typeof define == "function" && define.amd) // AMD
+  } else if (typeof define == "function" && define.amd) {// AMD
     define(["../../lib/codemirror"], mod);
-  else // Plain browser env
+  } else { // Plain browser env
     mod(CodeMirror);
+  }
 })(function(CodeMirror) {
   "use strict";
   var GUTTER_ID = "CodeMirror-lint-markers";
@@ -19,7 +20,7 @@
     document.body.appendChild(tt);
 
     function position(e) {
-      if (!tt.parentNode) return CodeMirror.off(document, "mousemove", position);
+      if (!tt.parentNode) {return CodeMirror.off(document, "mousemove", position);}
       tt.style.top = Math.max(0, e.clientY - tt.offsetHeight - 5) + "px";
       tt.style.left = (e.clientX + 5) + "px";
     }

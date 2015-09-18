@@ -57,13 +57,18 @@ Router.map(function() {
   this.resource('users', function() {
       this.route('create');
   });
-  this.resource('userArena', {
-      path: '/arena/:arena_id' //used to load arena trial
+  this.route('userArena', {
+      path: '/arena/:user_arena_id' //used to load a user arena
   }, function() {
-      this.resource('trial', {
+      this.route('trial', {
           path: '/try/:trial_id' //used to load trial
       });
   });
+
+  this.resource('userArenas', {
+      path: '/user-arenas' //used to load user arenas
+  }, function(){});
+
   this.resource('challengeTrial', {
       path: '/trial/:challenge_id'
   });
@@ -89,6 +94,7 @@ Router.map(function() {
   }, function() {
       this.route('create');
   });
+  this.route('trial');
 });
 
 export default Router;

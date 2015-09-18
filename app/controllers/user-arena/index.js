@@ -1,25 +1,19 @@
 import Ember from 'ember';
 
 export default Ember.Controller.extend({
-    breadCrumb:'arena',
-    breadCrumbPath:'userArena',
+    breadCrumb:'arenas',
+    breadCrumbPath:'userArenas',
     needs: ['userArena'],
-    arena: Ember.computed.alias("controllers.userArena.model"),
+    arena: Ember.computed.alias("controllers.userArena.model.arena"),
     trials: function() {
         return Ember.ArrayProxy.createWithMixins(Ember.SortableMixin, {
             sortProperties: ['order'],
-            content: this.get('model.trials')
+            content: this.store.query('trial', {arena:this.get('arena.id'), user:this.get('session.user.id')})
         });
     }.property('model.trials'),
-    init: function() {
-        this._super();
-    },
-    currentTrial: function() {
-        return this.get('model.trials.firstObject');
-    }.property('arena.challenges.[]'),
     actions: {
         try: function(trial) {
-            this.transitionToRoute('trial', trial);
+            this.transitionToRoute('userArena.trial', this.get('model'), trial);
         }
     }
 });

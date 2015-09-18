@@ -1,0 +1,20 @@
+<h3>Arenas</h3>
+
+<div class="list-group">
+{{#each model as |userArena| }}
+    {{#link-to 'userArena' userArena class="user-arena-name" class="list-group-item"}}   
+    <h4 class="list-group-item-heading">
+        
+        <div class="pull-right">
+        {{#link-to 'userArena' userArena class="btn-primary btn-sm user-arena-try"}}
+            <i class="glyphicon glyphicon-play"></i> Try
+        {{/link-to}}
+        </div>
+        
+        {{userArena.arena.name}}            
+    </h4>  
+    {{/link-to}}
+{{else}}
+    <p>No Arenas are published yet</p>
+{{/each}}
+</div>

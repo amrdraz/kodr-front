@@ -23,14 +23,19 @@
             </a>
           {{/link-to}}
           {{#if session.isAuthenticated}}
-          {{#link-to 'arenas' tagName="li" href=false}}
-            <a href="{{view.href}}" class="btn" >
-              Arenas
-            </a>
-          {{/link-to}}
+            {{#link-to 'userArenas' tagName="li" href=false}}
+              <a href="{{view.href}}" class="btn" >
+                {{if session.isStudent? 'Arenas' 'User Arenas' }}
+              </a>
+            {{/link-to}}
           {{/if}}
 
           {{#if session.atLeastTeacher }}
+            {{#link-to 'arenas' tagName="li" href=false}}
+              <a href="{{view.href}}" class="btn" >
+                Arenas
+              </a>
+            {{/link-to}}
             {{#link-to 'quests' tagName="li" href=false }}
             <a href="{{view.href}}" class="btn" >
               Quests

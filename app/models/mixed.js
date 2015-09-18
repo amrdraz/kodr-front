@@ -1,4 +1,5 @@
 import Ember from 'ember';
+var _ = window._;
 
 export default Ember.Object.extend({
     init: function () {
@@ -15,6 +16,7 @@ export default Ember.Object.extend({
     propertyKeys: null,
     original: null,
     toJSON() {
-        return this.getProperties(this.propertyKeys);
+        var propertyKeys = _.chain(this.propertyKeys).pull('original').pull('propertyKeys').value();
+        return this.getProperties(propertyKeys);
     }
 });

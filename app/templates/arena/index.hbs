@@ -2,7 +2,7 @@
 <div class="col-md-12 text-center">
 {{#if session.atLeastTeacher }}
     {{#link-to 'arena.edit' model class="btn pull-right" }}Edit{{/link-to}}
-    {{#link-to 'userArena' model class="btn pull-right" }}Try{{/link-to}}
+    {{#link-to 'userArena' userArena class="btn pull-right" }}Try{{/link-to}}
 {{else}}
     {{#unless session.isAuthenticated}}
         <div class="alert alert-info">

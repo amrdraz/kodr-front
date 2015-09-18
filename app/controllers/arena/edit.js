@@ -11,6 +11,12 @@ export default Ember.Controller.extend({
     canPublish: function() {
         return this.get('model.canPublish') && this.get('model.challenges').filterBy('isPublished', true).length >= 1;
     }.property('model.challenges.[].isPublished'),
+    challenges: function() {
+        return Ember.ArrayProxy.createWithMixins(Ember.SortableMixin, {
+            sortProperties: ['order'],
+            content: this.get('model.challenges')
+        });
+    }.property('model.challenges'),
     actions: {
         reset: function() {
             this.get('model').rollback();
@@ -66,8 +72,27 @@ export default Ember.Controller.extend({
 
             }
         },
-        'export': function(){
-            
+        moveChallengeUp: function(challenge) {
+            var challenge2;
+            var index = this.get('challenges').indexOf(challenge);
+            if(index > 0 && index < this.get('challenges.length')) {
+                challenge2 = this.get('challenges').objectAt(index-1);
+                challenge.set("order", challenge.get('order')-1);
+                challenge2.set("order", challenge2.get('order')+1);
+                challenge.save();
+                challenge2.save();
+            }
+        },
+        moveChallengeDown: function(challenge) {
+            var challenge2;
+            var index = this.get('challenges').indexOf(challenge);
+            if(index > -1 && index < this.get('challenges.length') - 1) {
+                challenge2 = this.get('challenges').objectAt(index+1);
+                challenge.set("order", challenge.get('order')+1);
+                challenge2.set("order", challenge2.get('order')-1);
+                challenge.save();
+                challenge2.save();
+            }
         }
 
     }

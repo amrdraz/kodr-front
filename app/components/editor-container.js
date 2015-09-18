@@ -43,6 +43,6 @@ export default Ember.Component.extend({
         this.EventBus.unsubscribe('console.show', this, this.showConsole);
         this.EventBus.unsubscribe('editor.lint', this, this.editorLint);
         this.EventBus.unsubscribe('editor.line', this, this.editorLine);
-        this.EventBus.subscribe('editor.past', this, this.editorPast);
+        this.EventBus.unsubscribe('editor.past', this, this.editorPast);
     }
 });

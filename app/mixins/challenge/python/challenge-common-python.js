@@ -32,7 +32,7 @@ export default Ember.Mixin.create(ChallengeCommon, {
     },
     resetSrc() {
         var component = this;
-        component.this.get('model').get(this.get('evaluatedModelObject')).set(component.get('evaluatedModelProperty'), "");
+        component.get('model').get(this.get('evaluatedModelObject')).set(component.get('evaluatedModelProperty'), "");
         component.goToLine(0);
     },
     runCode(src) {
@@ -154,9 +154,9 @@ export default Ember.Mixin.create(ChallengeCommon, {
     didInsertElement() {
         window.brython(1);
         $B.brython_path = window.location.origin + "/brython/www/src/";
-        // $B.path = [
-        //     window.location.origin + "/brython/www/src"
-        // ];
+        $B.path = [
+            window.location.origin + "/brython/www/src"
+        ];
         var component = this;
 
         var cout = {
@@ -186,7 +186,8 @@ export default Ember.Mixin.create(ChallengeCommon, {
             var stdin = ($B.imported.sys && $B.imported.sys.stdin || $B.stdin);
             // $B.stdout.write(arg);
             if (stdin.__original__) {
-                return prompt(arg);
+                val = prompt(arg);
+                return val?val:'';
             }
             var val = _b_.getattr(stdin, 'readline')();
             val = val.split('\n')[0];

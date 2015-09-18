@@ -16,18 +16,19 @@
     <div class="tab-content">
       <div class="tab-pane fade in active" id="description">
         <br>
-        {{#editor-copy target="solutionEditor"}}
-          {{marked-math model=model.challenge.blueprint observable='description' }}
-        {{/editor-copy}}
+        {{#editor-run target="solutionEditor"}}
+          {{marked-math model=challenge observable='blueprint.description' }}
+        {{/editor-run}}
       </div>
       <div class="tab-pane fade" id="solution">
         {{code-editor
           name="solutionEditor"
           id="solutionEditor"
           class="col-lg-12"
-          model=model.work
+          model=model
           lint=true
-          attr='solution'
+          language="python"
+          attr='work.solution'
         }}
       </div>
     </div>

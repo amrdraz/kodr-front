@@ -30,7 +30,7 @@
     "select2": "3.5.2",
     "selectize": "~0.12.1",
     "socket.io-client": "1.0.6",
-    "sweetalert": "https://github.com/t4t5/sweetalert.git#~1.0.1",
+    "sweetalert": "~1.1.0",
     "toastr": "~2.1.1"
   }
 }

@@ -786,11 +786,10 @@
             var None = _b_.None;
             var getattr = _b_.getattr;
             var setattr = _b_.setattr;
+            var delattr = _b_.delattr;
 
             if ($B.async_enabled) {
                 js = $B.execution_object.source_conversion(js);
-
-                //console.log(js)
                 eval(js);
             } else {
                 // Run resulting Javascript

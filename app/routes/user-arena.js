@@ -10,7 +10,7 @@ var UserArenaRoute = Ember.Route.extend(AuthenticatedRouteMixin,{
   // afterModel: function() {},
     model: function(params) {
         var store = this.store;
-        return store.findRecord('arena', params.arena_id);
+        return store.findRecord('userArena', params.user_arena_id);
     }
 });
 

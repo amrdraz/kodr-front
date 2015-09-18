@@ -27,10 +27,17 @@
                     <i class="glyphicon glyphicon-play"></i> Try
                 {{/link-to}}
                 {{#link-to 'challenge.copy' challenge class=":challenge-copy"}}
-                    Copy
+                    <i class="glyphicon glyphicon-copy"></i> Copy
                 {{/link-to}}
                 <a {{action "removeChallenge" challenge }} href="#" class="challenge-remove">
                     <i class="glyphicon glyphicon-remove"></i> Remove 
+                </a>
+
+                <a {{action "moveChallengeUp" challenge }} href="#" class="challenge-remove">
+                    <span class="glyphicon glyphicon-chevron-up"></span> Move Up
+                </a>
+                <a {{action "moveChallengeDown" challenge }} href="#" class="challenge-remove">
+                    <span class="glyphicon glyphicon-chevron-down"></span> Move Down
                 </a>
             </div>
             <div>

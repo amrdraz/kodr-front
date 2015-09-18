@@ -128,12 +128,12 @@ body {
     user-select: none;
 }
 
-.past-text pre {
+.past-text pre:not(.no-run) {
     position:relative;
     cursor: pointer;
 }
 
-.past-text pre:before {
+.past-text pre:not(.no-run):before {
     content: "\f03c";
     font-family: FontAwesome;
     position: absolute;
@@ -141,12 +141,22 @@ body {
     font-size: 14px;
     right: 4px;
 }
-.past-text pre:hover:before {
+.past-text pre:not(.no-run):hover:before {
     color: $brand-primary;
 }
 
-#description {
+#description.tab-pane {
     max-height: 400px;
-    overflow-y: scroll;
+    overflow-y: auto;
 }
+
+.noselect {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
 @import "./console";

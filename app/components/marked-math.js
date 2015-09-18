@@ -115,13 +115,6 @@ export default Ember.Component.extend({
         // };
         this.get('model').addObserver(this.get('observable'), this.get('model'),this.callback);
         callback();
-
-        component.$().on('click','code', function () {
-            var code = Ember.$(this).text();
-            component.EventBus.publish('challenge.event.copy.example');
-            component.EventBus.publish('editor.past', code);
-            console.log(code);
-        });
     },
     willDestroyElement: function () {
         this.get('model').removeObserver(this.get('observable'), this.get('model'),this.callback);
