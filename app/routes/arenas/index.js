@@ -9,6 +9,11 @@ export default Ember.Route.extend(AuthenticatedRouteMixin,{
       }
     }
   },
+  beforeModel(){
+    if(this.get('session.isStudent')){
+      return this.transitionTo('userArenas');
+    }
+  },
   model: function() {
     return this.store.findAll('arena');
   }
