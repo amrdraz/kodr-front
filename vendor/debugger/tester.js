@@ -246,6 +246,7 @@
         test.message = test.message || DEFAULT_PASS_MESSAGE;
         test.fail_message = test.fail_message || DEFAULT_FAIL_MESSAGE;
         test.score = test.score || DEFAULT_SCORE;
+        test.score = Math[test.passed?'max':'min'](test.score, 0);
         test.message = (test.passed)?test.message:test.fail_message;
         
         delete test.test;
@@ -266,7 +267,6 @@
     function fail() {
         var obj = processPassFailArguments.apply(this, arguments);
         obj.passed = false;
-        obj.score = obj.score?Math.min(obj.score, 0):DEFAULT_SCORE;
         return appendTestToReport(obj);
     }
 

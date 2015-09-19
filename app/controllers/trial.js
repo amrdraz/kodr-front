@@ -30,21 +30,10 @@ export default Ember.Controller.extend({
     isDirtyish: function() {
         return this.get('model.hasDirtyAttributes') && !this.get('model.isNew');
     }.property('model.hasDirtyAttributes', 'model.isNew'),
-    
-    testError: function (errors) {
-        var model = this.get('model');
-        model.set('report', {
-            errors: errors
-        });
-        model.set('complete', this._super(errors));
-        this.save();
-    },
-    test: function(report) {
-        var model = this.get('model');
+    test: function() {
         var controller = this;
-        model.set('report', report);
-        model.set('complete', report.passed);
-        this.save(function (model) {
+        var model = this.get('model');
+        if (!this.isChallengeTrialFunc()) {
             if(model.get('completed')===1) {
                 swal({title:"+"+model.get('exp')+" EXP", text:"For completeing this challenge", type:"success"}, function () {
                     console.log("swal stopped me from executing until ok");
@@ -53,7 +42,13 @@ export default Ember.Controller.extend({
             } else if(model.get('completed')>1) {
                 swal("Great Job", "You already completed this challenge so no points for you", "info");
             }
-        });
+        } else {
+            if(model.get('complete')){
+                swal("Great Job", "You could have earned "+model.get('challenge.exp')+" EXP if you where logged in", "success");
+            } else {
+                toastr.info('You meight want to change those failures in your code, check the console');
+            }
+        }            
     },
     nextChallenge(){
         if(!this.isChallengeTrialFunc()) {
@@ -64,18 +59,6 @@ export default Ember.Controller.extend({
             // } else {
                 this.transitionToRoute("userArena", this.get('model.userArena'));
             // }
-        }
-    },
-    save: function(cb) {
-        var model = this.get('model');
-        if (!this.isChallengeTrialFunc()) {
-            return model.save().then(cb);
-        } else {
-            if(model.get('complete')){
-                swal("Great Job", "You could have earned "+model.get('challenge.exp')+" EXP if you where logged in", "success");
-            } else {
-                toastr.info('You meight want to change those failures in your code, check the console');
-            }
         }
     },
     actions: {

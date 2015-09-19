@@ -10,6 +10,7 @@
         can_step: canStep,
         set_step: setStep,
         set_no_input_trace: setNoInputTrace,
+        set_no_suppress_out: setNoSuppressOut,
         set_trace: setTrace,
         set_trace_call: setTraceCall,
         set_step_limit: setStepLimit,
@@ -35,6 +36,7 @@
     var _b_ = $B.builtins;
     var traceCall = 'Brython_Debugger.set_trace';
     var noInputTrace = false;
+    var noSuppressOut = false;
     var debugging = false; // flag indecting debugger was started
     var stepLimit = 10000; // Solving the halting problem by limiting the number of steps to run
 
@@ -44,6 +46,7 @@
     var isRecorded = false;
     var didErrorOccure = false;
     var weStopDebugOnRuntimeError = false;
+    var errorState = null;
     var parserReturn = null; // object returned when done parsing
     var recordedStates = [];
     var recordedInputs = {};
@@ -108,6 +111,16 @@
     }
 
     /**
+     * Set the value of noInputTrace
+     * a flag that stops the debugger from injecting input trace calls into the code
+     * will cause the program to stop if you're in record more and did not change the default input function or input stream
+     * @param {Boolean} bool wheather input trace calls should be injected into the code
+     */
+    function setNoSuppressOut(bool) {
+        noSuppressOut = bool;
+    }
+
+    /**
      * is the debugger in record mode, exposed as is_recorded
      * @return {Boolean} whether the is recorded flag is on
      */
@@ -138,6 +151,10 @@
         return currentStep;
     }
 
+    function getErrorState() {
+        return errorState;
+    }
+
     function getRecordedStates() {
         return recordedStates;
     }
@@ -147,7 +164,7 @@
     }
 
     function getCurrentState() {
-        return currentState;
+        return recordedStates[currentStep];
     }
 
     /**
@@ -250,7 +267,7 @@
      * In live mode currentStep is useually the last
      */
     function updateStep() {
-        currentState = recordedStates[currentStep];
+        var currentState = getCurrentState();
         callbacks.stepUpdate(currentState);
     }
 
@@ -286,10 +303,10 @@
             frame: $B.last(err.$stack),
             err: err,
             step: getRecordedStates().length - 1,
-            line_no: +($B.last(err.$stack)[1].$line_info.split(',')[0]),
-            next_line_no: +($B.last(err.$stack)[1].$line_info.split(',')[0]),
-            module_name: +($B.last(err.$stack)[1].$line_info.split(',')[1])
         };
+        trace.stdout = (getLastRecordedState()?getLastRecordedState().stdout:'') + trace.data;
+        trace.module_name = trace.frame[0];
+        trace.line_no = trace.next_line_no = +($B.last(err.$stack)[1].$line_info.split(',')[0]);
         didErrorOccure = true;
         if (getRecordedStates().length > 0) {
             if (getRecordedStates().length >= stepLimit) {
@@ -301,7 +318,12 @@
         } else {
             trace.type = 'syntax_error';
         }
+        setErrorState(trace);
         callbacks.debugError(trace, Debugger);
+    }
+
+    function setErrorState(state) {
+        errorState = state;
     }
 
     /**
@@ -360,14 +382,10 @@
             return;
         }
         if (state.type === 'runtime_error') {
-            setErrorState(state);
+            recordedStates.pop();
+            state.stdout += state.data;
         }
         recordedStates.push(state);
-    }
-
-    function setErrorState(state) {
-        recordedStates.pop();
-        state.stdout += state.data;
     }
 
     function setdStdOutTrace(state) {
@@ -505,7 +523,7 @@
     function rerunCode() {
         resetDebugger(true);
         try {
-            setOutErr(true);
+            setOutErr();
             runTrace(parserReturn);
         } catch (err) {
             handleDebugError(err);
@@ -525,7 +543,7 @@
 
         isRecorded = record === undefined ? true : record;
 
-        setOutErr(record);
+        setOutErr(noSuppressOut);
         try {
             var obj = parserReturn = parseCode(code);
 
@@ -578,7 +596,7 @@
     function pythonToBrythonJS(src) {
         var obj = {
             code: ""
-        };
+        }, local_name, current_globals_id, current_locals_name, current_globals_name;
         // Initialize global and local module scope
         var current_frame = $B.frames_stack[$B.frames_stack.length - 1];
         var module_name;
@@ -589,9 +607,9 @@
             local_name = '__builtins__';
         } else {
             var current_locals_id = current_frame[0];
-            var current_locals_name = current_locals_id.replace(/\./, '_');
-            var current_globals_id = current_frame[2] || current_locals_id;
-            var current_globals_name = current_globals_id.replace(/\./, '_');
+            current_locals_name = current_locals_id.replace(/\./, '_');
+            current_globals_id = current_frame[2] || current_locals_id;
+            current_globals_name = current_globals_id.replace(/\./, '_');
             var _globals = _b_.dict([]);
             module_name = _b_.dict.$dict.get(_globals, '__name__', 'exec_' + $B.UUID());
             $B.$py_module_path[module_name] = $B.$py_module_path[current_globals_id];
@@ -599,14 +617,14 @@
         }
 
         obj.module_name = module_name;
-        if (!$B.async_enabled) obj[module_name] = {};
+        if (!$B.async_enabled) { obj[module_name] = {}; }
 
 
         // parse python into javascript
         try {
             var root = $B.py2js(src, module_name, [module_name], local_name);
             obj.code = root.to_js();
-            if ($B.async_enabled) obj.code = $B.execution_object.source_conversion(obj.code);
+            if ($B.async_enabled) { obj.code = $B.execution_object.source_conversion(obj.code); }
             //js=js.replace("@@", "\'", 'g')
         } catch (err) {
             if (err.$py_error === undefined) {
@@ -626,7 +644,6 @@
      */
     function injectTrace(code) {
         // console.log('brython:\n\n' + code);
-        var end = code.length;
         var newCode = "";
         var whileLine;
         var codearr = code.split('\n');
@@ -684,7 +701,7 @@
 
         function getNextLine(code) {
             var match = LINE_RGX.exec(code);
-            if (!match) return null;
+            if (!match) { return null; }
             return {
                 indent: match[1].length,
                 indentString: match[1],
@@ -698,7 +715,7 @@
 
         function getNextWhile(code) {
             var match = WHILE_RGX.exec(code);
-            if (!match) return null;
+            if (!match) { return null; }
             return {
                 indent: match[1].length,
                 indentString: match[1],
@@ -709,7 +726,7 @@
 
         function getNextFunction(code) {
             var match = FUNC_RGX.exec(code);
-            if (!match) return null;
+            if (!match) { return null; }
             return {
                 indent: match[1].length,
                 name: match[2],
@@ -733,13 +750,25 @@
 
         function getNextInput(code, re) {
             var match = re.exec(code);
-            if (!match) return null;
+            if (!match) { return null; }
             return {
                 param: match[1],
                 string: match[0],
                 index: match.index
             };
         }
+    }
+
+    /**
+     * Injects a trace call at the end of the code just before we exit inorder to capture the last frame
+     * @param  {String} code code to inject trace into
+     * @return {String}      code with trace call set
+     */
+    function injectTraceLast(code) {
+        var index = code.lastIndexOf("$B.leave_frame(");
+        var preCode = code.substr(0, index);
+        var postCode = code.substr(index);
+        return preCode + traceCall + "({event:'no_trace', type:'eof', frame:$B.last($B.frames_stack})\n;" + postCode;
     }
 
     /**
@@ -754,6 +783,8 @@
             eval('var $locals_' + obj.module_name + '= obj["' + obj.module_name + '"]');
             var getattr = _b_.getattr;
             var setattr = _b_.setattr;
+            var delattr = _b_.setattr;
+
             var res = eval(js);
 
             if (res === undefined) return _b_.None;
@@ -812,8 +843,8 @@
      * @return {Interpreter} instence of Interpreter
      */
     function interpretCode(obj) {
-        initAPI = defineAPIScope(obj);
-        return new Interpreter(obj.code, initAPI);
+        var initAPI = defineAPIScope(obj);
+        return new window.Interpreter(obj.code, initAPI);
     }
 
 
@@ -826,7 +857,7 @@
         return function initAPI(interpreter, scope) {
             // variables
 
-            interpreter.setProperty(scope, '__BRYTHON__', __BRYTHON__, true);
+            interpreter.setProperty(scope, '__BRYTHON__', $B, true);
             interpreter.setProperty(scope, '$locals_' + obj.module_name, obj[obj.module_name], true);
             interpreter.setProperty(scope, '_b_', _b_, true);
             interpreter.setProperty(scope, 'getattr', _b_.getattr, true);
@@ -857,28 +888,21 @@
     }
 
     function getSessionHistory() {
-        var last_state = getLastRecordedState();
-        if (last_state) {
-            return {
-                states: getRecordedStates(),
-                prints: recordedOut,
-                stdout: last_state.stdout,
-                locals: last_state.frame[1],
-                globals: last_state.frame[3],
-                error: didErrorOccure
-            };
+        var last_state;
+        if(didErrorOccure && errorState.type==="syntax_error") {
+            last_state = errorState;       
         } else {
-            return {
-                states:[],
-                prints:[],
-                stdout:"SyntaxError In Code",
-                stderr:"SyntaxError In Code",
-                locals:{},
-                globals:{},
-                error: didErrorOccure,
-            };
+            last_state = getLastRecordedState();
         }
-        
+        return {
+            states: recordedStates,
+            prints: recordedOut,
+            stdout: last_state.stdout,
+            locals: last_state.frame[1],
+            globals: last_state.frame[3],
+            error: didErrorOccure,
+            errorState: errorState
+        };    
     }
 
     var realStdOut = $B.stdout;
@@ -915,20 +939,22 @@
     var outerr = {
         recordOut: createOut('dOut', 'stdout'),
         recordErr: createOut('dErr', 'stderr'),
-        spyOut: createOut('dOut', 'stdout', realStdOut),
-        spyErr: createOut('dErr', 'stderr', realStdErr)
     };
 
 
     /**
      * setStdout to debugger stdout capturing output stream
      */
-    function setOutErr(record) {
+    function setOutErr(spy) {
         realStdOut = $B.stdout;
         realStdErr = $B.stderr;
-        var type = record ? 'record' : 'spy';
-        $B.stdout = outerr[type + 'Out'];
-        $B.stderr = outerr[type + 'Err'];
+        if(spy) {
+            $B.stdout = createOut('dOut', 'stdout', realStdOut);
+            $B.stderr = createOut('dErr', 'stderr', realStdErr);
+        } else {
+            $B.stdout = outerr.recordOut;
+            $B.stderr = outerr.recordErr;
+        }
     }
     /**
      * resetting back stdout to original stream before debugger ran

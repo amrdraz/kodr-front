@@ -39,7 +39,15 @@ export default Ember.Mixin.create(ChallengeCommon, {
         this.clearConsole();
         this.clearLint();
         this.EventBus.publish('console.show');
-        Debugger.run_no_debugger(src);
+        Debugger.unset_events();
+        Debugger.set_no_input_trace(false);
+        Debugger.set_no_suppress_out(true);
+        Debugger.start_debugger(src, true);
+        var history = Debugger.get_session();
+        Debugger.stop_debugger();
+        Debugger.set_no_suppress_out(false);
+        Debugger.reset_events();
+        return history;
     },
     startDebugger(src) {
         this.clearConsole();
@@ -95,6 +103,16 @@ export default Ember.Mixin.create(ChallengeCommon, {
         this.set('isLastStep', Debugger.is_last_step());
         this.set('canStep', Debugger.can_step());
         this.set('isFirstStep', Debugger.is_first_step());
+
+        if(state.err) {
+            state.column_no_start = 0;
+            state.column_no_stop = 200;
+            state.severity = 'error';
+
+            this.EventBus.publish('editor.lint', this.get('evaluatedModelProperty'), [state]);
+        } else {
+            this.clearLint();
+        }
     },
     debug_error(err, Debugger) {
         // This is a syntax errorr
@@ -103,18 +121,13 @@ export default Ember.Mixin.create(ChallengeCommon, {
             this.writeToConsole(err.data + '\n');
             Debugger.stop_debugger();
         }
-        err.column_no_start = 0;
-        err.column_no_stop = 200;
-        err.severity = 'error';
-
-        this.EventBus.publish('editor.lint', this.get('evaluatedModelProperty'), [err]);
     },
     testCode(obj) {
         this.clearConsole();
         this.EventBus.publish('console.show');
         var report = Tester.run_test(obj);
         this.printReport(report);
-        this.sendAction(this.get("test"), report);
+        return report;
     },
     test_error(err) {
         this.writeToConsole(err.data + '\n');
@@ -125,10 +138,21 @@ export default Ember.Mixin.create(ChallengeCommon, {
     },
     actions: {
         run() {
-            this.runCode(this.get('model').get(this.get('evaluatedModelObject')).get(this.get('evaluatedModelProperty')));
+            var hist =  this.runCode(this.get('model').get(this.get('evaluatedModelObject')).get(this.get('evaluatedModelProperty')));
+            if(hist.error) {
+                var err = hist.errorState;
+                err.column_no_start = 0;
+                err.column_no_stop = 200;
+                err.severity = 'error';
+
+                this.EventBus.publish('editor.lint', this.get('evaluatedModelProperty'), [err]);
+            }
+            return hist;
         },
         test() {
-            this.testEvent();
+            var report = this.testEvent();
+            this.sendAction(this.get("test"), report);
+            return report;
         },
         step() {
             this.stepDebugger();

@@ -6,7 +6,7 @@ export default Ember.Component.extend(ChallengeCommon, {
     evaluatedModelProperty: 'solution',
     testEvent(){
         this.clearLint('tests');
-        this.testCode({
+        return this.testCode({
             code: this.get('model.blueprint').get(this.get('evaluatedModelProperty')),
             test: this.get('model.blueprint.tests'),
             exp: this.get('model.exp')
