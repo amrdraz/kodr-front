@@ -39,11 +39,7 @@ export default Ember.Mixin.create(ChallengeCommon, {
         this.clearConsole();
         this.clearLint();
         this.EventBus.publish('console.show');
-        var t0 = Date.now();
         Debugger.run_no_debugger(src);
-        // should send activity event about runtime
-        // this.writeToConsole('\n<completed in ' + ((Date.now() - t0) * 1000.0) + ' ms >\n');
-
     },
     startDebugger(src) {
         this.clearConsole();
@@ -129,27 +125,27 @@ export default Ember.Mixin.create(ChallengeCommon, {
     },
     actions: {
         run() {
-                this.runCode(this.get('model').get(this.get('evaluatedModelObject')).get(this.get('evaluatedModelProperty')));
-            },
-            test() {
-                this.testEvent();
-            },
-            step() {
-                this.stepDebugger();
-            },
-            back() {
-                this.stepBackDebugger();
-            },
-            debug() {
-                this.startDebugger(this.get('model').get(this.get('evaluatedModelObject')).get(this.get('evaluatedModelProperty')));
-            },
-            stop() {
-                this.stopDebugger();
-            },
-            reset() {
-                this.resetSrc();
-                this.sendAction(this.get('reset'));
-            },
+            this.runCode(this.get('model').get(this.get('evaluatedModelObject')).get(this.get('evaluatedModelProperty')));
+        },
+        test() {
+            this.testEvent();
+        },
+        step() {
+            this.stepDebugger();
+        },
+        back() {
+            this.stepBackDebugger();
+        },
+        debug() {
+            this.startDebugger(this.get('model').get(this.get('evaluatedModelObject')).get(this.get('evaluatedModelProperty')));
+        },
+        stop() {
+            this.stopDebugger();
+        },
+        reset() {
+            this.resetSrc();
+            this.sendAction(this.get('reset'));
+        },
     },
     didInsertElement() {
         window.brython(1);
@@ -202,9 +198,11 @@ export default Ember.Mixin.create(ChallengeCommon, {
         Debugger.on_debugging_end(component.debug_stoped.bind(component));
         Debugger.on_debugging_error(component.debug_error.bind(component));
         Debugger.on_step_update(component.debug_step.bind(component));
+        this.set('Debugger', Debugger);
 
         Tester.init();
         Tester.on_test_error(component.test_error.bind(component));
+        this.set('Tester', Tester);
     },
     testEvent(){},
     runEvent(){},

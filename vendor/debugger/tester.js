@@ -210,7 +210,7 @@
             return sum + t.score;
         }, 0);
         report.score = Math.max(0, Math.min(report.score, options.exp));
-        report.passed = report.passes.length === tests.length;
+        report.passed = report.passes.length === tests.length && report.passes.length>0;
 
         return report;
     }

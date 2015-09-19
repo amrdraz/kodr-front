@@ -3,11 +3,12 @@ import DS from 'ember-data';
 export default  DS.Model.extend({
     work: DS.attr('mixed'),
     blueprint: DS.attr('mixed'),
-    input: DS.attr('string'),
     times: DS.attr('number'),
     exp: DS.attr('number'),
     order: DS.attr('number'),
     started: DS.attr('boolean'),
+    startTime: DS.attr('date'),
+    endTime: DS.attr('date'),
     complete: DS.attr('boolean'),
     completed: DS.attr('number'),
     report:DS.attr(),

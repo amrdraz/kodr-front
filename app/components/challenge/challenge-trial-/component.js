@@ -2,7 +2,6 @@ import Ember from 'ember';
 
 export default Ember.Component.extend({
     tagName:'section',
-    classNames:['row'],
     actions: {
         run() {
             this.sendAction(this.get('run'));

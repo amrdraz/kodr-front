@@ -8,7 +8,7 @@ export default Ember.Controller.extend({
     trials: Ember.computed.alias("controllers.userArena.trials"),
     actions: {
         try: function(trial) {
-            this.transitionToRoute('userArena.trial', this.get('model'), trial);
+            this.transitionToRoute('userArena.trial', trial);
         }
     }
 });

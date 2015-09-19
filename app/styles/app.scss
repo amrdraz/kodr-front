@@ -145,8 +145,8 @@ body {
     color: $brand-primary;
 }
 
-#description.tab-pane {
-    max-height: 400px;
+.description .panel-body {
+    max-height: 300px;
     overflow-y: auto;
 }
 

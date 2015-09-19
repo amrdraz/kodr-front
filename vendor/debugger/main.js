@@ -516,11 +516,11 @@
 
     /**
      * Initialises the debugger, setup code for debugging, and either run interpreter or record run
-     * @param  {String} src optional code to be passed, if not passed will be read from the set editor
+     * @param  {String} src optional code to be passed, if default is an empty string
      * @param  {Boolean} whether to run recording then replay or step
      */
     function startDebugger(src, record) {
-        var code = src || getEditor().getValue() || "";
+        var code = src || "";
         resetDebugger();
 
         isRecorded = record === undefined ? true : record;

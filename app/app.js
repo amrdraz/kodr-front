@@ -51,6 +51,7 @@ App = Ember.Application.extend({
         // host: 'localhost',
         // port: 9000,
         // secure:true,
+        components: ['challenge/python/challenge-trial-python'],
         controllers: ['application'],
         autoConnect: true
     })

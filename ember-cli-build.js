@@ -22,6 +22,7 @@ module.exports = function(defaults) {
     });
 
     app.import('bower_components/modernizr/modernizr.js');
+    app.import('vendor/rAF.js');
 
     app.import('bower_components/lodash/lodash.js');
 

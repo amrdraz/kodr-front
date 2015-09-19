@@ -36,7 +36,11 @@ export default Ember.Component.extend({
                 editor.data('CodeMirror').focus();
             }
         }).on('click', function () {
-            that.EventBus.publish("challenge.event.tab.select", $(this).attr("href").substr(1));
+            that.EventBus.publish("trial.event.tab.select", $(this).attr("href").substr(1));
+        });
+
+        Ember.$('.tab-content .tab-pane').on('click', function () {
+            that.EventBus.publish("trial.event.tab.select", $(this).attr("id"));
         });
     },
     willClearRender: function() {

@@ -6,6 +6,9 @@ export default Ember.Route.extend({
     renderTemplate: function() {
         this.render('trial');
     },
+    setupController: function(controller, model) {
+        controller.set('model', model);
+    },
     model(params){
         return this.store.find('trial', params.trial_id);
     },
@@ -19,11 +22,7 @@ export default Ember.Route.extend({
             trial.set('blueprint', Mixed.create(trial.get('challenge.blueprint').toJSON()));
         }
         if (this.get('session.user.flags') && this.get('session.user.flags.no_setup') && !trial.get('started')) {
-            trial.work.set('solution', '');
-        }
-        if (!trial.get('started')) {
-            trial.set('started', true);
-            trial.save();
+            trial.set('work.solution', '');
         }
     },
 });

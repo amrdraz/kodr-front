@@ -23,7 +23,7 @@ export default Ember.Route.extend(AuthenticatedRouteMixin, {
             blueprint: challenge.get('blueprint')
         };
         if(this.get('session.flags') && this.get('session.flags.no_setup')) {
-            trial.work.set('solution', '');
+            trial.set('work.solution', '');
         }
         var record = this.store.createRecord('trial', trial);
         return record;
