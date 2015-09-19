@@ -6,7 +6,7 @@ export default Ember.Route.extend({
         if(trial.work===undefined) {
             trial.set('work', Mixed.create({solution:trial.get('challenge.blueprint.setup')}));
         }
-        if(this.get('session.flags') && this.get('session.flags.no_setup') && !trial.get('started')) {
+        if(this.get('session.user.flags') && this.get('session.user.flags.no_setup') && !trial.get('started')) {
             trial.work.set('solution', '');
         }
         if(!trial.get('started')) {

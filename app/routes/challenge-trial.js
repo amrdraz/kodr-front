@@ -25,7 +25,7 @@ var ChallengeTrialRoute = Ember.Route.extend(AuthenticatedRouteMixin, {
                     blueprint: challenge.get('blueprint').toJSON(),
                     user: session.user_id
                 };
-                if (session.get('flags') && session.get('flags.isControl')) {
+                if (session.get('user.flags') && session.get('user.flags.no_setup')) {
                     trial.work.set('solution', '');
                 }
                 return Ember.$.ajax({

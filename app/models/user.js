@@ -11,7 +11,7 @@ export default DS.Model.extend({
     rp: attr('number',{defaultValue:0}),
     role:attr('string'),
     activated:attr('boolean'),
-    flags: attr(),
+    flags: attr('mixed'),
 
     challenges: hasMany('challenge', {async: true, inverse: 'author'}),
     arenas: hasMany('arena', {async: true, inverse: 'author'}),
