@@ -144,7 +144,7 @@ export default Ember.Mixin.create(ChallengeCommon, {
                 err.column_no_start = 0;
                 err.column_no_stop = 200;
                 err.severity = 'error';
-
+                this.writeToConsole(err.data + '\n');
                 this.EventBus.publish('editor.lint', this.get('evaluatedModelProperty'), [err]);
             }
             return hist;

@@ -7,7 +7,7 @@ export default  Ember.Route.extend({
   // renderTemplate: function() {},
   beforeModel: function() {
     if(this.get('session.isAuthenticated')) {
-      this.transitionTo('arenas');
+      this.transitionTo('userArenas');
     } else {
       this.transitionTo('login');
     }

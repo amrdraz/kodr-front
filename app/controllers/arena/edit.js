@@ -9,7 +9,7 @@ export default Ember.Controller.extend({
         return this.container.lookup('controller:application').get('currentPath').split('.').contains('create');
     }.property('currentPath'),
     canPublish: function() {
-        return this.get('model.canPublish') && this.get('model.challenges').filterBy('isPublished', true).length >= 1;
+        return this.get('model.canPublish') && this.get('model.challenges').filterBy('isPublished', true).get('length') >= 1;
     }.property('model.challenges.[].isPublished'),
     challenges: function() {
         return Ember.ArrayProxy.createWithMixins(Ember.SortableMixin, {

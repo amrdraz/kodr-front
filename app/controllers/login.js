@@ -41,7 +41,9 @@ var LoginController = Ember.Controller.extend(EmberValidations.Mixin, {
         authenticate: function() {
             var that = this;
             var credentials = that.getProperties('identification', 'password');
-            that.get('session').authenticate('authenticator:custom', credentials).then(null, function(error) {
+            that.get('session').authenticate('authenticator:custom', credentials).then(function () {
+                that.transitionToRoute('userArenas');
+            }, function(error) {
               that.set('errorMessage', JSON.parse(error));
             });
         },

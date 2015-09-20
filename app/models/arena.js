@@ -4,15 +4,15 @@ var attr = DS.attr;
 
 export default DS.Model.extend({
     name: attr('string', {
-        defaultValue: "New Arena"
+        defaultValue: "Still Loading"
     }),
     description: attr('string', {
-        defaultValue: "A new Arena"
+        defaultValue: "Isn't life a beautifule thing"
     }),
-    fllow: attr('string', {
-        defaultValue: "any"
+    flow: attr('string', {
+        defaultValue: "sequencial"
     }),
-    fllowType: ['any', 'sequencial'],
+    flowType: ['any', 'sequencial'],
     isPublished: attr('boolean', {defaultValue:false}),
     challenges: DS.hasMany('challenge', {async:true, inverse: 'arena'}),
     trials: DS.hasMany('trial', {async:true, inverse: 'arena'}),

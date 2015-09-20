@@ -260,7 +260,6 @@
     function pass() {
         var obj = processPassFailArguments.apply(this, arguments);
         obj.passed = true;
-        obj.score = obj.score?Math.max(obj.score, 0):DEFAULT_SCORE;
         return appendTestToReport(obj);
     }
 
@@ -327,6 +326,8 @@
         case 1:
             if(_.isNumber(arguments[0])) {
                 obj.score = arguments[0];
+            } else {
+                obj.message = obj.fail_message = arguments[0];
             }
             break;
         case 2:

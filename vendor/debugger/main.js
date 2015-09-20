@@ -291,7 +291,7 @@
         try {
             info = _b_.getattr(err, 'info');
         } catch (er) {
-            // guess it doesn't work here
+            // guess it doesn't work here, sometimes info doesn't exist when you have a syntax error
         }
         var trace = {
             event: 'line',
@@ -310,6 +310,8 @@
         didErrorOccure = true;
         if (getRecordedStates().length > 0) {
             if (getRecordedStates().length >= stepLimit) {
+                trace.name = "StepLimitExceededError";
+                trace.stdout = trace.data = info + '\n' + trace.name + ": " + trace.message + '\n';
                 trace.type = 'infinit_loop';
                 recordedStates.push(trace);
             } else {
@@ -335,7 +337,7 @@
         // replace by event
 
         if (recordedStates.length > stepLimit) {
-            throw $B.exception("You have exceeded the amount of steps allowed by this debugger, you probably have an infinit loop or you're running a long program");
+            throw $B.exception("You have exceeded the amount of steps allowed for this program, you probably have an infinit loop or you're running a long program");
             // you can change the limit by using the setStepLimit method variable form the default
             // The debugger is not meant to debug long pieces of code so that should be taken into consideration
         }

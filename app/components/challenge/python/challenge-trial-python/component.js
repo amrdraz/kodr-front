@@ -25,11 +25,11 @@ export default Ember.Component.extend(ChallengeCommon, {
                 });
                 var hist = this._super();
                 var model = this.get('model');
-                this.runCount += 1;
-                hist.runCount = this.runCount;
+                this.incrementSessionCountFor(this.trialState);
+                hist.runCount = this.getSessionCountFor('run');
                 hist.printCount = hist.prints.length;
                 if (hist.error) {
-                    hist.totalErrorCount = this.errorCount = this.errorCount + 1;
+                    hist.totalErrorCount = this.incrementSessionCountFor('error');
                     hist.errorState = _.pick(hist.errorState, ['name', 'line_no', 'type', 'message', 'step', 'module_name']);
                 }
                 hist = _.omit(hist, ['globals', 'locals', 'prints', 'stdout', 'states']);
@@ -37,8 +37,8 @@ export default Ember.Component.extend(ChallengeCommon, {
                     resolveNow: true,
                     meta: hist
                 });
-                model.get('work').set('errorCount', this.errorCount);
-                model.get('work').set('runCount', this.runCount);
+                model.get('work').set('errorCount', this.getSessionCountFor('error'));
+                model.get('work').set('runCount', this.getSessionCountFor('run'));
                 model.save();
             },
             test() {
@@ -48,8 +48,7 @@ export default Ember.Component.extend(ChallengeCommon, {
                 });
                 var report = this.testEvent();
                 var model = this.get('model');
-                this.testRunCount += 1;
-                report.testRunCount = this.testRunCount;
+                report.testRunCount = this.incrementSessionCountFor(this.trialState);
                 report.passesCount = report.passes.length;
                 report.failuresCount = report.failures.length;
                 report.testsCount = report.tests.length;
@@ -59,35 +58,57 @@ export default Ember.Component.extend(ChallengeCommon, {
                     meta: report
                 });
 
-                model.set('complete', report.passed);
+                if(report.passed && !model.get('complete')) {
+                    model.set('endTime', _.now());
+                    model.set('complete', report.passed);
+                }
                 model.get('work').setProperties(report);
                 model.save().then(function () {
                     component.sendAction('test', report);
                 });
             },
             debug() {
+                this.incrementSessionCountFor('debug');
                 this.setTrialStateToDebug({
-                    event: 'trial.solution.debug'
+                    event: 'trial.solution.debug',
+                    meta: {
+                        debugCount: this.getSessionCountFor('debug')
+                    }
                 });
                 this._super();
                 var model = this.get('model');
-                this.debugCount += 1;
-
-
-                model.get('work').set('debugCount', this.debugCount);
+                model.get('work').set('debugCount', this.getSessionCountFor('debug'));
                 model.save();
-            }
+            },
+            step() {
+                this._super();
+                this.setTrialStateToDebug({
+                    resetWaitForIdleTime:true,
+                });
+            },
+            back() {
+                this._super();
+                this.setTrialStateToDebug({
+                    resetWaitForIdleTime:true,
+                });
+            },
+            stop() {
+                this._super();
+                this.setTrialStateToDebug({
+                    resolveNow:true,
+                });
+            },
     },
 
     trialState: null,
     trialStateEvent: null,
-    stateTimer: null,
+    idleStateTimer: null,
     activeIntreface: 'description',
     defaultIdleWaitTime: 10000,
-    errorCount: 0,
-    runCount: 0,
-    testRunCount: 0,
-    debugCount: 0,
+    sessionTime:{},
+    sessionCount:{},
+    sessionStartTime: null,
+    sessionEndTime: null,
     getTrialState() {
         return {
             name: this.trialState,
@@ -129,14 +150,14 @@ export default Ember.Component.extend(ChallengeCommon, {
                 this.set('activeIntreface', event.activeInterface);
             }
             this.changingTrialState = false;
-            if (trialState !== 'idle') {
+            if (trialState !== 'idle' && trialState!=='end') {
                 this.setTrialStateToIdle(event.idle);
             }
         } else {
             this.updateTrialStateEvent(event);
-            if(event.resolveNow) {
-                this.resolveTrialState();
-            }
+        }
+        if(event.resolveNow) {
+            this.resolveTrialState();
         }
         if(event.resetWaitForIdleTime) {
             this.startedWaitingForIdleTime = _.now();
@@ -151,19 +172,20 @@ export default Ember.Component.extend(ChallengeCommon, {
                 endTime: this.stateEndTime,
             }
         });
+        this.setTrialStateSpentTime();
         this.handleTrialEvent(this.trialStateEvent);
         this.trialState = null;
         this.trialStateEvent = null;
-        this.stateTimer = null;
+        this.idleStateTimer = null;
     },
     setTrialStateToIdle(now) {
         var isIdleTime = (_.now() - this.startedWaitingForIdleTime) > this.idleWaitTime;
         if (now === true || (isIdleTime && !this.changingTrialState)) {
             this.setIdleWaitTime(this.defaultIdleWaitTime);
             this.setTrialState('idle');
-            return window.cancelAnimationFrame(this.stateTimer);
+            return window.cancelAnimationFrame(this.idleStateTimer);
         }
-        this.stateTimer = window.requestAnimationFrame(this.setTrialStateToIdle.bind(this));
+        this.idleStateTimer = window.requestAnimationFrame(this.setTrialStateToIdle.bind(this));
     },
     setIdleWaitTime(time){
         this.idleWaitTime = time;
@@ -171,6 +193,7 @@ export default Ember.Component.extend(ChallengeCommon, {
     setTrialStateToTyping() {
         this.setTrialState('typing', {
             resetWaitForIdleTime:true,
+            activeInterface:'solution',
             meta: {
                 solution: this.get('model.work.solution')
             }
@@ -200,8 +223,9 @@ export default Ember.Component.extend(ChallengeCommon, {
         this.container.lookup('socket:main').emit('trial.event', event);
     },
     updateActiveInterface(inter) {
-        if (this.get('activeIntreface') !== inter) {
-            this.setTrialState('focus', {
+        var that = this;
+        if (that.get('activeIntreface') !== inter) {
+            that.setTrialState('tab.click', {
                 event: 'tiral.tab.change',
                 action:'click',
                 verb:'clicked',
@@ -210,13 +234,22 @@ export default Ember.Component.extend(ChallengeCommon, {
             });
         }
     },
+    setActiveInterface(inter, action) {
+        this.setTrialState('focus.'+inter, {
+            event: 'tiral.interface.focus',
+            action:action,
+            resetWaitForIdleTime:true,
+            activeInterface: inter,
+        });
+    },
     startTrial: function() {
         var component = this;
         var model = this.get('model');
         this.setIdleWaitTime(this.defaultIdleWaitTime);
+        this.sessionStartTime = _.now();
         if (!model.get('started')) {
             model.set('started', true);
-            model.set('startTime', _.now());
+            model.set('startTime', this.sessionStartTime);
             model.save(function(model) {
                 component.setTrialState('start', {
                     event: 'trial.session.start',
@@ -232,6 +265,7 @@ export default Ember.Component.extend(ChallengeCommon, {
                 event: 'trial.session.start',
                 action:'start',
                 meta: {
+                    startTime: this.sessionStartTime,
                     first: false
                 }
             });
@@ -239,7 +273,15 @@ export default Ember.Component.extend(ChallengeCommon, {
     }.on("didInsertElement"),
     watchEvents: function() {
         var model = this.get('model');
-        model.addObserver('work.solution', this, this.setTrialStateToTyping);
+        var that = this;
+        this.$('#solution').on('keydown', this.setTrialStateToTyping.bind(this));
+        this.$('.description .panel-body').on('scroll', function () {
+            that.setActiveInterface('description', 'scroll');
+        });
+        this.$('.description .panel-body').on('mousemove', function () {
+            that.setActiveInterface('description', 'mousemove');
+        });
+        // model.addObserver('work.solution', this, );
         this.EventBus.subscribe('trial.event', this, this.handleTrialEvent);
         this.EventBus.subscribe('trial.event.example.run', this, this.setTrialStateToExample);
         this.EventBus.subscribe('trial.event.solution.run', this, this.setTrialStateToRun);
@@ -251,7 +293,6 @@ export default Ember.Component.extend(ChallengeCommon, {
     }.on("didInsertElement"),
     unWatchEvents: function() {
         var model = this.get('model');
-        model.removeObserver('work.solution', this, this.setTrialStateToTyping);
         this.EventBus.unsubscribe('trial.event', this, this.handleTrialEvent);
         this.EventBus.unsubscribe('trial.event.example.run', this, this.setTrialStateToExample);
         this.EventBus.unsubscribe('trial.event.solution.run', this, this.setTrialStateToRun);
@@ -267,7 +308,24 @@ export default Ember.Component.extend(ChallengeCommon, {
                 isComplete: model.get('complete')
             }
         });
-        clearTimeout(this.stateTimer);
+        clearTimeout(this.idleStateTimer);
+    }.on("willClearRender"),
+    endTrialSession: function() {
+        var model = this.get('model');
+        this.sessionEndTime = _.now();
+        this.sessionTime['total'] =  this.sessionStartTime - this.sessionEndTime,
+        this.setTrialState('end', {
+            event: 'trial.session.end',
+            resolveNow: true,
+            meta: {
+                startTime: this.sessionStartTime,
+                endTime: this.sessionEndTime,
+                sessionTime: this.sessionTime,
+                sessionCount:this.sessionCount,
+                isComplete: model.get('complete')
+            }
+        });
+        clearTimeout(this.idleStateTimer);
     }.on("willClearRender"),
     trialStateEventDefaults(event) {
         switch (this.trialState) {
@@ -328,5 +386,18 @@ export default Ember.Component.extend(ChallengeCommon, {
                 }, event);
         }
         return event;
-    }
+    }, 
+    setTrialStateSpentTime() {
+        var startTime = this.trialStateEvent.meta.startTime;
+        var endTime = this.trialStateEvent.meta.endTime;
+        var sessionTime = startTime - endTime;
+        this.sessionTime[this.trialState] += sessionTime;
+    },
+    incrementSessionCountFor(state) {
+        this.sessionCount[state] = this.getSessionCountFor(state) + 1;
+        return this.sessionCount[state];
+    },
+    getSessionCountFor(state) {
+        return this.sessionCount[state] || 0;
+    },
 });
