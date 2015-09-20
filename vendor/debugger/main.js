@@ -57,9 +57,10 @@
 
     var events = ['stepUpdate', 'debugStarted', 'debugError', 'debugEnded', 'handleInput'];
     var callbacks = {};
-    var temp_callbacks = {};
+    var nope_callbacks = {};
+    var temp_callbacks = null;
     events.forEach(function(key) {
-        callbacks[key] = noop;
+        nope_callbacks[key] = callbacks[key] = noop;
     });
 
     // used in trace injection
@@ -79,16 +80,19 @@
      * temporarely remove callback in order to stop updating who ever is listening
      */
     function unsetCallbacks() {
-        temp_callbacks = callbacks;
-        events.forEach(function(key) {
-            callbacks[key] = noop;
-        });
+        if(temp_callbacks===null) {
+            temp_callbacks = callbacks;
+            callbacks = nope_callbacks;
+        }
     }
     /**
      * re set callback after unset
      */
     function resetCallbacks() {
-        callbacks = temp_callbacks;
+        if(temp_callbacks!==null) {
+            callbacks = temp_callbacks;
+            temp_callbacks = null;
+        }
     }
 
     /**
@@ -459,6 +463,7 @@
             currentStep = 0;
             recordedInputs = {};
             parserReturn = null;
+            errorState = null;
         }
     }
 

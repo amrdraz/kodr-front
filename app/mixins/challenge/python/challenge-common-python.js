@@ -40,11 +40,12 @@ export default Ember.Mixin.create(ChallengeCommon, {
         this.clearLint();
         this.EventBus.publish('console.show');
         Debugger.unset_events();
-        Debugger.set_no_input_trace(false);
+        Debugger.set_no_input_trace(true);
         Debugger.set_no_suppress_out(true);
         Debugger.start_debugger(src, true);
         var history = Debugger.get_session();
         Debugger.stop_debugger();
+        Debugger.set_no_input_trace(false);
         Debugger.set_no_suppress_out(false);
         Debugger.reset_events();
         return history;

@@ -149,6 +149,7 @@
         Debugger.set_no_input_trace(true);
         Debugger.start_debugger(code, true);
         var history = Debugger.get_session();
+        Debugger.set_no_input_trace(false);
         Debugger.stop_debugger();
         Debugger.reset_events();
         unsetInput();
