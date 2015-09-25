@@ -13,7 +13,7 @@ export default Ember.Route.extend(ApplicationRouteMixin, {
         },
         error: function(reason) {
             console.log(reason.stack);
-            toastr.error(reason.responseText);
+            toastr.error(reason.responseText || reason.message);
         },
         authorizationFailed: function() {
             // stops Ember Simple Auth default redirect behavior on 401 errors

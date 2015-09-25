@@ -9,7 +9,7 @@
       <li class="list-group-item text-right"><span class="pull-left"><strong>Email</strong></span> {{model.email}}</li>
     {{/if}}
     <li class="list-group-item text-right"><span class="pull-left"><strong>Experience</strong></span> {{model.exp}}</li>
-    {{#if model.isStudent}}
+   {{!--  {{#if model.isStudent}}
       <li class="list-group-item text-right"><span class="pull-left"><strong>Group</strong></span>
       {{#each model.memberships as |member| }}
         {{member.gname}} 
@@ -17,7 +17,7 @@
         You have Yet to join a group
       {{/each}}
       </li>
-    {{/if}}
+    {{/if}} --}}
 </ul>
 </section>
 <section class="col-md-8">
@@ -121,6 +121,35 @@
         </div>
       {{else}}
          <div class="tab-pane active" id="groups">
+            <div class="row">
+              <h3>Groups</h3>
+              <div class="col-md-12">
+                  {{#each model.memberships as |member| }}
+                    <button {{action "leave" member }} class="btn btn-primary">Leave {{member.gname}}</button>
+                  {{else}}
+                   <p>You have yet to Join any group</p>
+                  {{/each}}
+              </div>
+            </div>
+            {{#if canJoinGroups }}
+            <div class="row">
+              <form class="form-horizontal col-md-11">
+                <fieldset>
+                  <legend>Join Group</legend>
+                  <div class="form-group">
+                    {{ember-selectize
+                        content=groupOptions
+                        optionValuePath="content"
+                        optionLabelPath="content.name"
+                        selection=group
+                        class="group-options form-control col-md-12"
+                        }}
+                  </div>
+                  <button {{action "join" group }} class="btn btn-primary">Join</button>
+                </fieldset>
+              </form>            
+            </div>
+            {{/if}}
             <ul class="list-group">
             {{#each model.memberships as |member| }}
               <li class="list-group-item">            
@@ -149,35 +178,6 @@
      
       {{#if isOwnPage }}
         <div class="tab-pane" id="settings">
-          <div class="row">
-            <h3>Groups</h3>
-            <div class="col-md-12">
-                {{#each model.memberships as |member| }}
-                  <button {{action "leave" member }} class="btn btn-primary">Leave {{member.gname}}</button>
-                {{else}}
-                 <p>You have yet to Join any group</p>
-                {{/each}}
-            </div>
-          </div>
-          {{#if canJoinGroups }}
-          <div class="row">
-            <form class="form-horizontal col-md-11">
-              <fieldset>
-                <legend>Join Group</legend>
-                <div class="form-group">
-                  {{ember-selectize
-                      content=groupOptions
-                      optionValuePath="content"
-                      optionLabelPath="content.name"
-                      selection=group
-                      class="group-options form-control col-md-12"
-                      }}
-                </div>
-                <button {{action "join" group }} class="btn btn-primary">Join</button>
-              </fieldset>
-            </form>            
-          </div>
-          {{/if}}
           {{#if fullErrors }}
             <div class="alert alert-danger">
               {{#each fullErrors as |message| }}
