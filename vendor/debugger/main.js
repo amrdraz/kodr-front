@@ -57,11 +57,20 @@
 
     var events = ['stepUpdate', 'debugStarted', 'debugError', 'debugEnded', 'handleInput'];
     var callbacks = {};
-    var nope_callbacks = {};
+    var default_callbacks = {};
     var temp_callbacks = null;
     events.forEach(function(key) {
-        nope_callbacks[key] = callbacks[key] = noop;
+        default_callbacks[key] = callbacks[key] = noop;
     });
+    /**
+     * Dfault function to handle input while debugging
+     * can be replaced externallyfrom this default
+     * @param  {String} arg String to show user
+     * @return {String}     Value of input
+     */
+    default_callbacks['handleInput'] = callbacks['handleInput'] = function handleInput(arg) {
+        return _b_.input(arg);
+    };
 
     // used in trace injection
     var LINE_RGX = /^( *);\$locals\.\$line_info=\"(\d+),(.+)\";/m;
@@ -82,7 +91,7 @@
     function unsetCallbacks() {
         if(temp_callbacks===null) {
             temp_callbacks = callbacks;
-            callbacks = nope_callbacks;
+            callbacks = default_callbacks;
         }
     }
     /**
@@ -230,16 +239,6 @@
         recordedInputs[state.id] = inp;
         return recordedInputs[state.id];
     }
-
-    /**
-     * Dfault function to handle input while debugging
-     * can be replaced externallyfrom this default
-     * @param  {String} arg String to show user
-     * @return {String}     Value of input
-     */
-    callbacks['handleInput'] = function handleInput(arg) {
-        return _b_.input(arg);
-    };
 
     /**
      * Is this last step
@@ -435,11 +434,11 @@
     }
 
     /**
-     * detect whether stdin changed
+     * detect whether stdin changed by using the sys module
      * @return {Boolean} whether stdIn was changed while running the code
      */
     function stdInChanged() {
-        return $B.imported.sys.stdin !== $B.modules._sys.stdin;
+        return $B.imported.sys?($B.imported.sys.stdin !== $B.modules._sys.stdin):false;
     }
 
     /**
@@ -581,6 +580,12 @@
         }
     }
 
+    /**
+     * return true if eror was thrown by debugger in order to HULT
+     * the purpose of this behavior is to stop running the program up until some function that demands user intraction
+     * @param  {Object} err [description]
+     * @return {Boolean}     [description]
+     */
     function wasHalted(err) {
         return err.$message === ('<' + HALT + '>');
     }
@@ -767,18 +772,6 @@
     }
 
     /**
-     * Injects a trace call at the end of the code just before we exit inorder to capture the last frame
-     * @param  {String} code code to inject trace into
-     * @return {String}      code with trace call set
-     */
-    function injectTraceLast(code) {
-        var index = code.lastIndexOf("$B.leave_frame(");
-        var preCode = code.substr(0, index);
-        var postCode = code.substr(index);
-        return preCode + traceCall + "({event:'no_trace', type:'eof', frame:$B.last($B.frames_stack})\n;" + postCode;
-    }
-
-    /**
      * Run traced code, used in record mode by hidding 
      * @param  {Object} obj object contianing code and module scope
      * @return {Object} result of running code as if evaluated
@@ -806,8 +799,7 @@
 
     /**
      * Run Code without trace
-     * @param  {[type]} code [description]
-     * @return {[type]}      [description]
+     * @param  {String} code to run
      */
     function runNoTrace(code) {
         resetDebugger();
@@ -894,6 +886,12 @@
         };
     }
 
+    /**
+     * return an object containing a history of what happend during the debug seesion
+     * this includes wether an error occured, the last global, local frame, stdout, print states, all line states
+     * if a syntax error occured teh last state is the erro state.
+     * @return {Object} debug session history
+     */
     function getSessionHistory() {
         var last_state;
         if(didErrorOccure && errorState.type==="syntax_error") {
@@ -916,7 +914,15 @@
     var realStdErr = $B.stderr;
     var realStdIn = $B.stdin;
 
-    function createOut(cname, std, next) {
+    /**
+     * Creates an Std out object for writing to surign debugging, if next is specified then that object is called after the debug hook
+     * this function is used when we want to spy on the out streams instead of supressing them
+     * no_suppress_out toggles this behavior before debug start
+     * @param  {String}   std   the type of out stream out/err
+     * @param  {Function} next  real output steam to pass the call to if stream is not suppressed. 
+     * @return {Object}         a brython io class
+     */
+    function createOut(std, next) {
         var $io = {
             __class__: $B.$type,
             __name__: 'io'
@@ -944,20 +950,21 @@
     }
 
     var outerr = {
-        recordOut: createOut('dOut', 'stdout'),
-        recordErr: createOut('dErr', 'stderr'),
+        recordOut: createOut('stdout'),
+        recordErr: createOut('stderr'),
     };
 
 
     /**
      * setStdout to debugger stdout capturing output stream
+     * if spy is true the data will be passed along to the original output stream present at the start of the debug session.
      */
     function setOutErr(spy) {
         realStdOut = $B.stdout;
         realStdErr = $B.stderr;
         if(spy) {
-            $B.stdout = createOut('dOut', 'stdout', realStdOut);
-            $B.stderr = createOut('dErr', 'stderr', realStdErr);
+            $B.stdout = createOut('stdout', realStdOut);
+            $B.stderr = createOut('stderr', realStdErr);
         } else {
             $B.stdout = outerr.recordOut;
             $B.stderr = outerr.recordErr;
