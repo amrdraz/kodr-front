@@ -4,6 +4,16 @@ var _ = window._;
 export default Ember.Component.extend(ChallengeCommon, {
     evaluatedModelProperty: 'solution',
     evaluatedModelObject: 'work',
+    resetSrc() {
+        var component = this;
+        var model =component.get('model');
+        if (this.get('session.user.flags') && this.get('session.user.flags.no_setup')) {
+            model.set('work.solution', '');
+        } else {
+            model.set('work.solution', model.get('challenge.blueprint.setup'));
+        }
+        component.goToLine(0);
+    },
     testEvent() {
         return this.testCode({
             code: this.get('model.work').get('solution'),
@@ -93,6 +103,12 @@ export default Ember.Component.extend(ChallengeCommon, {
                 });
             },
             stop() {
+                this._super();
+                this.setTrialStateToDebug({
+                    resolveNow:true,
+                });
+            },
+            reset() {
                 this._super();
                 this.setTrialStateToDebug({
                     resolveNow:true,
