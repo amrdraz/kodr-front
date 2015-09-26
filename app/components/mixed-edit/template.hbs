@@ -1,0 +1,15 @@
+<div class="row">
+    <div class="col-md-12">
+        <label for="addFlag"> Add Flag
+            {{input value=newKey class="user-falgs-key"}}
+        </label>
+        <button class="btn btn-primary btn-sm" {{action 'addFlag' }}>Add</button>
+    </div>
+</div>
+<h6>Current Flags</h6>
+{{#each-in model=flags as |key val| }}
+    <div class="btn-group">
+      <button {{action 'toggleFlag' key }} class="btn {{if val 'btn-success' 'btn-default' }}">{{key}}</button>
+      <button {{action 'removeFlag' key }} class="btn dropdown-toggle {{if val 'btn-success' 'btn-default' }}">&times;</button>
+    </div>
+{{/each-in}}

@@ -219,7 +219,6 @@ export default Ember.Component.extend(ChallengeCommon, {
             user: this.get('model.user.id'),
             trial: this.get('model.id'),
         });
-        console.log(event);
         this.container.lookup('socket:main').emit('trial.event', event);
     },
     updateActiveInterface(inter) {

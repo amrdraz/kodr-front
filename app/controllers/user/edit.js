@@ -21,6 +21,9 @@ export default Ember.Controller.extend(EmberValidations.Mixin, {
             presence: true
         }
     },
+    canSave: function () {
+        return this.get('model.hasDirtyAtributes') || this.get('model.contentChanged');
+    },
     isCreating: function() {
         return this.container.lookup('controller:application').get('currentPath').split('.').contains('create');
     }.property('currentPath'),
@@ -39,6 +42,7 @@ export default Ember.Controller.extend(EmberValidations.Mixin, {
                     toastr.error(xhr.message);
                 });
             } else {
+                model.set('contentChanged', false);
                 return model.save();
             }
         },

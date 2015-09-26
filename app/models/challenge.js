@@ -93,7 +93,6 @@ export default DS.Model.extend({
         return this.get('type') === 'python';
     }.property('type'),
 
-    contentChanged: false,
 
     // relationshipChanged: false,
     canSave: function() {
@@ -106,6 +105,7 @@ export default DS.Model.extend({
         return !this.get('canSave') && !this.get('isPublished') && this.get('valid');
     }.property('canSave'),
 
+    contentChanged: false,
     set: function(keyName, value) {
         this._super(keyName, value);
         if (keyName.indexOf('blueprint.') > -1) {

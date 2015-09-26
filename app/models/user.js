@@ -11,6 +11,8 @@ export default DS.Model.extend({
     rp: attr('number',{defaultValue:0}),
     role:attr('string'),
     activated:attr('boolean'),
+    labGroup: attr('string'),
+    lectureGroup: attr('string'),
     flags: attr('mixed'),
 
     challenges: hasMany('challenge', {async: true, inverse: 'author'}),
@@ -36,5 +38,15 @@ export default DS.Model.extend({
     }.property('role'),
     canJoinGroups:function () {
         return !this.get('memberships.length') || !this.get('isStudent');
-    }.property('memberships.[]','role')
+    }.property('memberships.[]','role'),
+
+
+    contentChanged: false,
+    // set: function(keyName, value) {
+    //     this._super(keyName, value);
+    //     if (keyName.indexOf('flags.') > -1) {
+    //         // a property of `blueprint` has changed => notify observers of `blueprint`
+    //         this.set('contentChanged', true);
+    //     }
+    // }
 });
