@@ -1,7 +1,9 @@
 import Ember from 'ember';
 import Mixed from 'kodr/models/mixed';
+import ModalMethodsMixin from 'kodr/mixins/trial/trial-modal-methods';
 
-export default Ember.Route.extend({
+
+export default Ember.Route.extend(ModalMethodsMixin, {
     controllerName: 'trial',
     renderTemplate: function() {
         this.render('trial');

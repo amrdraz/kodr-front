@@ -1,0 +1,42 @@
+{{#bs-modal title='You completed the challenge please submit your feedback' ok='submitSurvey' close='removeModal' noClose=true}}
+  <form {{action 'ok' on='submit' target=view}} class="text-center">
+    <div class="form-group">
+        <h4>How challenging did you find the last activity?</h4>
+        <br>
+        <div class="row">
+            <span class="col-md-1">&nbsp;</span>
+            {{#each challengeChoices as |choice|}}
+                <div class="col-md-2">
+                    {{#radio-button
+                        value=choice.value
+                        groupValue=model.challengeLevel
+                        required=true
+                    }}
+                    <br>
+                    {{choice.name}}
+                    {{/radio-button}}
+                </div>
+            {{/each}}
+        </div>
+    </div>
+    <div class="form-group">
+        <h4>Where your skills appropriate for understanding this last activity?</h4>
+        <br>
+        <div class="row">
+            <span class="col-md-1">&nbsp;</span>
+            {{#each skillChoices as |choice|}}
+                <div class="col-md-2">
+                    {{#radio-button
+                        value=choice.value
+                        groupValue=model.skillLevel
+                        required=true
+                    }}
+                    <br>
+                    {{choice.name}}
+                    {{/radio-button}}
+                </div>
+            {{/each}}
+        </div>
+    </div>
+  </form>
+{{/bs-modal}}

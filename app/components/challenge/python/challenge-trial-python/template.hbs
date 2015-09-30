@@ -13,11 +13,15 @@
 <section>
  <div class="col-lg-6">
   <div class="row">
-    <button {{action "run"}} class="btn btn-default btn-sm pull-left challenge-run" disabled={{isDebugging}}>{{fa-icon "play"}} Run in Console</button>
-    <button {{action "debug"}} class="btn btn-default btn-sm pull-left challenge-debug" disabled={{isDebugging}}>{{fa-icon "bug"}} Start  Debugger</button>
-    <button {{action "back"}} class="btn btn-default btn-sm pull-left challenge-back" disabled={{if isDebugging isFirstStep 'disabled'}}>{{fa-icon "step-backward"}} Back</button>
-    <button {{action "step"}} class="btn btn-default btn-sm pull-left challenge-step" disabled={{if isDebugging isLastStep 'disabled'}}>{{fa-icon "step-forward"}} Step</button>
-    <button {{action "stop"}} class="btn btn-default btn-sm pull-left challenge-stop" disabled={{is-not isDebugging}}>{{fa-icon "stop"}} Stop</button>
+    {{#unless isDebugging }}
+      <button {{action "run"}} class="btn btn-default btn-sm pull-left challenge-run" disabled={{isDebugging}}>{{fa-icon "play"}} Run in Console</button>
+      <button {{action "debug"}} class="btn btn-default btn-sm pull-left challenge-debug" disabled={{isDebugging}}>{{fa-icon "bug"}} Start  Debugger</button>
+    {{/unless}}
+    {{#if isDebugging}}
+      <button {{action "back"}} class="btn btn-default btn-sm pull-left challenge-back" disabled={{if isDebugging isFirstStep 'disabled'}}>{{fa-icon "step-backward"}} Back</button>
+      <button {{action "step"}} class="btn btn-default btn-sm pull-left challenge-step" disabled={{if isDebugging isLastStep 'disabled'}}>{{fa-icon "step-forward"}} Step</button>
+      <button {{action "stop"}} class="btn btn-default btn-sm pull-left challenge-stop" disabled={{is-not isDebugging}}>{{fa-icon "stop"}} Stop</button>
+    {{/if}}
     <button {{action "reset"}} class="btn btn-default btn-sm pull-right challenge-reset">{{fa-icon "repeat"}} Reset </button>
   </div>
   <div class="row">

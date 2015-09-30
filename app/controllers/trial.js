@@ -35,10 +35,7 @@ export default Ember.Controller.extend({
         var model = this.get('model');
         if (!this.isChallengeTrialFunc()) {
             if(model.get('completed')===1) {
-                swal({title:"+"+model.get('exp')+" EXP", text:"For completeing this challenge", type:"success"}, function () {
-                    console.log("swal stopped me from executing until ok");
-                    controller.nextChallenge();
-                });
+                this.send('showModal', 'modals/flow-questionair', {challengeLevel:null, skillLevel:null});
             } else if(model.get('completed')>1) {
                 swal("Great Job", "You already completed this challenge so no points for you", "info");
             }
@@ -49,6 +46,13 @@ export default Ember.Controller.extend({
                 toastr.info('You meight want to change those failures in your code, check the console');
             }
         }            
+    },
+    trialComplete(){
+        var controller = this;
+        var model = this.get('model');
+        swal({title:"+"+model.get('exp')+" EXP", text:"For completeing this challenge", type:"success"}, function () {
+            controller.nextChallenge();
+        });
     },
     nextChallenge(){
         if(!this.isChallengeTrialFunc()) {
@@ -68,5 +72,11 @@ export default Ember.Controller.extend({
         test(report){
             this.test(report);
         }
-    }
+    },
+    controllerSubscribe: function() {
+        this.EventBus.subscribe('trial.complete.reward', this, this.trialComplete);
+    }.on('init'),
+    controllerUnSubscribe: function() {
+        this.EventBus.unsubscribe('trial.complete.reward', this, this.trialComplete);
+    }.on('willDestroy'),
 });

@@ -299,8 +299,8 @@
         var premessage = [].shift.call(arguments) || 'inputs';
         var obj = processArguments.apply(this, arguments);
         obj.passed = _.isEqual(obj.test,obj.expect);
-        obj.message = obj.message || "Expected For "+premessage+": "+obj.expect + " got " + obj.test;
-        obj.fail_message = obj.fail_message || "Expected For "+premessage+": "+obj.expect + " got " + obj.test;
+        obj.message = obj.message || "Expected For "+premessage+": `"+obj.expect + "` got `" + obj.test+"`";
+        obj.fail_message = obj.fail_message || "Expected For "+premessage+": `"+obj.expect + "` got `" + obj.test+"`";
         return appendTestToReport(obj);
     }
 

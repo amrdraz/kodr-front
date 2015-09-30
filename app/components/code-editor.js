@@ -37,12 +37,31 @@ function getMode(lang) {
 
 export default Ember.Component.extend({
     tagName: 'textarea',
+    updateEditor : function() {
+        var editor = this.get('editor');
+        var model = this.get('model');
+        var attr = this.get('attr');
+        if (editor.getDoc().getValue() !== model.get(attr)) {
+            editor.getDoc().setValue(model.get(attr) || '');
+        }
+    },
+    setValue: function(cm) {
+        var model = this.get('model');
+        var attr = this.get('attr');
+        model.set(attr, cm.getValue());
+    },
+    changeMode: function() {
+        var editor = this.get('editor');
+        var model = this.get('model');
+        editor.setOption("mode", getMode(model.get('language')));
+    },
     didInsertElement: function() {        
+        var component = this;
         var model = this.get('model');
         var config = {
             autofocus: true,
             lineNumbers: true,
-            indentUnits: 4,
+            indentUnits: 2,
             lineWrapping: true,
             styleActiveLine: true,
             mode:getMode(this.get('language') || model.get('language'))
@@ -60,27 +79,18 @@ export default Ember.Component.extend({
 
         editor.getDoc().setValue(model.get(attr) || '');
         
-        this.updateEditor = function() {
-            if (editor.getDoc().getValue() !== model.get(attr)) {
-                editor.getDoc().setValue(model.get(attr) || '');
-            }
-        };
-        this.changeMode = function() {
-            editor.setOption("mode", getMode(model.get('language')));
-        };
-        model.addObserver(attr, model, this.updateEditor);
+        
+        model.addObserver(attr, component, this.updateEditor);
         if(!this.get('language')) { model.addObserver('language', model, this.changeMode);}
 
-        editor.on('change', debounce(function(cm) {
-            model.set(attr, cm.getValue());
-        }));
+        editor.on('change', debounce(this.setValue.bind(this)));
 
         this.set('editor', editor);
         //inorder to access it by selecting the element
         this.$().data('CodeMirror', editor);
     },
     willDestroyElement: function() {
-        this.get('model').removeObserver(this.get('attr'), this.get('model'), this.updateEditor);
+        this.get('model').removeObserver(this.get('attr'), this, this.updateEditor);
         if(!this.get('language')) { this.get('model').removeObserver('language', this.get('model'), this.changeMode); }
         // this.get('lint') && this.get('controller').off('spy', this, this.spy);
     }

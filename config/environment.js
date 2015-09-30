@@ -54,14 +54,24 @@ module.exports = function(environment) {
     }
 
     if (environment === 'production') {
-        
+
     }
 
 
     ENV['simple-auth'] = {
         session: 'session:custom',
-        authorizer: 'simple-auth-authorizer:oauth2-bearer',
+        authorizer: 'simple-auth-authorizer:token',
         crossOriginWhitelist: [ENV.APP.API_HOST]
+    };
+
+    ENV['simple-auth-token'] = {
+        serverTokenEndpoint: '/token',
+        identificationField: 'identification',
+        passwordField: 'password',
+        tokenPropertyName: 'access_token',
+        authorizationPrefix: 'Bearer ',
+        authorizationHeaderName: 'X-K-Authorization',
+        headers: {},
     };
 
     return ENV;

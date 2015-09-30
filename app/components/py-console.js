@@ -7,7 +7,8 @@ export default Ember.Component.extend({
         this.get('console').Write(text, type);
     },
     clear: function () {
-        this.get('console').Clear();
+        this.get('console').ClearPromptText(true);
+        this.get('console').Clear(true);
     },
     didInsertElement: function() {
         var component = this;

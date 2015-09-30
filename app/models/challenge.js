@@ -110,7 +110,7 @@ export default DS.Model.extend({
         this._super(keyName, value);
         if (keyName.indexOf('blueprint.') > -1) {
             // a property of `blueprint` has changed => notify observers of `blueprint`
-            this.notifyPropertyChange('blueprint');
+            // this.notifyPropertyChange(keyName);
             this.set('contentChanged', true);
         }
     }
