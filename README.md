@@ -19,7 +19,7 @@ Currently the existing challenge types are code specific and the supported langu
 
 That said javascript and python are run client side while Java is run on the server side
 
-At the time of writing this the system focuses solely on supporting python challanges (which include a step back debugger) and the server has be set to stop supporting Java challanges and python challenges.
+At the time of writing this the system focuses solely on supporting python challanges (which include a step back debugger) and the server was set to not run the Java server which evaluated the java code. Javascript challenges are also out of date.
 
 ## Prerequisites
 
@@ -33,21 +33,27 @@ You will need the following things properly installed on your computer to run an
 
 ## Installation
 
-* `git clone <repository-url>` this repository
-* change into the new directory
+In your developemnt folder of choice on your computer
+
+* `git clone https://github.com/amrdraz/kodr-front.git`
+* `cd kodr-front`
 * `npm install`
 * `bower install`
-* move back one directory up
-* and get the backend
+
+If you don't already have the backend part of the project
+
+* `cd ..`
 * `git clone https://github.com/amrdraz/kodr.git`
-* mode into the directory
+* `cd kodr`
 * `npm install` you may need to `sudo npm install` depending on your setup
-* `bower install`
+
+> see the backend repo for more on the backend dependencies, also note that the backend has one dependency for the email templates that will cause problems if you're on node 4+ this project uses node 12.7 will figure out something when I get the chance tho.  
 
 ## Running / Development
 
-* In the backend folder `node server.js` or if you have nodemon prefered `nodemon server.js`
-* In another termainl window go to the front end folder and
+* run to terminal sessions (tabs) one for the backend and one for the front
+* In the backend folder __kodr__ `node server.js` or if you have nodemon prefered `nodemon server.js`
+* In the another termainl window go to the front end folder __kodr-front__ and
 * `ember serve --proxy http://localhost:9000`
 * Visit the app in the browser at [http://localhost:4200](http://localhost:4200).
 
@@ -94,7 +100,6 @@ I use git to deploy on a virtual server running on digital ocean with nginx hand
 
 * [brython.js](brython.info) The python to javascript library
 * [ember.js](http://emberjs.com/)
-* 
 * [ember-cli](http://www.ember-cli.com/)
 * Development Browser Extensions
   * [ember inspector for chrome](https://chrome.google.com/webstore/detail/ember-inspector/bmdblncegkenkacieihfhpjfppoconhi)
