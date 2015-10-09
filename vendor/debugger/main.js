@@ -1,6 +1,7 @@
 (function(win) {
     var Debugger = win.Brython_Debugger = {
         run_no_debugger: runNoTrace,
+        run_to_end: runToEnd,
         start_debugger: startDebugger,
         stop_debugger: stopDebugger,
         step_debugger: stepDebugger,
@@ -38,7 +39,7 @@
     var noInputTrace = false;
     var noSuppressOut = false;
     var debugging = false; // flag indecting debugger was started
-    var stepLimit = 10000; // Solving the halting problem by limiting the number of steps to run
+    var stepLimit = 4000; // Solving the halting problem by limiting the number of steps to run
 
     var linePause = true; // used inorder to stop interpreter on line
     var myInterpreter = null;
@@ -76,7 +77,7 @@
     var LINE_RGX = /^( *);\$locals\.\$line_info=\"(\d+),(.+)\";/m;
     var WHILE_RGX = /^( *)while/m;
     var FUNC_RGX = /^( *)\$locals.*\[\"(.+)\"\]=\(function\(\){/m;
-    var INPUT_RGX = /getattr\(\$B.builtins\[\"input\"\],\"__call__\"\)\(((?:\"(.)*\")|\d*)\)/g; // only works for string params
+    var INPUT_RGX = /getattr\(input,\"__call__\"\)\(((?:\"(.)*\")|\d*)\)/g; // only works for string params
     var HALT = "HALT";
 
     function callbackSetter(key) {
@@ -310,6 +311,13 @@
         trace.stdout = (getLastRecordedState()?getLastRecordedState().stdout:'') + trace.data;
         trace.module_name = trace.frame[0];
         trace.line_no = trace.next_line_no = +($B.last(err.$stack)[1].$line_info.split(',')[0]);
+        trace.column_no_start = 0;
+        trace.column_no_stop = 200;
+        if(err.args[1] && err.args[1][1]===trace.line_no) {
+            trace.fragment = err.args[1][3];
+            trace.column_no_start = Math.max(0, err.args[1][2]-3);
+            trace.column_no_stop = err.args[1][2]+3;
+        }
         didErrorOccure = true;
         if (getRecordedStates().length > 0) {
             if (getRecordedStates().length >= stepLimit) {
@@ -371,17 +379,17 @@
         if (!isRecorded) {
             linePause = true;
         }
+        lastState = getLastRecordedState();
         state.printerr = state.stderr = state.stdout = state.printout = "";
-        if (getLastRecordedState()) {
-            state.stdout = getLastRecordedState().stdout;
-            state.stderr = getLastRecordedState().stderr;
+        if (lastState) {
+            state.stdout = lastState.stdout;
+            state.stderr = lastState.stderr;
             state.locals = state.frame[1];
             state.globals = state.frame[3];
             state.var_names = Object.keys(state.locals).filter(function(key) {
                 return !/^(__|_|\$)/.test(key);
             });
-
-            getLastRecordedState().next_line_no = state.line_no;
+            lastState.next_line_no = state.line_no;
         }
         if (isDisposableState(state)) {
             return;
@@ -608,26 +616,20 @@
     function pythonToBrythonJS(src) {
         var obj = {
             code: ""
-        }, local_name, current_globals_id, current_locals_name, current_globals_name;
+        }, module_name, local_name, current_globals_id, current_locals_name, current_globals_name;
+
+        firstRunCheck();
         // Initialize global and local module scope
         var current_frame = $B.frames_stack[$B.frames_stack.length - 1];
-        var module_name;
-
-        if (current_frame === undefined) {
-            module_name = '__main__';
-            $B.$py_module_path[module_name] = window.location.href;
-            local_name = '__builtins__';
-        } else {
-            var current_locals_id = current_frame[0];
-            current_locals_name = current_locals_id.replace(/\./, '_');
-            current_globals_id = current_frame[2] || current_locals_id;
-            current_globals_name = current_globals_id.replace(/\./, '_');
-            var _globals = _b_.dict([]);
-            module_name = _b_.dict.$dict.get(_globals, '__name__', 'exec_' + $B.UUID());
-            $B.$py_module_path[module_name] = $B.$py_module_path[current_globals_id];
-            local_name = module_name;
-        }
-
+        var current_locals_id = current_frame[0];
+        current_locals_name = current_locals_id.replace(/\./, '_');
+        current_globals_id = current_frame[2] || current_locals_id;
+        current_globals_name = current_globals_id.replace(/\./, '_');
+        var _globals = _b_.dict([]);
+        module_name = _b_.dict.$dict.get(_globals, '__name__', 'exec_' + $B.UUID());
+        $B.$py_module_path[module_name] = $B.$py_module_path[current_globals_id];
+        local_name = module_name;
+    
         obj.module_name = module_name;
         if (!$B.async_enabled) { obj[module_name] = {}; }
 
@@ -665,13 +667,15 @@
         if (line === null) { // in case empty code
             return code;
         }
-        var lastLineNo = 1;
+        var lastLineNo = 0;
         var largestLine = 1;
         var index = line.index;
         do {
 
             newCode += code.substr(0, index);
-            newCode += line.indentString + traceCall + "({event:'line', frame:$B.last($B.frames_stack), line_no: " + line.line_no + ", next_line_no: " + (+line.line_no + 1) + "});\n";
+            if (+line.line_no!==lastLineNo) { // bug fix for brython 3.2.2 for in loop outputing identical line traces after each other
+                newCode += line.indentString + traceCall + "({event:'line', frame:$B.last($B.frames_stack), line_no: " + line.line_no + ", next_line_no: " + (+line.line_no + 1) + "});\n";
+            }
             newCode += line.string;
             index += line.string.length;
             code = code.substr(index);
@@ -682,6 +686,7 @@
             if (line === null) {
                 break;
             }
+
             whileLine = getNextWhile(code);
             if (whileLine && whileLine.index < line.index) { // then I'm about to enter a while loop
                 code = injectWhileEndTrace(code, whileLine, lastLineNo); // add a trace at the end of the while block
@@ -698,7 +703,7 @@
             var inputLine = getNextInput(newCode, re);
             while (inputLine !== null) {
                 code = newCode.substr(0, inputLine.index);
-                var inJect = traceCall + "({event:'input', arg:" + inputLine.param + ", id:'" + inputLine.index + "'})";
+                var inJect = traceCall + "({event:'input'" + (inputLine.param?", arg:"+inputLine.param:"") + ", id:'" + inputLine.index + "'})";
                 code += inJect;
                 index = inputLine.index + inputLine.string.length;
                 code += newCode.substr(index);
@@ -707,7 +712,7 @@
             }
         }
 
-        // console.log('debugger:\n\n' + code);
+        // console.log('debugger:\n\n' + newCode);
 
         return newCode;
 
@@ -755,7 +760,8 @@
             newCode += code.substr(0, res.index);
             newCode += whileLine.indentString + traceCall + "({event:'line', type:'endwhile', frame:$B.last($B.frames_stack), line_no: " + lastLine + ", next_line_no: " + (lastLine + 1) + "});\n";
             newCode += indent;
-            newCode += traceCall + "({event:'line', type:'afterwhile', frame:$B.last($B.frames_stack), line_no: " + (lastLine + 1) + ", next_line_no: " + (lastLine + 1) + "});\n";
+            // somehow seems to have proven useless
+            // newCode += traceCall + "({event:'line', type:'afterwhile', frame:$B.last($B.frames_stack), line_no: " + (lastLine) + ", next_line_no: " + (lastLine) + "});\n";
             newCode += code.substr(res.index + indent.length);
             return newCode;
         }
@@ -778,6 +784,7 @@
      */
     function runTrace(obj) {
         var js = obj.code;
+        // firstRunCheck();
         // Initialise locals object
         try {
             eval('var $locals_' + obj.module_name + '= obj["' + obj.module_name + '"]');
@@ -797,27 +804,51 @@
         }
     }
 
+
+    /**
+     * Run Debugger and  step through it until the end of the program
+     * @param  {String} code to run
+     * @return {Object} debug session history contains step trace and error if error occured
+     */
+    function runToEnd(code) {
+        Debugger.set_no_input_trace(true);
+        Debugger.set_no_suppress_out(true);
+        Debugger.start_debugger(code, true);
+        var history = Debugger.get_session();
+        Debugger.stop_debugger();
+        Debugger.set_no_input_trace(false);
+        Debugger.set_no_suppress_out(false);
+        return history;
+    }
+
     /**
      * Run Code without trace
      * @param  {String} code to run
      */
     function runNoTrace(code) {
         resetDebugger();
-        var module_name = '__main__';
-        $B.$py_module_path[module_name] = window.location.href;
+        var module_name, local_name, current_globals_id, current_locals_name, current_globals_name;
+        // Initialize global and local module scope
+        firstRunCheck();
+        var current_frame = $B.frames_stack[$B.frames_stack.length - 1];
+        var current_locals_id = current_frame[0];
+        current_locals_name = current_locals_id.replace(/\./, '_');
+        current_globals_id = current_frame[2] || current_locals_id;
+        current_globals_name = current_globals_id.replace(/\./, '_');
+        var _globals = _b_.dict([]);
+        module_name = _b_.dict.$dict.get(_globals, '__name__', 'exec_' + $B.UUID());
+        $B.$py_module_path[module_name] = $B.$py_module_path[current_globals_id];
+        local_name = module_name;
         try {
-            var root = $B.py2js(code, module_name, module_name, '__builtins__');
+            var root = $B.py2js(code, module_name, [module_name], local_name);
 
             var js = root.to_js();
-            if ($B.debug > 1) {
-                console.log(js);
-            }
-
+            
+            if (!$B.async_enabled) { eval('var $locals_' + module_name + '=  {}'); }
             var None = _b_.None;
             var getattr = _b_.getattr;
             var setattr = _b_.setattr;
-            var delattr = _b_.delattr;
-
+            var delattr = _b_.setattr;
             if ($B.async_enabled) {
                 js = $B.execution_object.source_conversion(js);
                 eval(js);
@@ -976,5 +1007,18 @@
     function resetOutErr() {
         $B.stdout = realStdOut;
         $B.stderr = realStdErr;
+    }
+
+    /**
+     * Initialize the first frame the first time Brython runs
+     */
+    function firstRunCheck () {
+        if($B.frames_stack<1) {
+            var module_name = '__main__';
+            $B.$py_module_path[module_name] = window.location.href;
+            var root = $B.py2js("", module_name, module_name, '__builtins__');
+            var js = root.to_js();
+            eval(js);
+        }
     }
 })(window);

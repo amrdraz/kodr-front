@@ -5,10 +5,10 @@ var _ = window._;
 
 export default Ember.Controller.extend(EmberValidations.Mixin, {
     lectureGroups:function () {
-      return _.range(1, 7);
+      return _.range(1, 6);
     }.property(),
     labGroups:function () {
-      return _.map(_.range(19,25), (k)=> {return 'BI '+k;}).concat(_.map(_.range(1, 46), (k)=> {return 'ENG '+k;}));
+      return _.map(_.range(19,25), (k)=> {return 'BI '+k;}).concat(_.map(_.range(1, 46), (k)=> {return 'EN '+k;})).concat(_.map(_.range(1, 21), (k)=> {return 'PH '+k;}));
     }.property(),
     validations:{
       username: {
@@ -22,7 +22,7 @@ export default Ember.Controller.extend(EmberValidations.Mixin, {
       uniId: {
         format: {
           with:/^\d\d-\d{3,5}$/,
-          message: 'must enter a valid uni id eg. 13-1233'
+          message: 'must enter a valid uni id eg. 37-1233'
         }
       },
       lectureGroup: {
