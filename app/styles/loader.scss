@@ -1,11 +1,12 @@
     @charset "utf-8";
     /* CSS Document */
     
+    $n:10; //play??
     $first-color: #69C96A;
     $second-color: #F9EE3D;
     $third-color: #ee6362;
     $forth-color: #2cb0b2;
-
+    $cube-color: #2c3e50;
     .loader-text {
         font-size: 2em;
         font-weight: 400;
@@ -13,334 +14,14 @@
         text-transform: uppercase;
         font: 400 200%/1.5em "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
     }
-    /* ---------- CLASSES ---------- */
-    
     .loader-container {
         position: absolute;
+                height:150px;
+      width:170px;
         top: 30%;
         left: 50%;
         text-align: center;
         transform: translate(-50%, -50%);
-    }
-    /* ---------- LOADER ---------- */
-    
-    .loader {
-        display: inline-block;
-        font-size: 2em;
-        right: 20px;
-        position: relative;
-        height: .5em;
-        width: 1em;
-    }
-    
-    .loader:before,
-    .loader:after {
-        content: "";
-        display: block;
-        height: .5em;
-        position: absolute;
-        width: .5em;
-    }
-    
-    .loader:before {
-        -webkit-animation: load-before 2s ease-in-out infinite, zoom-before .66s ease-in-out infinite;
-        -moz-animation: load-before 2s ease-in-out infinite, zoom-before .66s ease-in-out infinite;
-        -ms-animation: load-before 2s ease-in-out infinite, zoom-before .66s ease-in-out infinite;
-        -o-animation: load-before 2s ease-in-out infinite, zoom-before .66s ease-in-out infinite;
-        animation: load-before 2s ease-in-out infinite, zoom-before .66s ease-in-out infinite;
-        background: $first-color;
-    }
-    
-    .loader:after {
-        -webkit-animation: load-after 2s ease-in-out infinite, zoom-after .66s ease-in-out infinite;
-        -moz-animation: load-after 2s ease-in-out infinite, zoom-after .66s ease-in-out infinite;
-        -ms-animation: load-after 2s ease-in-out infinite, zoom-after .66s ease-in-out infinite;
-        -o-animation: load-after 2s ease-in-out infinite, zoom-after .66s ease-in-out infinite;
-        animation: load-after 2s ease-in-out infinite, zoom-after .66s ease-in-out infinite;
-        background: $second-color;
-    }
-    
-    .loader-large {
-        font-size: 4em;
-    }
-    /* ---------- ANIMATION WEBKIT ---------- */
-    
-    @-webkit-keyframes load-before {
-        0% {
-            left: 0;
-            -webkit-transform: scale(1.1);
-        }
-        50% {
-            left: 100%;
-            -webkit-transform: scale(1);
-        }
-        100% {
-            left: 0;
-            -webkit-transform: scale(1.1);
-        }
-    }
-    
-    @-webkit-keyframes load-after {
-        0% {
-            left: 100%;
-            -webkit-transform: scale(1.1);
-        }
-        50% {
-            left: 0;
-            -webkit-transform: scale(1);
-        }
-        100% {
-            left: 100%;
-            -webkit-transform: scale(1.1);
-        }
-    }
-    
-    @-webkit-keyframes zoom-before {
-        0% {
-            z-index: 0;
-        }
-        50% {
-            z-index: 1;
-        }
-        100% {
-            z-index: 0;
-        }
-    }
-    
-    @-webkit-keyframes zoom-after {
-        0% {
-            z-index: 1;
-        }
-        50% {
-            z-index: 0;
-        }
-        100% {
-            z-index: 1;
-        }
-    }
-    /* ---------- ANIMATION MOZ ---------- */
-    
-    @-moz-keyframes load-before {
-        0% {
-            left: 0;
-            -moz-transform: scale(1.1);
-        }
-        50% {
-            left: 100%;
-            -moz-transform: scale(1);
-        }
-        100% {
-            left: 0;
-            -moz-transform: scale(1.1);
-        }
-    }
-    
-    @-moz-keyframes load-after {
-        0% {
-            left: 100%;
-            -moz-transform: scale(1.1);
-        }
-        50% {
-            left: 0;
-            -moz-transform: scale(1);
-        }
-        100% {
-            left: 100%;
-            -moz-transform: scale(1.1);
-        }
-    }
-    
-    @-moz-keyframes zoom-before {
-        0% {
-            z-index: 0;
-        }
-        50% {
-            z-index: 1;
-        }
-        100% {
-            z-index: 0;
-        }
-    }
-    
-    @-moz-keyframes zoom-after {
-        0% {
-            z-index: 1;
-        }
-        50% {
-            z-index: 0;
-        }
-        100% {
-            z-index: 1;
-        }
-    }
-    /* ---------- ANIMATION MS ---------- */
-    
-    @-ms-keyframes load-before {
-        0% {
-            left: 0;
-            -ms-transform: scale(1.1);
-        }
-        50% {
-            left: 100%;
-            -ms-transform: scale(1);
-        }
-        100% {
-            left: 0;
-            -ms-transform: scale(1.1);
-        }
-    }
-    
-    @-ms-keyframes load-after {
-        0% {
-            left: 100%;
-            -ms-transform: scale(1.1);
-        }
-        50% {
-            left: 0;
-            -ms-transform: scale(1);
-        }
-        100% {
-            left: 100%;
-            -ms-transform: scale(1.1);
-        }
-    }
-    
-    @-ms-keyframes zoom-before {
-        0% {
-            z-index: 0;
-        }
-        50% {
-            z-index: 1;
-        }
-        100% {
-            z-index: 0;
-        }
-    }
-    
-    @-ms-keyframes zoom-after {
-        0% {
-            z-index: 1;
-        }
-        50% {
-            z-index: 0;
-        }
-        100% {
-            z-index: 1;
-        }
-    }
-    /* ---------- ANIMATION O ---------- */
-    
-    @-o-keyframes load-before {
-        0% {
-            left: 0;
-            -o-transform: scale(1.1);
-        }
-        50% {
-            left: 100%;
-            -o-transform: scale(1);
-        }
-        100% {
-            left: 0;
-            -o-transform: scale(1.1);
-        }
-    }
-    
-    @-o-keyframes load-after {
-        0% {
-            left: 100%;
-            -o-transform: scale(1.1);
-        }
-        50% {
-            left: 0;
-            -o-transform: scale(1);
-        }
-        100% {
-            left: 100%;
-            -o-transform: scale(1.1);
-        }
-    }
-    
-    @-o-keyframes zoom-before {
-        0% {
-            z-index: 0;
-        }
-        50% {
-            z-index: 1;
-        }
-        100% {
-            z-index: 0;
-        }
-    }
-    
-    @-o-keyframes zoom-after {
-        0% {
-            z-index: 1;
-        }
-        50% {
-            z-index: 0;
-        }
-        100% {
-            z-index: 1;
-        }
-    }
-    /* ---------- ANIMATION ---------- */
-    
-    @keyframes load-before {
-        0% {
-            left: 0;
-            transform: scale(1.1);
-        }
-        50% {
-            left: 100%;
-            transform: scale(1);
-        }
-        100% {
-            left: 0;
-            transform: scale(1.1);
-        }
-    }
-    
-    @keyframes load-after {
-        0% {
-            left: 100%;
-            transform: scale(1.1);
-        }
-        50% {
-            left: 0;
-            transform: scale(1);
-        }
-        100% {
-            left: 100%;
-            transform: scale(1.1);
-        }
-    }
-    
-    @keyframes zoom-before {
-        0% {
-            z-index: 0;
-        }
-        50% {
-            z-index: 1;
-        }
-        100% {
-            z-index: 0;
-        }
-    }
-    
-    @keyframes zoom-after {
-        0% {
-            z-index: 1;
-        }
-        50% {
-            z-index: 0;
-        }
-        100% {
-            z-index: 1;
-        }
-    }
-    /* ---------- GRID ---------- */
-    
-    .loader-container {
         margin-right: auto;
         margin-left: auto;
         *zoom: 1;
@@ -355,4 +36,85 @@
     
     .loader-container:after {
         clear: both;
+    }
+    
+    //important vars!
+    .loader-cubes {
+        background: $cube-color;
+        height: 50px;
+        width: 50px;
+        -webkit-animation: load 2s infinite;
+        animation: load 2s infinite;
+        margin: auto;
+        display: inline-block;
+        //the XD Part!! XD containerS!!
+        @for $i from 0 to $n {
+            &:nth-child(#{$i + 1}) {
+                -webkit-animation-delay: ($i* 1s / $n);
+                -o-animation-delay: ($i* 1s / $n);
+                -moz-animation-delay: ($i* 1s / $n);
+                -animation-delay: ($i* 1s / $n);
+            }
+        }
+    }
+    
+    //animation
+    @-webkit-keyframes load {
+        0% {
+            transform: scale(0.1);
+        }
+        50% {
+            transform: scale(1);
+        }
+        100% {
+            transform: scale(0.1);
+        }
+    }
+    
+    @-moz-keyframes load {
+        0% {
+            transform: scale(0.1);
+        }
+        50% {
+            transform: scale(1);
+        }
+        100% {
+            transform: scale(0.1);
+        }
+    }
+    
+    @-ms-keyframes load {
+        0% {
+            transform: scale(0.1);
+        }
+        50% {
+            transform: scale(1);
+        }
+        100% {
+            transform: scale(0.1);
+        }
+    }
+    
+    @-o-keyframes load {
+        0% {
+            transform: scale(0.1);
+        }
+        50% {
+            transform: scale(1);
+        }
+        100% {
+            transform: scale(0.1);
+        }
+    }
+    
+    @keyframes load {
+        0% {
+            transform: scale(0.1);
+        }
+        50% {
+            transform: scale(1);
+        }
+        100% {
+            transform: scale(0.1);
+        }
     }
