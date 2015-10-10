@@ -145,6 +145,10 @@ body {
     color: $brand-primary;
 }
 
+.past-text pre.copy:not(.no-run):before {
+    content: "\f0c5";
+}
+
 .description .panel-body {
     max-height: 300px;
     overflow-y: auto;
@@ -160,3 +164,4 @@ body {
 }
 
 @import "./console";
+@import "./cm-styles";

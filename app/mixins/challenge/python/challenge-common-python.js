@@ -27,8 +27,12 @@ export default Ember.Mixin.create(ChallengeCommon, {
     clearLint(editor) {
         this.EventBus.publish('editor.lint', editor || this.get('evaluatedModelProperty'), []);
     },
+    clearPointer(editor) {
+        this.EventBus.publish('editor.pointer.clear', editor || this.get('evaluatedModelProperty'));
+    },
     goToLine(line) {
         this.EventBus.publish('editor.line', this.get('evaluatedModelProperty'), line);
+        this.EventBus.publish('editor.pointer.line', this.get('evaluatedModelProperty'), line);
     },
     resetSrc() {
         var component = this;
@@ -40,13 +44,7 @@ export default Ember.Mixin.create(ChallengeCommon, {
         this.clearLint();
         this.EventBus.publish('console.show');
         Debugger.unset_events();
-        Debugger.set_no_input_trace(true);
-        Debugger.set_no_suppress_out(true);
-        Debugger.start_debugger(src, true);
-        var history = Debugger.get_session();
-        Debugger.stop_debugger();
-        Debugger.set_no_input_trace(false);
-        Debugger.set_no_suppress_out(false);
+        var history = Debugger.run_to_end(src);
         Debugger.reset_events();
         return history;
     },
@@ -57,6 +55,7 @@ export default Ember.Mixin.create(ChallengeCommon, {
         Debugger.start_debugger(src, true);
     },
     stopDebugger() {
+        this.clearPointer();
         Debugger.stop_debugger();
     },
     stepDebugger() {
