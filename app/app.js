@@ -54,7 +54,10 @@ App = Ember.Application.extend({
         components: ['challenge/python/challenge-trial-python'],
         controllers: ['application'],
         autoConnect: true
-    })
+    }),
+    ready(){
+        Ember.$("#preloader").remove();
+    }
 });
 
 loadInitializers(App, config.modulePrefix);

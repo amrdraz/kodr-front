@@ -6,22 +6,24 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Ko;dr</title>
     <meta name="description" content="Kodr is an online gamified learning system that teaches programing concepts. It does so through engaging students in challenges. Users learn by partaking in challenges and following Quests which gives them experience, awarding them achivements.">
-
     <meta name="viewport" content="width=device-width, initial-scale=1"> {{content-for 'head'}}
-    
+    <!-- loader css embedded -->
+    <style>@charset "utf-8";.loader-text{margin:.5em 0;text-transform:uppercase;font:400 200%/1.5em "Source Sans Pro","Helvetica Neue",Helvetica,Arial,sans-serif}.loader-container{position:absolute;top:50%;left:50%;text-align:center;transform:translate(-50%,-50%);margin-right:auto;margin-left:auto}.loader{display:inline-block;font-size:2em;right:20px;position:relative;height:.5em;width:1em}.loader:after,.loader:before{content:"";display:block;height:.5em;position:absolute;width:.5em}.loader:before{-webkit-animation:load-before 2s ease-in-out infinite,zoom-before .66s ease-in-out infinite;-moz-animation:load-before 2s ease-in-out infinite,zoom-before .66s ease-in-out infinite;-ms-animation:load-before 2s ease-in-out infinite,zoom-before .66s ease-in-out infinite;-o-animation:load-before 2s ease-in-out infinite,zoom-before .66s ease-in-out infinite;animation:load-before 2s ease-in-out infinite,zoom-before .66s ease-in-out infinite;background:#69C96A}.loader:after{-webkit-animation:load-after 2s ease-in-out infinite,zoom-after .66s ease-in-out infinite;-moz-animation:load-after 2s ease-in-out infinite,zoom-after .66s ease-in-out infinite;-ms-animation:load-after 2s ease-in-out infinite,zoom-after .66s ease-in-out infinite;-o-animation:load-after 2s ease-in-out infinite,zoom-after .66s ease-in-out infinite;animation:load-after 2s ease-in-out infinite,zoom-after .66s ease-in-out infinite;background:#F9EE3D}.loader-large{font-size:4em}@-webkit-keyframes load-before{0%,100%{left:0;-webkit-transform:scale(1.1)}50%{left:100%;-webkit-transform:scale(1)}}@-webkit-keyframes load-after{0%,100%{left:100%;-webkit-transform:scale(1.1)}50%{left:0;-webkit-transform:scale(1)}}@-webkit-keyframes zoom-before{0%,100%{z-index:0}50%{z-index:1}}@-webkit-keyframes zoom-after{0%,100%{z-index:1}50%{z-index:0}}@-moz-keyframes load-before{0%,100%{left:0;-moz-transform:scale(1.1)}50%{left:100%;-moz-transform:scale(1)}}@-moz-keyframes load-after{0%,100%{left:100%;-moz-transform:scale(1.1)}50%{left:0;-moz-transform:scale(1)}}@-moz-keyframes zoom-before{0%,100%{z-index:0}50%{z-index:1}}@-moz-keyframes zoom-after{0%,100%{z-index:1}50%{z-index:0}}@-ms-keyframes load-before{0%,100%{left:0;-ms-transform:scale(1.1)}50%{left:100%;-ms-transform:scale(1)}}@-ms-keyframes load-after{0%,100%{left:100%;-ms-transform:scale(1.1)}50%{left:0;-ms-transform:scale(1)}}@-ms-keyframes zoom-before{0%,100%{z-index:0}50%{z-index:1}}@-ms-keyframes zoom-after{0%,100%{z-index:1}50%{z-index:0}}@-o-keyframes load-before{0%,100%{left:0;-o-transform:scale(1.1)}50%{left:100%;-o-transform:scale(1)}}@-o-keyframes load-after{0%,100%{left:100%;-o-transform:scale(1.1)}50%{left:0;-o-transform:scale(1)}}@-o-keyframes zoom-before{0%,100%{z-index:0}50%{z-index:1}}@-o-keyframes zoom-after{0%,100%{z-index:1}50%{z-index:0}}@keyframes load-before{0%,100%{left:0;transform:scale(1.1)}50%{left:100%;transform:scale(1)}}@keyframes load-after{0%,100%{left:100%;transform:scale(1.1)}50%{left:0;transform:scale(1)}}@keyframes zoom-before{0%,100%{z-index:0}50%{z-index:1}}@keyframes zoom-after{0%,100%{z-index:1}50%{z-index:0}}.loader-container:after,.loader-container:before{display:table;content:"";line-height:0}.loader-container:after{clear:both}</style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.8.0/styles/default.min.css">
     <link rel="stylesheet" href="assets/vendor.css">
     <link rel="stylesheet" href="assets/kodr.css"> {{content-for 'head-footer'}}
 </head>
 
 <body>
+    <div id="preloader" class="loader-container">
+        <div class="loader loader-large"></div>
+        <h1 class="loader-text">Loading...</h1>
+    </div>
+    
+    <!-- end loader-container -->
     {{content-for 'body'}}
     <script type="text/x-mathjax-config">
-      MathJax.Hub.Config({
-        showProcessingMessages: false,
-        tex2jax: { inlineMath: [['$','$'],['\\(','\\)']] },
-        TeX: { equationNumbers: {autoNumber: "AMS"} }
-      });
+        MathJax.Hub.Config({ showProcessingMessages: false, tex2jax: { inlineMath: [['$','$'],['\\(','\\)']] }, TeX: { equationNumbers: {autoNumber: "AMS"} } });
     </script>
     <script src="assets/vendor.js"></script>
     <script src="assets/kodr.js"></script>
