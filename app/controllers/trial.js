@@ -35,7 +35,7 @@ export default Ember.Controller.extend({
         var model = this.get('model');
         if (!this.isChallengeTrialFunc()) {
             if(model.get('completed')===1) {
-                this.send('showModal', 'modals/flow-questionair', {challengeLevel:null, skillLevel:null});
+                this.send('showModal', 'modals/flow-questionair', {challengeLevel:null, skillLevel:null, help:false});
             } else if(model.get('completed')>1) {
                 swal("Great Job", "You already completed this challenge so no points for you", "info");
             }
