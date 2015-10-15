@@ -21,14 +21,16 @@ export default DS.Model.extend({
     author: DS.belongsTo('user', {async:true, inverse:'arenas'}),
 
     canSave: function() {
-        return !this.get('isSaving') && this.get('hasDirtyAttributes') || this.get('isNew');
-    }.property('hasDirtyAttributes'),
+        return !this.get('isSaving') && this.get('hasDirtyAttributes') || this.get('contentChanged') || this.get('isNew');
+    }.property('hasDirtyAttributes', 'contentChanged'),
     canReset: function() {
         return !this.get('isSaving') && this.get('hasDirtyAttributes') && !this.get('isNew');
     }.property('hasDirtyAttributes'),
     canPublish: function() {
         return !this.get('hasDirtyAttributes') && !this.get('isPublished');
     }.property('hasDirtyAttributes', 'isPublished'),
+
+    contentChanged: false,
 
     getJson: function() {
         var v, ret = [];

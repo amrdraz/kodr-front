@@ -24,6 +24,7 @@ export default Ember.Controller.extend({
         save: function() {
             var that = this;
             var model = this.get('model');
+            model.set('contentChanged', false);
             model.save().then(function(arena) {
                 if (that.get('isCreating')) {
                     that.transitionToRoute('arena.edit', arena.id);

@@ -34,6 +34,7 @@ export default Ember.Controller.extend(EmberValidations.Mixin, {
         save: function() {
             var that = this;
             var model = this.get('model');
+            model.set('contentChanged', false);
             if (this.get('isCreating')) {
                 model.save().then(function(user) {
                     that.transitionTo('user.edit', user);
@@ -42,7 +43,6 @@ export default Ember.Controller.extend(EmberValidations.Mixin, {
                     toastr.error(xhr.message);
                 });
             } else {
-                model.set('contentChanged', false);
                 return model.save();
             }
         },
