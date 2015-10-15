@@ -10,6 +10,9 @@
         <h4 class="list-group-item-heading">
             <small class="pull-right">
             {{#unless session.isStudent }}
+                {{#if user.activated}}
+                    <span class="label label-default">activated</span>
+                {{/if}}
                 {{#if user.isStudent }}
                     <span class="label label-default">student</span>
                 {{/if}}
@@ -38,7 +41,7 @@
             </small>
 
             {{#link-to 'user' user class="user-name"}}
-                {{user.uniId}} | {{user.username}} | {{user.email}}
+                {{user.uniId}} | {{user.username}} | {{user.email}} | {{user.labGroup}}
             {{/link-to}}
         </h4>
     </li>
