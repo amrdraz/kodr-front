@@ -58,43 +58,23 @@ export default Ember.ObjectController.extend(EmberValidations.Mixin, {
         changePass: function() {
             var that = this;
             this.validate().then(function() {
-                if (that.get('session.isAdmin')) {
-                    Em.$.ajax({
-                        type: 'PUT',
-                        url: '/api/users/' + that.get('model.id'),
-                        context: that,
-                        data: {
-                            user: that.get('model').getProperties('password', 'passwordConfirmation')
-                        }
-                    }).done(function(res) {
-                        toastr.success('passwordChanged');
-                        that.set('session.access_token',res.access_token);
-                        that.get('model').setProperties({
-                            password: '',
-                            passwordConfirmation: ''
-                        });
-                    }).fail(function(xhr) {
-                        toastr.error(xhr.responseText);
+                Em.$.ajax({
+                    type: 'PUT',
+                    url: that.get('session.isAdmin')?'/api/users/' + that.get('model.id'):'/profile',
+                    context: that,
+                    data: {
+                        user: that.getProperties('password', 'passwordConfirmation')
+                    }
+                }).done(function(res) {
+                    toastr.success('passwordChanged');
+                    that.set('session.access_token',res.access_token);
+                    that.get('model').setProperties({
+                        password: '',
+                        passwordConfirmation: ''
                     });
-                } else {
-                    Em.$.ajax({
-                        type: 'PUT',
-                        url: '/profile',
-                        context: that,
-                        data: {
-                            user: that.get('model').getProperties('password', 'passwordConfirmation')
-                        }
-                    }).done(function(res) {
-                        toastr.success('passwordChanged');
-                        that.set('session.access_token',res.access_token);
-                        that.get('model').setProperties({
-                            password: '',
-                            passwordConfirmation: ''
-                        });
-                    }).fail(function(xhr) {
-                        toastr.error(xhr.responseText);
-                    });
-                }
+                }).fail(function(xhr) {
+                    toastr.error(xhr.responseText);
+                });
             }, function() {
                 var errors = that.get('errors');
                 var fullErrors = [];

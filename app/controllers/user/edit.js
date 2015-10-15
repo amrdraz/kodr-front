@@ -60,7 +60,7 @@ export default Ember.Controller.extend(EmberValidations.Mixin, {
             Ember.$.post('api/users/' + this.get('model.id') + '/verify').done(function(res) {
                 toastr.success(res.message);
             }).fail(function(xhr) {
-                toastr.error(xhr.responseText);
+                toastr.error(xhr.message || xhr.responseText);
             });
         },
         delete: function() {
@@ -75,7 +75,7 @@ export default Ember.Controller.extend(EmberValidations.Mixin, {
                     url: '/api/users/' + that.get('model.id'),
                     context: that,
                     data: {
-                        user: that.get('model').getProperties('password', 'passwordConfirmation')
+                        user: that.getProperties('password', 'passwordConfirmation')
                     }
                 }).done(function(res) {
                     toastr.success('passwordChanged');
@@ -85,7 +85,7 @@ export default Ember.Controller.extend(EmberValidations.Mixin, {
                         passwordConfirmation: ''
                     });
                 }).fail(function(xhr) {
-                    toastr.error(xhr.responseText);
+                    toastr.error(xhr.message || xhr.responseText);
                 });
             }, function() {
                 var errors = that.get('errors');

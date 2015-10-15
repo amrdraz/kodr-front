@@ -77,7 +77,14 @@
 {{#unless isCreating}}
   <hr>
 <section class="user-password-reset row">
-  <form role="form-horizontal col-md-6 col-md-offset-1">
+  <form role="form-horizontal col-md-12">
+    {{#if fullErrors }}
+            <div class="alert alert-danger">
+              {{#each fullErrors as |message| }}
+                <p>{{message}}</p>
+              {{/each}}
+            </div>
+          {{/if}}
     <fieldset>
       <legend>Change Password</legend>
       <div class="form-group">
