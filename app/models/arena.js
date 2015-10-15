@@ -14,6 +14,7 @@ export default DS.Model.extend({
     }),
     flowType: ['any', 'sequencial'],
     isPublished: attr('boolean', {defaultValue:false}),
+    flags: attr('mixed', {defaultValue:{beta:true}}),
     challenges: DS.hasMany('challenge', {async:true, inverse: 'arena'}),
     trials: DS.hasMany('trial', {async:true, inverse: 'arena'}),
     users: DS.hasMany('userArena', {async:true, inverse: 'arena'}),

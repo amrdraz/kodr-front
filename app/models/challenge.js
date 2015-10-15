@@ -40,14 +40,10 @@ export default DS.Model.extend({
     // inputs: attr('javaInput', {
     //     defaultValue: []
     // }),
-
-    status: attr('string', {
-        defaultValue: "unPublished"
-    }),
-    statusOptions: ['unPublished', 'Beta', 'Published'],
     isPublished: attr('boolean', {
         defaultValue: false
     }),
+    flags: attr('mixed', {defaultValue:{beta:true}}),
     valid: attr('boolean', {
         defaultValue: false
     }),
