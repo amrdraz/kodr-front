@@ -13,6 +13,11 @@
             <h4 class="list-group-item-heading">
 
                 <div class="pull-right">
+                
+                {{#if arena.isBeta}}
+                    <span class="label label-success">beta</span>
+                {{/if}}
+
                 {{#if arena.isPublished}}
                     <span class="label label-success"><i class="glyphicon glyphicon-ok"></i> Published</span>
                 {{else}}

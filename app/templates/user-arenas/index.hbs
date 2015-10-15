@@ -6,6 +6,11 @@
     <h4 class="list-group-item-heading">
         
         <div class="pull-right">
+
+        {{#if userArena.arena.isBeta}}
+            <span class="label label-success">beta</span>
+        {{/if}}
+        
         {{#link-to 'userArena' userArena class="btn-primary btn-sm user-arena-try"}}
             <i class="glyphicon glyphicon-play"></i> Try
         {{/link-to}}

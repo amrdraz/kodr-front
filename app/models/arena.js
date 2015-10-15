@@ -30,6 +30,10 @@ export default DS.Model.extend({
         return !this.get('hasDirtyAttributes') && !this.get('isPublished');
     }.property('hasDirtyAttributes', 'isPublished'),
 
+    isBeta: function() {
+        return this.get('flags') && this.get('flags.beta');
+    }.property(),
+
     contentChanged: false,
 
     getJson: function() {
