@@ -5,6 +5,9 @@ module.exports = function(defaults) {
     /* global require, module */
 
     var app = new EmberApp(defaults, {
+        fingerprint: {
+            exclude: ['brython']
+        },
         emberCliFontAwesome: {
             useScss: true
         },
