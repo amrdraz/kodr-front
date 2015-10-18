@@ -3917,14 +3917,15 @@ $B.$CORS=false
 if(options.CORS !==undefined)$B.$CORS=options.CORS
 $B.$options=options
 var meta_path=[]
-if($B.use_VFS){meta_path.push($B.meta_path[0])}
-else{$B.path_hooks.shift()}
+var path_hooks=[]
+if($B.use_VFS){meta_path.push($B.$meta_path[0]);path_hooks.push($B.$path_hooks[0])}
 if(options.static_stdlib_import!==false){
-meta_path.push($B.meta_path[1])
-$B.path.shift()
-$B.path.shift()}
-meta_path.push($B.meta_path[2])
+meta_path.push($B.$meta_path[1])
+if($B.path.length>3){$B.path.shift();$B.path.shift();}}
+meta_path.push($B.$meta_path[2])
 $B.meta_path=meta_path 
+path_hooks.push($B.$path_hooks[1])
+$B.path_hooks=path_hooks 
 if(options.ipy_id!==undefined){var $elts=[];
 for(var $i=0;$i<options.ipy_id.length;$i++){$elts.push(document.getElementById(options.ipy_id[$i]));}}else{var scripts=document.getElementsByTagName('script'),$elts=[]
 for(var i=0;i<scripts.length;i++){var script=scripts[i]
@@ -6626,7 +6627,7 @@ cached: _b_.None,parent: loader_data.is_package? fullname :
 parent_package(fullname),has_location: _b_.True});}
 return _b_.None;},invalidate_caches : function(self){}}
 url_hook.$dict.__mro__=[url_hook.$dict,_b_.object.$dict]
-$B.path_hooks=[vfs_hook,url_hook];
+$B.$path_hooks=[vfs_hook,url_hook];
 $B.path_importer_cache={};
 var _sys_paths=[[$B.script_dir + '/','py'],[$B.brython_path + 'Lib/','py'],[$B.brython_path + 'Lib/site-packages/','py'],[$B.brython_path + 'libs/','js']];
 for(i=0;i < _sys_paths.length;++i){var _path=_sys_paths[i],_type=_path[1];
@@ -6703,7 +6704,7 @@ try{
 locals[alias]=_b_.getattr(modobj,name);}
 catch($err3){console.log('error',$err3)
 if($err3.__class__===_b_.AttributeError.$dict){$err3.__class__=_b_.ImportError.$dict;}}}}}}}
-$B.meta_path=[finder_VFS,finder_stdlib_static,finder_path];
+$B.$meta_path=[finder_VFS,finder_stdlib_static,finder_path];
 function optimize_import_for_path(path,filetype){if(path.slice(-1)!='/'){path=path + '/' }
 $B.path_importer_cache[path]=url_hook(path,filetype);}
 _importlib_module={__class__ : $B.$ModuleDict,__name__ : '_importlib',Loader: Loader,VFSFinder: finder_VFS,StdlibStatic: finder_stdlib_static,ImporterPath: finder_path,VFSPathFinder : vfs_hook,UrlPathFinder: url_hook,optimize_import_for_path : optimize_import_for_path}
