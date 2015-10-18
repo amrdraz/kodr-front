@@ -55,7 +55,6 @@ module.exports = function(defaults) {
     app.import('bower_components/socket.io-client/socket.io.js');
     app.import('bower_components/ember-sockets/dist/ember-sockets.js');
 
-    app.import('vendor/brython.js');
     app.import('vendor/debugger/debugger.js');
     app.import('vendor/debugger/tester.js');
 

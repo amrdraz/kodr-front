@@ -173,10 +173,10 @@ export default Ember.Mixin.create(ChallengeCommon, {
     },
     didInsertElement() {
         window.brython(1);
-        $B.brython_path = window.location.origin + "/brython/www/src/";
-        $B.path = [
-            window.location.origin + "/brython/www/src"
-        ];
+        // $B.brython_path = window.location.origin + "/brython/www/src/";
+        // $B.path = [
+        //     window.location.origin + "/brython/www/src"
+        // ];
         var component = this;
 
         var cout = {

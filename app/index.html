@@ -33,13 +33,11 @@
     
     <!-- end loader-container -->
     {{content-for 'body'}}
-    <script type="text/x-mathjax-config">
-        MathJax.Hub.Config({ showProcessingMessages: false, tex2jax: { inlineMath: [['$','$'],['\\(','\\)']] }, TeX: { equationNumbers: {autoNumber: "AMS"} } });
-    </script>
+
+    <script src="/brython/www/src/brython.js"></script>
     <script src="assets/vendor.js"></script>
     <script src="assets/kodr.js"></script>
     {{content-for 'body-footer'}}
-    <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.8.0/highlight.min.js"></script>
 </body>
 
