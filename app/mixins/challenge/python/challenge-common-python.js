@@ -150,6 +150,7 @@ export default Ember.Mixin.create(ChallengeCommon, {
             return hist;
         },
         test() {
+            this.stopDebugger();
             var report = this.testEvent();
             this.sendAction(this.get("test"), report);
             return report;
