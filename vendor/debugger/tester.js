@@ -57,10 +57,8 @@
 
     function init() {
         restTest();
-        scope = {
-            __name__: "__main__"
-        };
-        $B.$__import__("io", scope, {}, []);
+        scope = firstRunCheck();
+        $B.$import("io", [], [], scope, true);
         scope.StringIO = _b_.getattr($B.imported.io, "StringIO");
     }
 
@@ -441,5 +439,7 @@
             var js = root.to_js();
             eval(js);
         }
+        var frame = $B.frames_stack[0];
+        return frame.length>2?frame[3]:frame[1];
     }
 })(window);
