@@ -418,9 +418,13 @@
     }
 
     Test.util = $B.jsobj2pyobj({
-            matches: function matches (expect, test) {
-                var re = new RegExp(expect);
+            matches: function matches (expect, test, flags) {
+                var re = new RegExp(expect, flags);
                 return re.test(test);
+            },
+            match: function match (test, expect, flags) {
+                var re = new RegExp(expect, flags);
+                return test.match(re);
             },
     });
 
