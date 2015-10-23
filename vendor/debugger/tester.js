@@ -34,7 +34,6 @@
     events.forEach(function(key) {
         callbacks[key] = noop;
     });
-
     function callbackSetter(key) {
         return function(cb) {
             callbacks[key] = cb;
@@ -168,6 +167,7 @@
      */
     function runTest(options) {
         restTest();
+        firstRunCheck();
         setCode(options.code);
         var test = "import Test;" + options.test;
         var module_name = '__main__';
@@ -417,5 +417,25 @@
         return test;
     }
 
+    Test.util = $B.jsobj2pyobj({
+            matches: function matches (expect, test) {
+                var re = new RegExp(expect);
+                return re.test(test);
+            },
+    });
+
     defineModule("Test", Test);
+
+    /**
+     * Initialize the first frame the first time Brython runs
+     */
+    function firstRunCheck() {
+        if ($B.frames_stack < 1) {
+            var module_name = '__main__';
+            $B.$py_module_path[module_name] = window.location.href;
+            var root = $B.py2js("", module_name, module_name, '__builtins__');
+            var js = root.to_js();
+            eval(js);
+        }
+    }
 })(window);

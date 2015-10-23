@@ -22,7 +22,6 @@
       <button {{action "step"}} class="btn btn-default btn-sm pull-left challenge-step" disabled={{if isDebugging isLastStep 'disabled'}}>{{fa-icon "step-forward"}} Step</button>
       <button {{action "stop"}} class="btn btn-default btn-sm pull-left challenge-stop" disabled={{is-not isDebugging}}>{{fa-icon "stop"}} Stop</button>
     {{/if}}
-    <button {{action "reset"}} class="btn btn-default btn-sm pull-right challenge-reset">{{fa-icon "repeat"}} Reset </button>
   </div>
   <div class="row">
     <ul class="nav nav-tabs">
@@ -46,7 +45,7 @@
 </div>
 <div class="col-lg-6 col-md-6 col-sm-6">
   <div class="row">
-    <a id="run" {{action "test"}} class="btn {{if model.complete 'btn-success' 'btn-primary'}} pull-right {{if model.canSubmit '' 'disabled'}} challenge-submit">
+    <button id="run" {{action "test"}} class="btn {{if model.complete 'btn-success' 'btn-primary'}} pull-right {{if model.canSubmit '' 'disabled'}} challenge-submit">
       {{#if model.complete}}
         {{#if isDirtyish}}
           Re-Submit <i class="glyphicon glyphicon-play"></i>
@@ -56,7 +55,8 @@
       {{else}}
         Submit <i class="glyphicon glyphicon-play"></i>
       {{/if}}
-    </a>
+    </button>
+    <button {{action "reset"}} class="btn btn-default btn-sm pull-right challenge-reset">{{fa-icon "repeat"}} Reset </button>
   </div>
   <div class="row">
     <ul class="nav nav-tabs">

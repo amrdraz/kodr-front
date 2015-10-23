@@ -6,7 +6,6 @@
     <button {{action "back"}} class="btn btn-default pull-left challenge-back" disabled={{if isDebugging isFirstStep 'disabled'}}>{{fa-icon "step-backward"}} Back</button>
     <button {{action "step"}} class="btn btn-default pull-left challenge-step" disabled={{if isDebugging isLastStep 'disabled'}}>{{fa-icon "step-forward"}} Step</button>
     <button {{action "stop"}} class="btn btn-default pull-left challenge-stop" disabled={{is-not isDebugging}}>{{fa-icon "stop"}} Stop</button>
-    <button {{action "reset"}} class="btn btn-default pull-right challenge-reset">{{fa-icon "repeat"}} Reset </button>
   </div>
   <div class="row">
     <ul class="nav nav-tabs">
@@ -50,7 +49,8 @@
 </div>
 <div class="col-lg-6 col-md-6 col-sm-6">
   <div class="row">
-    <a {{action "test"}} class="btn btn-default pull-right challenge-test">{{fa-icon "test"}} Test </a>
+    <button {{action "test"}} class="btn btn-default pull-right challenge-test">{{fa-icon "test"}} Test </button>
+    <button {{action "reset"}} class="btn btn-default pull-right challenge-reset">{{fa-icon "repeat"}} Reset </button>
   </div>
   <div class="row">
     <ul class="nav nav-tabs">
