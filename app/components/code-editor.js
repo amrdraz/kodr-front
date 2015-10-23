@@ -59,16 +59,16 @@ export default Ember.Component.extend({
         var model = this.get('model');
         var attr = this.get('attr');
 
-        if (this.get('language') === 'python') {
-            var text = cm.getValue();
-            if (text.charAt(text.length - 1) !== "\n") {
-                var cursor = cm.getDoc().getCursor();
-                cm.setValue(text + "\n");
-                cm.getDoc().setCursor(cursor, {
-                    scroll: true
-                });
-            }
-        }
+        // if (this.get('language') === 'python') {
+        //     var text = cm.getValue();
+        //     if (text.charAt(text.length - 1) !== "\n") {
+        //         var cursor = cm.getDoc().getCursor();
+        //         cm.setValue(text + "\n");
+        //         cm.getDoc().setCursor(cursor, {
+        //             scroll: true
+        //         });
+        //     }
+        // }
 
         model.set(attr, cm.getValue());
     },
