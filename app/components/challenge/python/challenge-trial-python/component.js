@@ -35,7 +35,7 @@ export default Ember.Component.extend(ChallengeCommon, {
                 });
                 var hist = this._super();
                 var model = this.get('model');
-                this.incrementSessionCountFor(this.trialState);
+                this.incrementSessionCountFor('run');
                 hist.runCount = this.getSessionCountFor('run');
                 hist.printCount = hist.prints.length;
                 if (hist.error) {
@@ -58,7 +58,7 @@ export default Ember.Component.extend(ChallengeCommon, {
                 });
                 var report = this.testEvent();
                 var model = this.get('model');
-                report.testRunCount = this.incrementSessionCountFor(this.trialState);
+                report.testRunCount = this.incrementSessionCountFor('test');
                 report.passesCount = report.passes.length;
                 report.failuresCount = report.failures.length;
                 report.testsCount = report.tests.length;
@@ -207,6 +207,19 @@ export default Ember.Component.extend(ChallengeCommon, {
         this.idleWaitTime = time;
     },
     setTrialStateToTyping() {
+        if(this.get('model.work.solution')===""){
+            return this.setTrialState('typing', {
+                resetWaitForIdleTime:true,
+                activeInterface:'solution',
+                meta: {
+                    event: 'trial.solution.clear',
+                    action: 'type',
+                    verb: 'typed',
+                    resolveNow: true,
+                    solution: this.get('model.work.solution')
+                }
+            });
+        }
         this.setTrialState('typing', {
             resetWaitForIdleTime:true,
             activeInterface:'solution',

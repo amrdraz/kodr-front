@@ -468,6 +468,7 @@
      * Process argumetns that come into test and return them as object
      * @param (Boolean) test    A boolean expression to pass or fail
      * @param (String) message  message to write on success or fail
+     * @param (String) fail_message  message to write on success or fail
      * @param (Number) score    score awarded for test
      * @param (String) tag      tag assissiated with test
      */
@@ -492,14 +493,24 @@
                 obj.score = arguments[1];
                 obj.tag = arguments[2];
             } else {
-                obj.message = obj.fail_message = arguments[1];
-                obj.score = arguments[2];
+                obj.message = arguments[1];
+                if(_.isNumber(arguments[2])) {
+                    obj.score = arguments[2];
+                } else {
+                    obj.fail_message = arguments[2];
+                }
             }
             break;
         default:
-            obj.message = obj.fail_message = arguments[1];
-            obj.score = arguments[2];
-            obj.tag = arguments[3];
+            obj.message = arguments[1];
+            if(_.isNumber(arguments[2])) {
+                obj.score = arguments[2];
+                obj.tag = arguments[3];
+            } else {
+                obj.fail_message = arguments[2];
+                obj.score = arguments[3];
+                if (arguments[4]) { obj.tag = arguments[4];}
+            }
         }
         return obj;
     }
