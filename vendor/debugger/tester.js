@@ -101,13 +101,13 @@
     /**
      * returns the test report object
      * the report is of the form
-     *     {Boolean} passed wether the entier test suite passed or not
+     *     {Boolean} passed whether the entier test suite passed or not
      *     {Number} score the acumilated score the user quired from the test
      *     {[Test]} passes an array of the tests that passed
      *     {[Test]} failures an array of the tests that failed
      *     {[Test]} tests an array of all tests
      *     A single test object is of the form
-     *         {Booelan} passed wether this test passed or not
+     *         {Booelan} passed whether this test passed or not
      *         {String}  message the message that is to be displayed
      *         {Number}  score   the score awarded for passing this test
      *         {String}  tag     a string labeling this test in case passing it is speccial
@@ -193,7 +193,7 @@
      *                          {Object}  locals  A dictionarry containing all the variables declared in the scope of the last frame that ran
      *                          {Object}  globals A dictionarry containing all the variables declared globaly in the last frame that ran
      *                          {[State]} states  An array of the state of the program after each line ran
-     *                          {Boolean} error   wether an error occured during the run
+     *                          {Boolean} error   whether an error occured during the run
      *                          {State}   errorState the state containing the error also caontins information about the error see Debugger's doc for properties
      */
     function runCode() {
@@ -307,7 +307,7 @@
      * @param  {Object} test  The test to append in an incomplete form
      *                        This function will set defaults to the message field and score
      *                        This function will not allow negative score for passed tests nor positive score for failed tests
-     * @return {Boolean}      wether the test passed or not
+     * @return {Boolean}      whether the test passed or not
      */
     function appendTestToReport(test) {
         test.message = test.message || DEFAULT_PASS_MESSAGE;
@@ -347,7 +347,7 @@
     /**
      * add a test to the report with message, score and tag
      * the tests passes based on the boolean expression passed as the first argument
-     * @return {Boolean} wether expression was true or not
+     * @return {Boolean} whether expression was true or not
      */
     function assert() {
         var obj = processAssertArguments.apply(this, arguments);
@@ -358,8 +358,8 @@
     /**
      * Add a test to the report with message, failure message, score and tag
      * used for strings
-     * The tests passes based on wether the test argument matches to the expected argument which is a regular expression
-     * @return {Boolean} wether the test passed or not
+     * The tests passes based on whether the test argument matches to the expected argument which is a regular expression
+     * @return {Boolean} whether the test passed or not
      */
     function matches() {
         var obj = processArguments.apply(this, arguments);
@@ -372,8 +372,8 @@
 
     /**
      * Add a test to the report with message, failure message, score and tag
-     * The tests passes based on wether the test argument contains the expected argument
-     * @return {Boolean} wether the test passed or not
+     * The tests passes based on whether the test argument contains the expected argument
+     * @return {Boolean} whether the test passed or not
      */
     function contains() {
         var obj = processArguments.apply(this, arguments);
@@ -386,8 +386,8 @@
 
     /**
      * Add a test to the report with message, failure message, score and tag
-     * The tests passes based on wether the test argument is deeply equal to the expected argument
-     * @return {Boolean} wether the test passed or not
+     * The tests passes based on whether the test argument is deeply equal to the expected argument
+     * @return {Boolean} whether the test passed or not
      */
     function expect() {
         var obj = processArguments.apply(this, arguments);
@@ -401,8 +401,8 @@
     /**
      * Add a test to the report with message, failure message, score and tag
      * The difference from expect is that teh first argument is prepended to the default success and falure message
-     * The tests passes based on wether the test argument is deeply equal to the expected argument
-     * @return {Boolean} wether the test passed or not
+     * The tests passes based on whether the test argument is deeply equal to the expected argument
+     * @return {Boolean} whether the test passed or not
      */
     function expectFor() {
         var premessage = [].shift.call(arguments) || 'inputs';
@@ -416,8 +416,8 @@
 
     /**
      * Add a test to the report with message, failure message, score and tag
-     * The tests passes based on wether the test has the expected argument defined
-     * @return {Boolean} wether the test passed or not
+     * The tests passes based on whether the test has the expected argument defined
+     * @return {Boolean} whether the test passed or not
      */
     function exists() {
         var obj = processArguments.apply(this, arguments);
@@ -600,7 +600,7 @@
              * @param  {String} expect a regex string
              * @param  {String} test   string to test
              * @param  {String} flags  flags for regex
-             * @return {Boolean}        wether the regex matches or not
+             * @return {Boolean}        whether the regex matches or not
              */
             matches: function matches (expect, test, flags) {
                 var re = new RegExp(expect, flags);
@@ -613,7 +613,7 @@
              * @param  {String} test   string to match
              * @param  {String} expect a regex as string
              * @param  {String} flags  flags for regex
-             * @return {Boolean}       wether the regex matches or not
+             * @return {Boolean}       whether the regex matches or not
              */
             match: function match (test, expect, flags) {
                 var re = new RegExp(expect, flags);
@@ -623,7 +623,7 @@
              * check if a propertu exists in an object
              * @param  {object} test   an object
              * @param  {String} expect key to check for
-             * @return {Boolean}        wether the property is defined or not
+             * @return {Boolean}        whether the property is defined or not
              */
             exists: function exists (test, expect) {
                 return test[expect]!==undefined;
@@ -639,7 +639,7 @@
              * test if a string will be striped from it's last newline character
              * @param  {object} test   an object
              * @param  {String} exp    another object
-             * @return {Boolean}       wether the property is defined or not
+             * @return {Boolean}       whether the property is defined or not
              */
             expect: function expect (test, exp) {
                 test = cutLastNewLine($B.pyobj2jsobj(test));
