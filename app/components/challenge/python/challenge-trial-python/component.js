@@ -382,28 +382,28 @@ export default Ember.Component.extend(ChallengeCommon, {
                 event = _.merge({
                     event: 'trial.solution.run',
                     action: 'run',
-                    ver: 'ran',
+                    verb: 'ran',
                 }, event);
                 break;
             case 'debug':
                 event = _.merge({
                     event: 'trial.solution.debug',
                     action: 'debug',
-                    ver: 'debuged',
+                    verb: 'debuged',
                 }, event);
                 break;
             case 'test':
                 event = _.merge({
                     event: 'trial.solution.test',
-                    action: 'debug',
-                    ver: 'debuged',
+                    action: 'test',
+                    verb: 'tested',
                 }, event);
                 break;
             case 'lookup':
                 event = _.merge({
                     event: 'trial.lookup',
                     action: 'lookup',
-                    ver: 'lookedup',
+                    verb: 'lookedup',
                 }, event);
                 break;
             default:
