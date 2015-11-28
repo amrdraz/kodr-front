@@ -275,6 +275,8 @@ export default Ember.Component.extend(ChallengeCommon, {
         var model = this.get('model');
         this.setIdleWaitTime(this.defaultIdleWaitTime);
         this.sessionStartTime = _.now();
+        this.sessionTime = {};
+        this.sessionCount = {};
         if (!model.get('started')) {
             model.set('started', true);
             model.set('startTime', this.sessionStartTime);
@@ -349,7 +351,7 @@ export default Ember.Component.extend(ChallengeCommon, {
                 startTime: this.sessionStartTime,
                 endTime: this.sessionEndTime,
                 sessionTime: this.sessionTime,
-                sessionCount:this.sessionCount,
+                sessionCount: this.sessionCount,
                 isComplete: model.get('complete')
             }
         });
