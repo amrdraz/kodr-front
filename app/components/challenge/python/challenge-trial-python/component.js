@@ -62,7 +62,7 @@ export default Ember.Component.extend(ChallengeCommon, {
                 report.passesCount = report.passes.length;
                 report.failuresCount = report.failures.length;
                 report.testsCount = report.tests.length;
-                report = _.omit(report, ['passes', 'failures', 'tests']);
+                report = _.omit(report, ['passes', 'failures']);
                 this.setTrialStateToTest({
                     resolveNow: true,
                     meta: report
@@ -110,8 +110,15 @@ export default Ember.Component.extend(ChallengeCommon, {
             },
             reset() {
                 this._super();
-                this.setTrialStateToDebug({
-                    resolveNow:true,
+                this.setTrialState('log', {
+                    resetWaitForIdleTime:true,
+                    activeInterface:'solution',
+                    meta: {
+                        event: 'trial.solution.rest',
+                        action: 'rest',
+                        verb: 'reseted',
+                        resolveNow: true,
+                    }
                 });
             },
     },
@@ -254,7 +261,7 @@ export default Ember.Component.extend(ChallengeCommon, {
         var that = this;
         if (that.get('activeIntreface') !== inter) {
             that.setTrialState('tab.click', {
-                event: 'tiral.tab.change',
+                event: 'trial.tab.change',
                 action:'click',
                 verb:'clicked',
                 resolveNow: true,
@@ -264,7 +271,7 @@ export default Ember.Component.extend(ChallengeCommon, {
     },
     setActiveInterface(inter, action) {
         this.setTrialState('focus.'+inter, {
-            event: 'tiral.interface.focus',
+            event: 'trial.interface.focus',
             action:action,
             resetWaitForIdleTime:true,
             activeInterface: inter,
@@ -345,6 +352,7 @@ export default Ember.Component.extend(ChallengeCommon, {
         this.sessionEndTime = _.now();
         this.sessionTime['total'] =  this.sessionStartTime - this.sessionEndTime,
         this.setTrialState('end', {
+            action:'end',
             event: 'trial.session.end',
             resolveNow: true,
             meta: {
@@ -412,8 +420,8 @@ export default Ember.Component.extend(ChallengeCommon, {
                 event = _.merge({
                     event: 'trial.log',
                     action: 'log',
-                    verb: 'logged',
                 }, event);
+                event.verb = event.action + 'ed';
         }
         return event;
     }, 

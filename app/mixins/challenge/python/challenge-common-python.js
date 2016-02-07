@@ -135,6 +135,7 @@ export default Ember.Mixin.create(ChallengeCommon, {
         err.column_no_stop = 200;
         err.severity = 'error';
         this.EventBus.publish('editor.lint', "tests", [err]);
+        this.EventBus.publish('trial.solution.test', "tests", Tester.get_report());
     },
     actions: {
         run() {

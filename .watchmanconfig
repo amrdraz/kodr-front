@@ -1,4 +1,3 @@
 {
-  "ignore_dirs": [".git","tmp", "brython", dist","node_modules", "bower_components"],
-  "fsevents_latency": 0.1
+  "ignore_dirs": ["tmp", "dist"]
 }

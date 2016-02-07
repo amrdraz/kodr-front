@@ -135,7 +135,10 @@
             score: 0,
             passes: [],
             failures: [],
-            tests: []
+            tests: [],
+            code_run_error: false,
+            run_errors: [],
+            test_error: false
         };
         code = "";
     }
@@ -210,6 +213,10 @@
         Debugger.reset_events();
         unsetInput();
         unsetOutput();
+        if (history.error) {
+            report.code_run_error = true;
+            report.run_errors.append(_.pick(history.errorState, ['name', 'line_no', 'type', 'message', 'step']));
+        }
         // some processing
         Object.keys(history).forEach(function (key) {
             history[key] = $B.jsobj2pyobj(history[key]);
@@ -298,6 +305,7 @@
         if (trace.name === "SyntaxError") {
             trace.type = 'syntax_error';
         }
+        report.test_error = _.pick(trace, ['name', 'line_no', 'type', 'message', 'step']);
         callbacks['testError'](trace, Test);
     }
 
