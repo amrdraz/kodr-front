@@ -1,0 +1,43 @@
+<section class="row">
+	<div class="col-md-12 text-center">
+		{{#if session.atLeastTeacher }}
+		    {{#link-to 'arena.edit' model class="btn pull-right" }}Edit{{/link-to}}
+		    {{#link-to 'userArena' userArena class="btn pull-right" }}Try{{/link-to}}
+		{{else}}
+		    {{#unless session.isAuthenticated}}
+		        <div class="alert alert-info">
+		            <p>You are not logged in. this is a demo</p>
+		        </div>
+		    {{/unless}}
+		{{/if}}
+		<hr>
+	    <h2 class="">{{arena.name}}</h2>
+	    <p>{{arena.description}}</p>
+	</div>
+
+	{{#if componentModel}}
+		
+		<button class="btn btn-default" id="next" {{action 'next'}}>Next</button>
+
+		{{component (concat 'challenge/python/challenge-trial-python') model=componentModel challenge=challenge run="run" test="test"}}
+	    {{outlet 'modal'}}
+	{{else}}
+	<div class="col-md-12 text-center">
+		<button class="btn btn-default"  {{action 'start'}} >Start</button>
+	</div>
+		
+	{{/if}}
+	<hr>
+</section>
+
+
+<section class="row">
+    {{#each items as |trial| }}
+        {{#if trial.challenge.isPublished}}
+          <button {{action 'try' trial }} class="btn  {{if trial.complete 'btn-success'}} col-md-4">
+              {{trial.challenge.name}} {{trial.challenge.exp}} <i class="glyphicon glyphicon-star"></i>
+          </button>
+        {{/if}}
+    {{/each}}
+</section>
+{{outlet}}

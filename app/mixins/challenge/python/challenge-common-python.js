@@ -140,6 +140,7 @@ export default Ember.Mixin.create(ChallengeCommon, {
     actions: {
         run() {
             var hist =  this.runCode(this.get('model').get(this.get('evaluatedModelObject')).get(this.get('evaluatedModelProperty')));
+            console.log("HIST: ", hist)
             if(hist.error) {
                 var err = hist.errorState;
                 err.column_no_start = 0;

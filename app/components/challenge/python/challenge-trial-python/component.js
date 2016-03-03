@@ -1,5 +1,6 @@
 import Ember from 'ember';
 import ChallengeCommon from 'kodr/mixins/challenge/python/challenge-common-python';
+import randomChallenge from 'kodr/controllers/random-challenge'
 var _ = window._;
 export default Ember.Component.extend(ChallengeCommon, {
     evaluatedModelProperty: 'solution',
@@ -15,11 +16,12 @@ export default Ember.Component.extend(ChallengeCommon, {
         component.goToLine(0);
     },
     testEvent() {
-        return this.testCode({
+        var test = this.testCode({
             code: this.get('model.work').get('solution'),
             test: this.get('model.challenge.blueprint.tests'),
             exp: this.get('model.challenge.exp')
         });
+        return test
     },
     test_error() {
         this.writeToConsole("You have found a failure case that was not acounted for leading to an error in the Tests" + '\n', 'error');
@@ -29,6 +31,10 @@ export default Ember.Component.extend(ChallengeCommon, {
     },
 
     actions: {
+        next() {
+            var nextButton = Ember.$('#next').click();
+            console.log('BTN', nextButton);
+        },
         run() {
                 this.setTrialStateToRun({
                     event: 'trial.solution.run'
@@ -76,6 +82,7 @@ export default Ember.Component.extend(ChallengeCommon, {
                 model.save().then(function () {
                     component.sendAction('test', report);
                 });
+
             },
             debug() {
                 this.incrementSessionCountFor('debug');

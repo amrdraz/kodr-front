@@ -5,14 +5,17 @@ var Router = Ember.Router.extend({
     location: config.locationType
 });
 
-Router.reopen({
-    notifyGoogleAnalytics: function() {
-        return ga('send', 'pageview', {
-            'page': this.get('url'),
-            'title': this.get('url')
-        });
-    }.on('didTransition')
-});
+// if (ga) {
+//   Router.reopen({
+//     notifyGoogleAnalytics: function() {
+//         return ga('send', 'pageview', {
+//             'page': this.get('url'),
+//             'title': this.get('url')
+//         });
+//     }.on('didTransition')
+//   });  
+// }
+
 
 Router.map(function() {
   this.route('login', {
@@ -87,6 +90,9 @@ Router.map(function() {
           path: 'challenge'
       }, function() {
           this.route('create');
+      });
+      this.resource('randomChallenge', {
+        path: '/random'
       });
   });
   this.resource('arenas', {

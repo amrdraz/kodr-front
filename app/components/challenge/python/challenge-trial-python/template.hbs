@@ -6,7 +6,7 @@
     </div>
     <div class="panel-body">
         {{#editor-run target="solutionEditor"}}
-          {{marked-math model=challenge observable='blueprint.description' }}
+          {{marked-math model=challenge observable='blueprint.description' blueprint=blueprint}}
         {{/editor-run}}
     </div>
 </section>
@@ -56,6 +56,13 @@
         Submit <i class="glyphicon glyphicon-play"></i>
       {{/if}}
     </button>
+    {{#if model.complete}}
+      {{#if isDirtyish}}
+      {{else}}
+        <button class="btn btn-success pull-right" {{action 'next'}}>Next</button>
+      {{/if}}
+    {{/if}}
+
     <button {{action "reset"}} class="btn btn-default btn-sm pull-right challenge-reset">{{fa-icon "repeat"}} Reset </button>
   </div>
   <div class="row">

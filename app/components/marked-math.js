@@ -14,6 +14,7 @@ export default Ember.Component.extend({
     //  Get the preview and buffer DIV's
     //
     PreviewDone: function() {
+        console.log('done')
         var text = "";
         if(this.get('math') && MathJax) {
             this.mjRunning = false;
@@ -23,10 +24,13 @@ export default Ember.Component.extend({
             text = text.replace(/^&gt;/mg, '>');
         } else {
             text = this.get('model').get(this.get('observable'));
+            // console.log(this.get('observable'));
+            // text = this.get('blueprint').description;
         }
         this.preview.innerHTML = marked(text);
     },
     Escape: function(html, encode) {
+        console.log('escape')
         return html.
             replace(!encode ? /&(?!#?\w+;)/g : /&/g, '&amp;').
             replace(/</g, '&lt;').
@@ -42,11 +46,14 @@ export default Ember.Component.extend({
     //    typesetting.  After it is done, call PreviewDone.
     //  
     CreatePreview: function() {
+        console.log('create')
         if (this.mjRunning) { return; }
         var text = this.get('model').get(this.get('observable'));
+        text = this.get('model').get('blueprint');
         if (text === this.oldtext) { return; }
         // text = this.Escape(text); //Escape tags before doing stuff
         this.buffer.innerHTML = this.oldtext = text;
+
         this.mjRunning = true;
         // MathJax.InputJax.TeX is undefined first time the page loads
         // don't know if it will cause a bug later but everything seems to work fine
@@ -70,6 +77,7 @@ export default Ember.Component.extend({
     // },
 
     didInsertElement: function() {
+        console.log('insert')
         var component = this;
         this.marked = marked;
         this.preview = this.$()[0];
@@ -79,7 +87,7 @@ export default Ember.Component.extend({
         if(!this.get('model').get(this.get('observable'))) {
             this.get('model').set(this.get('observable'), "");
         }
-
+        console.log("MODEL: ", this.get('model'))
         this.marked.setOptions({
             renderer: new marked.Renderer(),
             highlight: function(code) {
@@ -103,6 +111,7 @@ export default Ember.Component.extend({
             callback.autoReset = true;
         } else {
             callback = this.callback = this.PreviewDone.bind(this);
+
         }
         // var that = this;
         // this. once = function () {
@@ -113,10 +122,12 @@ export default Ember.Component.extend({
         //         this.removeObserver(that.get('observable'), this, once);
         //     }       
         // };
-        this.get('model').addObserver(this.get('observable'), this.get('model'),this.callback);
+
+        this.get('model').addObserver('blueprint', this.get('model'), this.callback);
         callback();
-    },
+    }.observes('model'),
     willDestroyElement: function () {
-        this.get('model').removeObserver(this.get('observable'), this.get('model'),this.callback);
+        // this.get('model').removeObserver(this.get('observable'), this.get('model'),this.callback);
+        this.get('model').addObserver(this.get('observable'), this.get('model'), this.callback);
     }
 });
