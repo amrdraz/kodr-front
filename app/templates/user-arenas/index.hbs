@@ -2,23 +2,37 @@
 
 <div class="list-group">
 {{#each model as |userArena| }}
-    {{#link-to 'userArena' userArena class="user-arena-name" class="list-group-item"}}   
+{{!--     {{#link-to 'userArena' userArena class="user-arena-name" class="list-group-item"}}  --}}
+<a href="" class="user-arena-name list-group-item">
     <h4 class="list-group-item-heading">
         
         <div class="pull-right">
 
-        {{#if userArena.arena.isBeta}}
-            <span class="label label-success">beta</span>
-        {{/if}}
-        
-        {{#link-to 'userArena' userArena class="btn-primary btn-sm user-arena-try"}}
-            <i class="glyphicon glyphicon-play"></i> Try
-        {{/link-to}}
+            {{#if userArena.arena.isBeta}}
+                <span class="label label-success">beta</span>
+            {{/if}}
+            
+            {{#link-to 'userArena' userArena class="btn-primary btn-sm user-arena-try"}}
+                <i class="glyphicon glyphicon-play"></i> Try
+            {{/link-to}}
+            {{#link-to 'randomChallenge' userArena class="btn-primary btn-sm arena-try"}}
+                <i class="glyphicon glyphicon-play"></i> Randomly Try
+            {{/link-to}}
         </div>
         
-        {{userArena.arena.name}}            
-    </h4>  
-    {{/link-to}}
+        {{userArena.arena.name}}<br>
+                   
+    </h4>
+    <div class="progress">
+        <div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="40"
+        aria-valuemin="0" aria-valuemax="100" style="width:{{userArena.exp}}%">
+        {{userArena.exp}}% Complete (success)
+        </div>
+    </div>     
+</a>  
+ 
+{{!--     {{/link-to}}
+ --}}    
 {{else}}
     <p>No Arenas are published yet</p>
 {{/each}}

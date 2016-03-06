@@ -18,13 +18,8 @@ export default Ember.Controller.extend({
 	blueprint: null,
 	actions: {
 		start() {
-			var challenge = this.challenges[0];
 
 			var controller = this;
-
-	        this.set('model.challenge', challenge)
-		    
-			challenge = {challenge: challenge};
 
 		    var found = false;
             

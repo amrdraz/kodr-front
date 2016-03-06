@@ -9,21 +9,21 @@ export default Ember.Route.extend(AuthenticatedRouteMixin, {
         var router = this;
         return new Promise(function(resolve, reject) {
             // In order to wait for the ajax request to finish.
-            var arena_id = router.modelFor('arena').id
-            var url = '/api/arenas/' + arena_id;
-            var arena;
+            var arena_id = router.modelFor('userArena').id
+            var url = '/api/userArenas/' + arena_id;
             
             Ember.$.get(url).done(function (res) {
-                arena = res['arena'];
-                var challenges = res['challenges'];
+                var userArena = res['userArena'];
 
-                router.store.query('trial', {arena:arena_id, user:router.get('session.user.id')}).then(function(items) {
+                var arena = router.store.findRecord('arena', userArena.arena)
+
+                router.store.query('trial', {arena:userArena.arena, user:router.get('session.user.id')}).then(function(items) {
                     // Get a DS.PromiseArray of the trials
                     router.controllerFor('random-challenge').set('items', items)
                 });
 
                 router.controllerFor('random-challenge').set('challenges', res.challenges);
-                router.controllerFor('random-challenge').set('arena', res.arena);
+                router.controllerFor('random-challenge').set('arena', arena);
                 resolve(res);
             }).fail(function (err) {
                 console.log(err);

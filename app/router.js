@@ -66,6 +66,9 @@ Router.map(function() {
       this.route('trial', {
           path: '/try/:trial_id' //used to load trial
       });
+      this.resource('randomChallenge', {
+        path: '/random'
+      });
   });
 
   this.resource('userArenas', {
@@ -91,9 +94,7 @@ Router.map(function() {
       }, function() {
           this.route('create');
       });
-      this.resource('randomChallenge', {
-        path: '/random'
-      });
+      
   });
   this.resource('arenas', {
       path: '/arenas'
