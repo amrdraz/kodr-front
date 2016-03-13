@@ -1,0 +1,15 @@
+{{#if isEditing}}
+<div class="container" id="post-item">
+    <div class="form-horizontal">
+        <div class="form-group">
+            <div class="col-xs-8">
+                {{textarea value=text class="form-control" rows="2" }}
+            </div>
+        </div>
+        <a type="submit" class="btn-edit" {{action 'editSave' text}} >Reply</a>
+        <a type="submit" class="btn-edit" {{action 'editCancel' text}} >Cancel</a>
+    </div>
+</div>
+{{else}}
+      <a type="submit" class="btn-edit" {{action 'editClicked' text}} >Reply</a>
+{{/if}}

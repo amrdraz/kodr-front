@@ -1,0 +1,27 @@
+{{#if isEditing}}
+      <div class="form-horizontal">
+          <div class="form-group">
+              <label class="col-xs-2 control-label">Text</label>
+              <div class="col-xs-10">
+                  {{textarea value=item.text class="form-control" rows="3" }}
+              </div>
+          </div>
+          <div class="form-group">
+              <div class="col-xs-offset-2 col-xs-10">
+                  <a type="submit" class="btn-edit" {{action 'editSave' item}} >Save</a>
+                  <a type="submit" class="btn-edit" {{action 'editCancel' item}} >Cancel</a>
+              </div>
+          </div>
+      </div>
+{{else}}
+<td class="vote-box">
+</td>
+<td>
+  <p>
+  {{markdown-to-html markdown=item.text}}
+  {{#desc-item item=item}}{{/desc-item}}
+  <a class="btn-edit" {{action 'editClicked' item}}>Edit</a>
+  <a class="btn-edit" {{action 'deleteClicked' item}}>Delete</a>
+  </p>
+</td>
+{{/if}}

@@ -62,10 +62,10 @@ body {
     height: auto !important;
     height: 100%;
     /* Negative indent footer by its height */
-    
+
     margin: 0 auto -120px;
     /* Pad bottom by footer height */
-    
+
     // I am using 140px instead of 120px to give some room between #wrap and #footer
     // Otherwise footer will be almost touching your page content
     padding: 0 0 140px;
@@ -101,18 +101,18 @@ body {
         max-width: 96%;
     }
     /* Remove the padding we set earlier */
-    
+
     .header, .marketing, .footer {
         padding-left: 0;
         padding-right: 0;
     }
     /* Space out the masthead */
-    
+
     .header {
         margin-bottom: 30px;
     }
     /* Remove the bottom border on the jumbotron for visual effect */
-    
+
     .jumbotron {
         border-bottom: 0;
     }
@@ -166,3 +166,4 @@ body {
 @import "./console";
 @import "./cm-styles";
 @import "./loader";
+@import "./discussions";

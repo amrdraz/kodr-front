@@ -1,0 +1,11 @@
+{{#if votedUp}}
+    <p><a class="button-clicked glyphicon glyphicon-triangle-top" {{action 'voteAction' 'voteUp'}} ></a></p>
+{{else}}
+    <p><a class="button glyphicon glyphicon-triangle-top" {{action 'voteAction' 'voteUp'}} ></a></p>
+{{/if}}
+<p class="votes text-center">{{totalVotes}}</p>
+{{#if votedDown}}
+    <p><a class="button-clicked glyphicon glyphicon-triangle-bottom" {{action 'voteAction' 'voteDown'}} ></a></p>
+{{else}}
+    <p><a class="button glyphicon glyphicon-triangle-bottom" {{action 'voteAction' 'voteDown'}}></a></p>
+{{/if}}

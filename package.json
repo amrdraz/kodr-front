@@ -38,6 +38,7 @@
     "ember-cli-sass": "4.0.1",
     "ember-cli-scaffold": "0.1.1",
     "ember-cli-selectize": "0.4.2",
+    "ember-cli-showdown": "2.5.0",
     "ember-cli-simple-auth": "^0.8.0",
     "ember-cli-simple-auth-oauth2": "^0.8.0",
     "ember-cli-simple-auth-token": "^0.7.3",
