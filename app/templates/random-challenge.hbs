@@ -13,7 +13,14 @@
 		<hr>
 	    <h2 class="">{{arena.name}}</h2>
 	    <p>{{arena.description}}</p>
+	    <div class="progress">
+	        <div class="progress-bar progress-bar-success progress-bar-striped" role="progressbar" aria-valuenow="40"
+	        aria-valuemin="0" aria-valuemax="100" style="width:{{userArena.progress}}%">
+	        {{userArena.progress}}% Complete
+	        </div>
+	    </div>
 	</div>
+	  
 
 	{{#if componentModel}}
 		
@@ -32,7 +39,7 @@
 
 
 <section class="row">
-    {{#each items as |trial| }}
+    {{#each trials as |trial| }}
         {{#if trial.challenge.isPublished}}
           <button {{action 'try' trial }} class="btn  {{if trial.complete 'btn-success'}} col-md-4">
               {{trial.challenge.name}} {{trial.challenge.exp}} <i class="glyphicon glyphicon-star"></i>

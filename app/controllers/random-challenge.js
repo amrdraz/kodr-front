@@ -9,13 +9,24 @@ export default Ember.Controller.extend({
 	classNames: ['preview'],
 	random: true,
 	started: false,
-	challenges: {},
 	arena: {},
 	trial: null,
 	componentModel: null,
 	challenge: null,
-	items: null,
-	blueprint: null,
+	trials: null,
+	userArena: null,
+	progress: null,
+	clearForm: function() {
+		this.setProperties({
+			started: false,
+			trial: null,
+			componentModel: null,
+			challenge: null,
+			trials: null,
+			userArena: null,
+			progress: null
+		});
+	},
 	actions: {
 		start() {
 
@@ -23,17 +34,23 @@ export default Ember.Controller.extend({
 
 		    var found = false;
             
-		    this.set('trial', this.items.toArray()[0])	    
+		    this.set('trial', this.trials.toArray()[0]);	    
 
-            this.items.map(function(item) {
+            this.trials.map(function(trial) {
                 
-                if(!item.get('complete')) {
-	                controller.set('componentModel', item);
+                if(!trial.get('complete')) {
+
+		        	trial.set('work', Mixed.create({
+		                solution: trial.get('challenge.blueprint.setup')
+		            }));
+			        trial.set('blueprint', Mixed.create(trial.get('challenge.blueprint').toJSON()));
+			        console.log(Mixed.create(trial.get('challenge.blueprint').toJSON()));
+
+	                controller.set('componentModel', trial);
 	                var proxy = Ember.ObjectProxy.create({
-	                  content: item
+	                  content: trial
 	                });
 	                
-	                // controller.set('blueprint', item.get('challenge').get('blueprint'));
 	                controller.set('challenge', proxy);
 	            }
 
@@ -46,10 +63,23 @@ export default Ember.Controller.extend({
 
 		},
 		next() {
-			console.log('NEXT')
-			console.log(this.items.toArray().length)
-			this.items.removeObjects([this.componentModel]);
-			this.set('componentModel', null)
+			console.log('NEXT');
+			console.log(this.trials.toArray().length);
+			this.trials.removeObjects([this.componentModel]);
+			this.set('componentModel', null);
+			this.get('userArena').notifyPropertyChange('progress');
+			this.send('start');
+			
+		},
+		computeProgress() {
+			var userArena = this.userArena;
+			var progress = this.progress;
+			var progDelta = (1 / this.trials.toArray().length) * 100;
+			progDelta = Math.round(progDelta);
+			progress += progDelta;
+			console.log("NEW PROGRESS ", progress);
+			// userArena.progress = Math.round(prog)
+			// this.set('userArena', userArena)
 			this.send('start');
 		}
 	}

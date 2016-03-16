@@ -20,6 +20,7 @@ export default DS.Model.extend({
     trials: DS.hasMany('trial', {async:true, inverse: 'arena'}),
     users: DS.hasMany('userArena', {async:true, inverse: 'arena'}),
     author: DS.belongsTo('user', {async:true, inverse:'arenas'}),
+    prerequisit: DS.belongsTo('arena', {async: true, defaultValue:null}),
 
     canSave: function() {
         return !this.get('isSaving') && this.get('hasDirtyAttributes') || this.get('contentChanged') || this.get('isNew');

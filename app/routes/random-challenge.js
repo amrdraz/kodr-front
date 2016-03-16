@@ -17,13 +17,18 @@ export default Ember.Route.extend(AuthenticatedRouteMixin, {
 
                 var arena = router.store.findRecord('arena', userArena.arena)
 
-                router.store.query('trial', {arena:userArena.arena, user:router.get('session.user.id')}).then(function(items) {
+                router.store.query('trial', {arena:userArena.arena, user:router.get('session.user.id')}).then(function(trials) {
                     // Get a DS.PromiseArray of the trials
-                    router.controllerFor('random-challenge').set('items', items)
+                    router.controllerFor('random-challenge').set('trials', trials)
                 });
 
-                router.controllerFor('random-challenge').set('challenges', res.challenges);
+                // The following line is to return a proper class not a json object
+                userArena = router.store.findRecord('userArena', userArena._id)
+                
                 router.controllerFor('random-challenge').set('arena', arena);
+                router.controllerFor('random-challenge').set('userArena', userArena);
+                console.log(userArena.progress, "progress")
+                router.controllerFor('random-challenge').set('progress', userArena.progress);
                 resolve(res);
             }).fail(function (err) {
                 console.log(err);
@@ -31,6 +36,9 @@ export default Ember.Route.extend(AuthenticatedRouteMixin, {
             });
         });
         
+    },
+    deactivate: function() {
+        this.controller.clearForm();
     }
 
 });

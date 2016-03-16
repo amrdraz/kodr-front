@@ -3,7 +3,7 @@
 <div class="list-group">
 {{#each model as |userArena| }}
 {{!--     {{#link-to 'userArena' userArena class="user-arena-name" class="list-group-item"}}  --}}
-<a href="" class="user-arena-name list-group-item">
+<div class="user-arena-name list-group-item">
     <h4 class="list-group-item-heading">
         
         <div class="pull-right">
@@ -11,25 +11,34 @@
             {{#if userArena.arena.isBeta}}
                 <span class="label label-success">beta</span>
             {{/if}}
+            {{#if userArena.locked}}
+                <a type="button" class="btn-sm user-arena-try disabled">
+                    <i class="glyphicon glyphicon-ban-circle"></i> Locked
+                </a>
+                {{#link-to 'randomChallenge' userArena class="btn-primary btn-sm arena-try"}}
+                    <i class="glyphicon glyphicon-play"></i> Randomly Try
+                {{/link-to}}
+            {{else}}
+                {{#link-to 'userArena' userArena class="btn-primary btn-sm user-arena-try"}}
+                    <i class="glyphicon glyphicon-play"></i> Try
+                {{/link-to}}
+                {{#link-to 'randomChallenge' userArena class="btn-primary btn-sm arena-try"}}
+                    <i class="glyphicon glyphicon-play"></i> Randomly Try
+                {{/link-to}}
+            {{/if}}
             
-            {{#link-to 'userArena' userArena class="btn-primary btn-sm user-arena-try"}}
-                <i class="glyphicon glyphicon-play"></i> Try
-            {{/link-to}}
-            {{#link-to 'randomChallenge' userArena class="btn-primary btn-sm arena-try"}}
-                <i class="glyphicon glyphicon-play"></i> Randomly Try
-            {{/link-to}}
         </div>
         
         {{userArena.arena.name}}<br>
                    
     </h4>
     <div class="progress">
-        <div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="40"
-        aria-valuemin="0" aria-valuemax="100" style="width:{{userArena.exp}}%">
-        {{userArena.exp}}% Complete (success)
+        <div class="progress-bar progress-bar-success progress-bar-striped" role="progressbar" aria-valuenow="40"
+        aria-valuemin="0" aria-valuemax="100" style="width:{{userArena.progress}}%">
+        {{userArena.progress}}% Complete
         </div>
     </div>     
-</a>  
+</div>  
  
 {{!--     {{/link-to}}
  --}}    
