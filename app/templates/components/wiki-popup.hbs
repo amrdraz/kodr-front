@@ -1,0 +1,16 @@
+<a class="glyphicon glyphicon-question-sign wiki-btn" {{action "toggleModal"}}></a>
+{{#if isShowingModal}}
+  {{#modal-dialog close='toggleModal' translucentOverlay=true targetAttachment='none' container-class='centered-scrolling-container' overlay-class='centered-scrolling-overlay' wrapper-class='centered-scrolling-wrapper' }}
+    <h1 class="text-center">Wiki</h1>
+    {{#each wikis as |wiki|}}
+      <section class="description panel panel-default">
+        <div class="panel-heading">
+          <h2 class="panel-title"><b>{{wiki.title}}</b></h2>
+        </div>
+        <div class="panel-body">
+          {{markdown-section content=wiki.text}}
+        </div>
+      </section>
+    {{/each}}
+  {{/modal-dialog}}
+{{/if}}

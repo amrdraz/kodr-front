@@ -40,7 +40,7 @@ export default Ember.Component.extend({
     //  If the text hasn't changed, return
     //  Otherwise, indicate that MathJax is running, and start the
     //    typesetting.  After it is done, call PreviewDone.
-    //  
+    //
     CreatePreview: function() {
         if (this.mjRunning) { return; }
         var text = this.get('model').get(this.get('observable'));
@@ -59,7 +59,7 @@ export default Ember.Component.extend({
             ["Typeset", MathJax.Hub, this.buffer], ["PreviewDone", this]
         );
         }
-        
+
     },
 
     // renderMathMark: function () {
@@ -111,7 +111,7 @@ export default Ember.Component.extend({
         //     } else {
         //         // because the observer is still attached
         //         this.removeObserver(that.get('observable'), this, once);
-        //     }       
+        //     }
         // };
         this.get('model').addObserver(this.get('observable'), this.get('model'),this.callback);
         callback();

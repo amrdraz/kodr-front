@@ -1,73 +1,68 @@
+<div class="row text-right" data-toggle="tooltip" title="Wikis!">
+  {{#wiki-popup}}{{/wiki-popup}}
+</div>
+
 {{#editor-container}}
-<section class="description panel panel-default">
+  <section class="description panel panel-default">
     <div class="panel-heading">
-        <span class="pull-right label label-primary">awards {{model.challenge.exp}} Exp</span>
-        <h2 class="panel-title">{{model.challenge.name}}</h2>
+      <span class="pull-right label label-primary">awards {{model.challenge.exp}} Exp</span>
+      <h2 class="panel-title">{{model.challenge.name}}</h2>
     </div>
     <div class="panel-body">
-        {{#editor-run target="solutionEditor"}}
-          {{marked-math model=challenge observable='blueprint.description' }}
-        {{/editor-run}}
+      {{#editor-run target="solutionEditor" }}
+        {{marked-math model=challenge observable='blueprint.description' }}
+      {{/editor-run}}
     </div>
-</section>
-<section>
- <div class="col-lg-6 col-md-6 col-sm-6">
-  <div class="row">
-    {{#unless isDebugging }}
-      <button {{action "run"}} class="btn btn-default btn-sm pull-left challenge-run" disabled={{isDebugging}}>{{fa-icon "play"}} Run in Console</button>
-      <button {{action "debug"}} class="btn btn-default btn-sm pull-left challenge-debug" disabled={{isDebugging}}>{{fa-icon "bug"}} Start  Debugger</button>
-    {{/unless}}
-    {{#if isDebugging}}
-      <button {{action "back"}} class="btn btn-default btn-sm pull-left challenge-back" disabled={{if isDebugging isFirstStep 'disabled'}}>{{fa-icon "step-backward"}} Back</button>
-      <button {{action "step"}} class="btn btn-default btn-sm pull-left challenge-step" disabled={{if isDebugging isLastStep 'disabled'}}>{{fa-icon "step-forward"}} Step</button>
-      <button {{action "stop"}} class="btn btn-default btn-sm pull-left challenge-stop" disabled={{is-not isDebugging}}>{{fa-icon "stop"}} Stop</button>
-    {{/if}}
-  </div>
-  <div class="row">
-    <ul class="nav nav-tabs">
-      <li class="active" ><a href="#solution" data-toggle="tab">Your Solution</a></li>
-    </ul>
-    <div class="tab-content">
-      <div class="tab-pane fade in active" id="solution">
-        {{code-editor
-          name="solutionEditor"
-          id="solutionEditor"
-          class="col-lg-12"
-          model=model
-          lint=true
-          debug=true
-          language="python"
-          attr='work.solution'
-        }}
-      </div>
-    </div>
-  </div>
-</div>
-<div class="col-lg-6 col-md-6 col-sm-6">
-  <div class="row">
-    <button id="run" {{action "test"}} class="btn {{if model.complete 'btn-success' 'btn-primary'}} pull-right {{if model.canSubmit '' 'disabled'}} challenge-submit">
-      {{#if model.complete}}
-        {{#if isDirtyish}}
-          Re-Submit <i class="glyphicon glyphicon-play"></i>
-        {{else}}
-          Completed <i class="glyphicon glyphicon-ok"></i>
+  </section>
+  <section>
+    <div class="col-lg-6 col-md-6 col-sm-6">
+      <div class="row">
+        {{#unless isDebugging }}
+          <button {{action "run"}} class="btn btn-default btn-sm pull-left challenge-run" disabled= {{isDebugging}}>{{fa-icon "play"}} Run in Console</button>
+          <button {{action "debug"}} class="btn btn-default btn-sm pull-left challenge-debug" disabled= {{isDebugging}}>{{fa-icon "bug"}} Start Debugger</button>
+        {{/unless}}
+        {{#if isDebugging}}
+          <button {{action "back"}} class="btn btn-default btn-sm pull-left challenge-back" disabled= {{if isDebugging isFirstStep 'disabled'}}>{{fa-icon "step-backward"}} Back</button>
+          <button {{action "step"}} class="btn btn-default btn-sm pull-left challenge-step" disabled= {{if isDebugging isLastStep 'disabled'}}>{{fa-icon "step-forward"}} Step</button>
+          <button {{action "stop"}} class="btn btn-default btn-sm pull-left challenge-stop" disabled= {{is-not isDebugging}}>{{fa-icon "stop"}} Stop</button>
         {{/if}}
-      {{else}}
-        Submit <i class="glyphicon glyphicon-play"></i>
-      {{/if}}
-    </button>
-    <button {{action "reset"}} class="btn btn-default btn-sm pull-right challenge-reset">{{fa-icon "repeat"}} Reset </button>
-  </div>
-  <div class="row">
-    <ul class="nav nav-tabs">
-      <li class="active"><a href="#console" data-toggle="tab">Console</a></li>
-    </ul>
-    <div class="tab-content">
-      <div class="tab-pane fade in active" id="console">
-        {{py-console}}
+      </div>
+      <div class="row">
+        <ul class="nav nav-tabs">
+          <li class="active"><a href="#solution" data-toggle="tab">Your Solution</a></li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane fade in active" id="solution">
+            {{code-editor name="solutionEditor" id="solutionEditor" class="col-lg-12" model=model lint=true debug=true language="python" attr='work.solution' }}
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-</div>
-</section>
+    <div class="col-lg-6 col-md-6 col-sm-6">
+      <div class="row">
+        <button id="run" {{action "test"}} class="btn {{if model.complete 'btn-success' 'btn-primary'}} pull-right {{if model.canSubmit '' 'disabled'}} challenge-submit">
+          {{#if model.complete}}
+            {{#if isDirtyish}}
+              Re-Submit <i class="glyphicon glyphicon-play"></i>
+            {{else}}
+              Completed <i class="glyphicon glyphicon-ok"></i>
+            {{/if}}
+          {{else}}
+            Submit <i class="glyphicon glyphicon-play"></i>
+          {{/if}}
+        </button>
+        <button {{action "reset"}} class="btn btn-default btn-sm pull-right challenge-reset">{{fa-icon "repeat"}} Reset </button>
+      </div>
+      <div class="row">
+        <ul class="nav nav-tabs">
+          <li class="active"><a href="#console" data-toggle="tab">Console</a></li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane fade in active" id="console">
+            {{py-console}}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 {{/editor-container}}
