@@ -2,7 +2,11 @@
 {{#if isShowingModal}}
   {{#modal-dialog close='toggleModal' translucentOverlay=true targetAttachment='none' container-class='centered-scrolling-container' overlay-class='centered-scrolling-overlay' wrapper-class='centered-scrolling-wrapper' }}
     <h1 class="text-center">Wiki</h1>
-    {{#each wikis as |wiki|}}
+    <div class="container-1 text-center">
+      {{input type="search" value=query placeholder="Search..."}}
+      <span class="icon"><i class="fa fa-search"></i></span>
+    </div>
+    {{#each wikisFiltered as |wiki|}}
       <section class="description panel panel-default">
         <div class="panel-heading">
           <h2 class="panel-title"><b>{{wiki.title}}</b></h2>

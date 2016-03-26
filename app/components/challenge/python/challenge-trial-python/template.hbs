@@ -56,10 +56,37 @@
       <div class="row">
         <ul class="nav nav-tabs">
           <li class="active"><a href="#console" data-toggle="tab">Console</a></li>
+          <li>
+            <a href="#editorial" data-toggle="tab">Editorial
+              {{#if model.complete}}
+                <span style="font-size:10px;" class="glyphicon glyphicon-ok-sign"></span>
+              {{else}}
+                <span style="font-size:10px;" class="glyphicon glyphicon-lock"></span>
+              {{/if}}
+            </a>
+          </li>
         </ul>
         <div class="tab-content">
           <div class="tab-pane fade in active" id="console">
             {{py-console}}
+          </div>
+          <div class="tab-pane fade in" id="editorial">
+            <section class="description panel panel-default">
+              <div class="panel-heading">
+                <h2 class="panel-title"><b>Editorial</b></h2>
+              </div>
+              <div class="panel-body">
+                {{#if model.complete}}
+                  {{code-section content=model.blueprint.solution language='python'}}
+                  <button {{action "viewDiscussion"}} class="btn btn-primary btn-sm pull-right">View Discussion</button>
+                {{else}}
+                  <div class="text-center">
+                    <h3> You didn't solve this challenge yet! </h3>
+                    <h4><a class="btn btn-lg" {{action "giveUp"}}> Give up? </a></h4>
+                  </div>
+                {{/if}}
+              </div>
+            </section>
           </div>
         </div>
       </div>

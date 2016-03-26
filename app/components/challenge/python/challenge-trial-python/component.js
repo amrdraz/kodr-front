@@ -121,6 +121,10 @@ export default Ember.Component.extend(ChallengeCommon, {
                     }
                 });
             },
+            viewDiscussion(){
+              var model = this.get('model');
+              console.log(model);
+            }
     },
 
     trialState: null,
@@ -424,7 +428,7 @@ export default Ember.Component.extend(ChallengeCommon, {
                 event.verb = event.action + 'ed';
         }
         return event;
-    }, 
+    },
     setTrialStateSpentTime() {
         var startTime = this.trialStateEvent.meta.startTime;
         var endTime = this.trialStateEvent.meta.endTime;
