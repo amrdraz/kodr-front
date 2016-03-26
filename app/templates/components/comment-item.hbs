@@ -20,7 +20,7 @@
         totalVotes=item.totalVotes}}
     </td>
     <td>
-      <p>{{markdown-to-html markdown=item.text}}</p>
+      <p>{{markdown-section content=item.text}}</p>
       {{#desc-item item=item}}{{/desc-item}}
       <a class="btn-edit" {{action 'editClicked' item}}>Edit</a>
       <a class="btn-edit" {{action 'deleteClicked' item}}>Delete</a>

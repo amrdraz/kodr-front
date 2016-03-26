@@ -45,7 +45,7 @@ export default Ember.Controller.extend({
             } else {
                 toastr.info('You meight want to change those failures in your code, check the console');
             }
-        }            
+        }
     },
     trialComplete(){
         var controller = this;
@@ -71,6 +71,22 @@ export default Ember.Controller.extend({
         },
         test(report){
             this.test(report);
+        },
+        viewDiscussion(){
+            var challenge_id = this.get('model.challenge.id');
+            var model = this.get('model.challenge');
+            Ember.$.ajax({
+              url: 'api/posts',
+              type: 'POST',
+              data: {
+                challenge: JSON.stringify(model),
+                challenge_id: challenge_id
+              }
+            }).then((response) => {
+              console.log(response);
+            }, function(xhr) {
+              console.log("Something went wrong " + xhr);
+            });
         }
     },
     controllerSubscribe: function() {

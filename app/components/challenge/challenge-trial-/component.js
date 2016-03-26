@@ -12,5 +12,8 @@ export default Ember.Component.extend({
         reset() {
             this.sendAction(this.get('reset'));
         },
+        viewDiscussion(){
+            this.sendAction(this.get('viewDiscussion'));
+        }
     }
 });

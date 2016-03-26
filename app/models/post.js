@@ -8,6 +8,7 @@ export default DS.Model.extend({
   tags:DS.attr(),
   comments: DS.hasMany('comment', {async: true}),
   author: DS.belongsTo('user', {async: true}),
+  challenge: DS.belongsTo('challenge',{async: true}),
   created_at: DS.attr('date'),
   updated_at: DS.attr('date')
 });

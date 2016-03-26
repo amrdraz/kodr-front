@@ -7,7 +7,7 @@
     {{vote-box model=model modelName='posts' totalVotes=model.totalVotes}}
   </td>
   <td>
-    <p>{{markdown-to-html markdown=model.text}}</p>
+    <p>{{markdown-section content=model.text}}</p>
     {{#desc-item item=model}}{{/desc-item}}
     <p>
       {{#each model.tags as |tag|}}
