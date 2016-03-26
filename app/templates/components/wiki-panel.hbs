@@ -1,0 +1,17 @@
+<section class="description panel panel-default">
+  <div class="panel-heading">
+    <h2 class="panel-title"><b>{{wiki.title}}</b></h2>
+  </div>
+  <div class="panel-body">
+    {{#if viewWiki}}
+      {{markdown-section content=wiki.text}}
+      <div class="text-center">
+        <button class="btn btn-link btn-sm" {{action 'toggleView'}}><span style="font-size:14px" class="glyphicon glyphicon-menu-up" aria-hidden="true"></span></button>
+      </div>
+    {{else}}
+      <div class="text-center">
+        <button class="btn btn-link btn-sm" {{action 'toggleView'}}><span style="font-size:14px" class="glyphicon glyphicon-menu-down" aria-hidden="true"></span></button>
+      </div>
+    {{/if}}
+  </div>
+</section>
