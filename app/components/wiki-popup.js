@@ -26,10 +26,10 @@ export default Ember.Component.extend({
     wikis.forEach(function(wiki) {
       var title = wiki.title.toLowerCase();
       if(!query || title.includes(query)){
+        console.log(title);
         wikisFiltered.push(wiki);
       }
     });
-    return wikisFiltered;
   }.observes('query'),
   actions: {
     toggleModal: function() {
