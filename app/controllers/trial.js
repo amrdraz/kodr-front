@@ -83,7 +83,7 @@ export default Ember.Controller.extend({
                 challenge_id: challenge_id
               }
             }).then((response) => {
-              this.transitionTo('discussions.solution',response.post._id);
+              this.transitionTo('solution',response.post._id);
             }, function(xhr) {
               console.log("Something went wrong " + xhr);
             });

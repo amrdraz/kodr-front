@@ -106,12 +106,12 @@ Router.map(function() {
     this.route('view', {
       path: '/view/:post_id'
     });
-    this.route('solution', {
-      path: '/solution/:post_id'
-    });
     this.route('edit', {
       path: '/edit/:post_id'
     });
+  });
+  this.route('solution', {
+    path: 'solution/:post_id'
   });
 });
 

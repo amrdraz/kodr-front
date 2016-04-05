@@ -38,6 +38,11 @@
   a{ color: rgb(154, 159, 159); }  a:hover{ color: rgba(84, 85, 84, 0.93); }
 }
 
+.editorial a{
+  font-weight: bold;
+  text-decoration: none;
+  margin-left: 4px;
+}
 
 // Styling for Tags Input
 /* Tagging Basic Style */

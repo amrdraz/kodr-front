@@ -61,6 +61,10 @@ export default Ember.Route.extend({
           comment.get('replies').removeObject(reply);
           comment.save();
       }
+    },
+    tryChallenge(){
+        var id = this.get('post.challenge.id');
+        this.transitionTo('challenge.try', id)
     }
   }
 });
