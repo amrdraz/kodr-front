@@ -64,7 +64,9 @@ export default Ember.Route.extend({
     },
     tryChallenge(){
         var id = this.get('post.challenge.id');
-        this.transitionTo('challenge.try', id)
+        this.store.findRecord('challenge',id).then((challenge)=>{
+          this.transitionTo('challenge',challenge.get('arena.content.id'),id);
+        });
     }
   }
 });

@@ -1,5 +1,7 @@
 .gray-link{ a{ color: gray; } a:hover{ color: white; } }
-
+a{
+  cursor: pointer;
+}
 
 .form-horizontal{ margin-right: 130px; padding-top: 20px; }
 

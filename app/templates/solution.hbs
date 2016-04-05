@@ -3,9 +3,9 @@
     <div class="container col-xs-12">
       <h3>
           Editorial for
-        {{#link-to 'challenge.try' model.challenge class="" }}
-          {{model.title}}
-        {{/link-to}}
+          <a {{action 'tryChallenge'}} class="">
+            {{model.title}}
+          </a>
       </h3>
     </div>
     <div class="well col-md-12">
@@ -44,10 +44,5 @@
         There Are No Other Solutions
       </div>
     {{/if}}
-    <div class="col-xs-12 text-right">
-      {{#link-to 'challenge.try' model.challenge class="btn btn-primary" }}
-        Solve This Challenge
-      {{/link-to}}
-    </div>
   </div>
 </div>
