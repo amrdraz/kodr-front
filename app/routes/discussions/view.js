@@ -3,12 +3,16 @@ import Ember from 'ember';
 export default Ember.Route.extend({
   model(params) {
     return Ember.RSVP.hash({
-       post: this.store.findRecord('post', params.post_id),
+       post: this.store.findRecord('post', params.post_id).then((post)=>{
+         console.log(post.get('author'));
+         return post;
+       }),
        comments: this.store.query('comment',{post:params.post_id})
      });
   },
   post: null,
   setupController: function(controller, model) {
+    //console.log(model.post.get('author.content.id'));
     controller.set('model', model.post);
     controller.set('comments', model.comments);
     this.set('post',model.post);
