@@ -2,14 +2,15 @@
 {{#if isShowingModal}}
   {{#modal-dialog close='toggleModal' translucentOverlay=true targetAttachment='none' container-class='centered-scrolling-container' overlay-class='centered-scrolling-overlay' wrapper-class='centered-scrolling-wrapper' }}
     <h1 class="text-center">Wiki</h1>
-    <div class="container-1 text-center">
-      {{input type="search" value=query placeholder="Search..."}}
-      <span class="icon"><i class="fa fa-search"></i></span>
-    </div>
-    {{#each wikisFiltered as |wiki|}}
-
+    {{#filter-content content=wikis properties="title" placeholder="Filter by wiki title" inputClassNames="form-control" as |fc|}}
+      <small class="{{if fc.query '' 'invisible'}}">
+        Showing {{fc.filteredContent.length}}/{{fc.content.length}} matches
+        <strong>"{{fc.query}}"</strong>
+      </small>
+      {{#each fc.filteredContent as |wiki|}}
         {{#wiki-panel wiki=wiki}}{{/wiki-panel}}
+      {{/each}}
+    {{/filter-content}}
 
-    {{/each}}
   {{/modal-dialog}}
 {{/if}}

@@ -29,6 +29,7 @@
     "ember-cli-chosen": "0.0.4",
     "ember-cli-content-security-policy": "0.4.0",
     "ember-cli-dependency-checker": "^1.1.0",
+    "ember-cli-filter-component": "2.0.1",
     "ember-cli-font-awesome": "0.1.1",
     "ember-cli-htmlbars": "^1.0.1",
     "ember-cli-htmlbars-inline-precompile": "^0.3.1",
