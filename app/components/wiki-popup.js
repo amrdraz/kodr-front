@@ -12,12 +12,33 @@ export default Ember.Component.extend({
       this.set('wikis', response.wikis);
       var wikisFiltered = this.get('wikisFiltered');
       response.wikis.forEach(function(wiki) {
-          wikisFiltered.push(wiki);
+        wikisFiltered.push(wiki);
       });
     }, function(xhr) {
       console.log("Something went wrong " + xhr);
     });
   },
+  airports: [{
+    rank: 1,
+    name: {
+      longForm: "Hartsfield–Jackson Atlanta International Airport",
+      code: "ATL"
+    },
+    location: {
+      city: "Atlanta",
+      state: "GA"
+    }
+  }, {
+    rank: 2,
+    name: {
+      longForm: "Hartsfield–Jackson Atlanta International Airport",
+      code: "ATL"
+    },
+    location: {
+      city: "Atlanta",
+      state: "GA"
+    }
+  }],
   filter: function() {
     var query = this.get('query').toLowerCase();
     var wikisFiltered = this.get('wikisFiltered');
@@ -25,7 +46,7 @@ export default Ember.Component.extend({
     wikisFiltered.clear();
     wikis.forEach(function(wiki) {
       var title = wiki.title.toLowerCase();
-      if(!query || title.includes(query)){
+      if (!query || title.includes(query)) {
         console.log(title);
         wikisFiltered.push(wiki);
       }
