@@ -38,6 +38,7 @@ export default Ember.Controller.extend({
                 this.send('showModal', 'modals/flow-questionair', {challengeLevel:null, skillLevel:null, help:false});
             } else if(model.get('completed')>1) {
                 swal("Great Job", "You already completed this challenge so no points for you", "info");
+                console.log("great");
             }
         } else {
             if(model.get('complete')){
@@ -51,7 +52,8 @@ export default Ember.Controller.extend({
         var controller = this;
         var model = this.get('model');
         swal({title:"+"+model.get('exp')+" EXP", text:"For completeing this challenge", type:"success"}, function () {
-            controller.nextChallenge();
+            //controller.nextChallenge();
+            controller.viewDiscussion(model.get('work.solution'));
         });
     },
     nextChallenge(){
@@ -65,6 +67,30 @@ export default Ember.Controller.extend({
             // }
         }
     },
+    viewDiscussion(solution){
+      var challenge_id = this.get('model.challenge.id');
+      var model = this.get('model');
+      var challenge = this.get('model.challenge');
+      solution = model.get('work.solution');
+      Ember.$.ajax({
+        url: 'api/posts',
+        type: 'POST',
+        data: {
+          challenge: JSON.stringify(challenge),
+          solution: JSON.stringify(solution),
+          challenge_id: challenge_id
+        }
+      }).then((response) => {
+            this.transitionTo('solution',response.post._id);
+        if(solution){
+            //this.transitionTo('solution.edit',response.solution._id);
+        }else{
+          //this.transitionTo('solution.edit',response.solution._id);
+        }
+      }, function(xhr) {
+        console.log("Something went wrong " + xhr);
+      });
+    },
     actions: {
         run() {
            // Happens in challenge component
@@ -73,20 +99,7 @@ export default Ember.Controller.extend({
             this.test(report);
         },
         viewDiscussion(){
-            var challenge_id = this.get('model.challenge.id');
-            var model = this.get('model.challenge');
-            Ember.$.ajax({
-              url: 'api/posts',
-              type: 'POST',
-              data: {
-                challenge: JSON.stringify(model),
-                challenge_id: challenge_id
-              }
-            }).then((response) => {
-              this.transitionTo('solution',response.post._id);
-            }, function(xhr) {
-              console.log("Something went wrong " + xhr);
-            });
+            this.viewDiscussion();
         }
     },
     controllerSubscribe: function() {

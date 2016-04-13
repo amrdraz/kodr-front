@@ -112,6 +112,8 @@ Router.map(function() {
   });
   this.route('solution', {
     path: 'solution/:post_id'
+  }, function() {
+    this.route('new',{path: 'solution/new/:post_id'});
   });
 });
 

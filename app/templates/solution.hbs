@@ -14,16 +14,23 @@
       </td>
       <td>
         <p>{{markdown-section content=model.text}}</p>
+        <p>
+          <b>Solution:<br><br>
+          {{code-section content=model.challenge.blueprint.solution}}
+          </b>
+        </p>
         {{#desc-item item=model}}{{/desc-item}}
         <p>
           {{#each model.tags as |tag|}}
             {{#link-to 'discussions.tag' tag._id class='tag' }}{{tag.title}}{{/link-to}}
           {{/each}}
         </p>
+        {{!#if (eq session.user.id model.author.id)}}
         <p>
           {{#link-to 'discussions.edit' model.id class='btn-edit' }}Edit{{/link-to}}
           <a {{action 'deletePost' model}} class='btn-edit'>Delete</a>
         </p>
+        {{!/if}}
       </td>
     </div>
     <div class="container col-xs-12">
