@@ -25,12 +25,12 @@
             {{#link-to 'discussions.tag' tag._id class='tag' }}{{tag.title}}{{/link-to}}
           {{/each}}
         </p>
-        {{!#if (eq session.user.id model.author.id)}}
-        <p>
-          {{#link-to 'discussions.edit' model.id class='btn-edit' }}Edit{{/link-to}}
-          <a {{action 'deletePost' model}} class='btn-edit'>Delete</a>
-        </p>
-        {{!/if}}
+        {{#if (eq session.user.id model.author.id)}}
+          <p>
+            {{#link-to 'discussions.edit' model.id class='btn-edit' }}Edit{{/link-to}}
+            <a {{action 'deletePost' model}} class='btn-edit'>Delete</a>
+          </p>
+        {{/if}}
       </td>
     </div>
     <div class="container col-xs-12">
