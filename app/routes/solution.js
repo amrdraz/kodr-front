@@ -13,7 +13,7 @@ export default Ember.Route.extend({
     controller.set('comments', model.comments);
     this.set('post',model.post);
   },
-
+  
   session: Ember.inject.service('session'),
   actions: {
     unAuthenticated(){
