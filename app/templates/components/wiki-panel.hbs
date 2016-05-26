@@ -6,11 +6,11 @@
     {{#if viewWiki}}
       {{markdown-section content=wiki.text}}
       <div class="text-center">
-        <button class="btn btn-link btn-sm" {{action 'toggleView'}}><span style="font-size:14px" class="glyphicon glyphicon-menu-up" aria-hidden="true"></span></button>
+        <button class="btn btn-default btn-sm btn-view-more" {{action 'toggleView'}}>Hide</button>
       </div>
     {{else}}
       <div class="text-center">
-        <button class="btn btn-link btn-sm" {{action 'toggleView'}}><span style="font-size:14px" class="glyphicon glyphicon-menu-down" aria-hidden="true"></span></button>
+        <button class="btn btn-default btn-sm btn-view-more" {{action 'toggleView'}}>View</button>
       </div>
     {{/if}}
   </div>

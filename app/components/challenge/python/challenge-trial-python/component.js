@@ -123,6 +123,16 @@ export default Ember.Component.extend(ChallengeCommon, {
     },
     viewDiscussion() {
       this.sendAction('viewDiscussion');
+    },
+    giveUp() {
+        let confirmation = confirm("Are you sure you want to give up this challenge? (you won't recieve any points if you give up)");
+        if(confirmation){
+          var model = this.get('model');
+          model.set('complete', true);
+          model.save().then(()=>{
+            console.log("lOL");
+          });
+        }
     }
   },
   trialState: null,

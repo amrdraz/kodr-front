@@ -71,7 +71,6 @@ export default Ember.Controller.extend({
       var challenge_id = this.get('model.challenge.id');
       var model = this.get('model');
       var challenge = this.get('model.challenge');
-      solution = model.get('work.solution');
       Ember.$.ajax({
         url: 'api/posts',
         type: 'POST',
@@ -81,11 +80,11 @@ export default Ember.Controller.extend({
           challenge_id: challenge_id
         }
       }).then((response) => {
-            this.transitionTo('solution',response.post._id);
         if(solution){
             //this.transitionTo('solution.edit',response.solution._id);
+            this.transitionTo('solution',response.post._id);
         }else{
-          //this.transitionTo('solution.edit',response.solution._id);
+            this.transitionTo('solution',response.post._id);
         }
       }, function(xhr) {
         console.log("Something went wrong " + xhr);
