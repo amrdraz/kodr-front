@@ -13,6 +13,9 @@
       {{/post-item}}
       <hr/>
     {{/each}}
+    <div class="pager">
+      {{page-numbers content=model currentPage=page totalPages=totalPagesCount}}
+    </div>
   {{else}}
     <div class="text-center">
       <h3> There Are No Posts , {{#link-to 'discussions.new'}}<a href="">Add One?</a>{{/link-to}} </h3>
