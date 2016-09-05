@@ -22,11 +22,13 @@
               About
             </a>
           {{/link-to}}
+          {{#if session.isAuthenticated}}
           {{#link-to 'discussions' tagName="li" href=false }}
             <a href="{{view.href}}" class="btn" >
-              Forums
+              Q & A
             </a>
           {{/link-to}}
+          {{/if}}
           {{#if session.isAuthenticated}}
             {{#link-to 'userArenas' tagName="li" href=false}}
               <a href="{{view.href}}" class="btn" >

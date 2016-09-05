@@ -1,10 +1,10 @@
 import Ember from 'ember';
+import AuthenticatedRouteMixin from 'simple-auth/mixins/authenticated-route-mixin';
 
-export default Ember.Route.extend({
+export default Ember.Route.extend(AuthenticatedRouteMixin, {
   model(params) {
     return Ember.RSVP.hash({
        post: this.store.findRecord('post', params.post_id).then((post)=>{
-         console.log(post.get('author'));
          return post;
        }),
        comments: this.store.query('comment',{post:params.post_id})

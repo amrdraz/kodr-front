@@ -65,6 +65,9 @@ module.exports = function(defaults) {
 
     // app.import('bower_components/katex/dist/katex.min.css');
     // app.import('bower_components/katex/dist/katex.min.js');
+    app.import('bower_components/jquery-ui/jquery-ui.js');
+    app.import('vendor/javascript/tag-editor.js');
+    app.import('vendor/javascript/jquery.caret.min.js');
 
     return app.toTree(extraAssets);
 

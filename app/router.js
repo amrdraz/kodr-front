@@ -100,6 +100,7 @@ Router.map(function() {
   this.route('discussions', function() {
     this.route('top');
     this.route('new');
+    this.route('my-posts');
     this.route('tag', {
       path: '/tag/:tag_id'
     });
