@@ -1,0 +1,20 @@
+<div class="form-horizontal">
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">Text</label>
+        <div class="col-sm-10">
+            {{textarea value=text class="form-control" placeholder=textPlaceholder rows="5" }}
+        </div>
+    </div>
+    <div class="form-group">
+      <label class="col-sm-2 control-label"></label>
+      <div class="well col-sm-10">
+          <p>{{text}}</p>
+      </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+            <button type="submit" class="btn btn-primary" {{action 'buttonClicked' text}} >{{buttonLabel}}</button>
+        </div>
+    </div>
+</div>

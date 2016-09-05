@@ -1,0 +1,19 @@
+<div class="container" id="post-item">
+    <div class="row">
+        <div class="col-xs-7">
+            {{yield}}
+        </div>
+
+        {{! Place Holder for Spacing}}
+        <div class="col-xs-1 text-center">
+        </div>
+
+        <div class="col-xs-2 text-center">
+            {{number-box title="Votes" number=item.totalVotes}}
+        </div>
+
+        <div class="col-xs-1 text-center">
+            {{number-box title=itemTitle number=item.comments.length number2=0}}
+        </div>
+    </div>
+</div>

@@ -1,0 +1,16 @@
+<a class="glyphicon glyphicon-question-sign wiki-btn" {{action "toggleModal"}}></a>
+{{#if isShowingModal}}
+  {{#modal-dialog close='toggleModal' translucentOverlay=true targetAttachment='none' container-class='centered-scrolling-container' overlay-class='centered-scrolling-overlay' wrapper-class='centered-scrolling-wrapper' }}
+    <h1 class="text-center">Wikis</h1>
+    {{#filter-content content=wikis properties="title" placeholder="Filter by wiki title" inputClassNames="form-control" as |fc|}}
+      <small class="{{if fc.query '' 'invisible'}}">
+        Showing {{fc.filteredContent.length}}/{{fc.content.length}} matches
+        <strong>"{{fc.query}}"</strong>
+      </small>
+      {{#each fc.filteredContent as |wiki|}}
+        {{#wiki-panel wiki=wiki}}{{/wiki-panel}}
+      {{/each}}
+    {{/filter-content}}
+
+  {{/modal-dialog}}
+{{/if}}

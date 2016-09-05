@@ -38,6 +38,7 @@ export default Ember.Controller.extend({
                 this.send('showModal', 'modals/flow-questionair', {challengeLevel:null, skillLevel:null, help:false});
             } else if(model.get('completed')>1) {
                 swal("Great Job", "You already completed this challenge so no points for you", "info");
+                console.log("great");
             }
         } else {
             if(model.get('complete')){
@@ -45,13 +46,14 @@ export default Ember.Controller.extend({
             } else {
                 toastr.info('You meight want to change those failures in your code, check the console');
             }
-        }            
+        }
     },
     trialComplete(){
         var controller = this;
         var model = this.get('model');
         swal({title:"+"+model.get('exp')+" EXP", text:"For completeing this challenge", type:"success"}, function () {
-            controller.nextChallenge();
+            //controller.nextChallenge();
+            controller.viewDiscussion(model.get('work.solution'));
         });
     },
     nextChallenge(){
@@ -65,12 +67,38 @@ export default Ember.Controller.extend({
             // }
         }
     },
+    viewDiscussion(solution){
+      var challenge_id = this.get('model.challenge.id');
+      var model = this.get('model');
+      var challenge = this.get('model.challenge');
+      Ember.$.ajax({
+        url: 'api/posts',
+        type: 'POST',
+        data: {
+          challenge: JSON.stringify(challenge),
+          solution: JSON.stringify(solution),
+          challenge_id: challenge_id
+        }
+      }).then((response) => {
+        if(solution){
+            //this.transitionTo('solution.edit',response.solution._id);
+            this.transitionTo('solution',response.post._id);
+        }else{
+            this.transitionTo('solution',response.post._id);
+        }
+      }, function(xhr) {
+        console.log("Something went wrong " + xhr);
+      });
+    },
     actions: {
         run() {
            // Happens in challenge component
         },
         test(report){
             this.test(report);
+        },
+        viewDiscussion(){
+            this.viewDiscussion();
         }
     },
     controllerSubscribe: function() {

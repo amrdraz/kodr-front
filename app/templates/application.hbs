@@ -23,6 +23,13 @@
             </a>
           {{/link-to}}
           {{#if session.isAuthenticated}}
+          {{#link-to 'discussions' tagName="li" href=false }}
+            <a href="{{view.href}}" class="btn" >
+              Q & A
+            </a>
+          {{/link-to}}
+          {{/if}}
+          {{#if session.isAuthenticated}}
             {{#link-to 'userArenas' tagName="li" href=false}}
               <a href="{{view.href}}" class="btn" >
                 {{if session.isStudent 'Arenas' 'User Arenas' }}
@@ -87,7 +94,7 @@
       </div>
     </div>
   </div>
-  
+
   <div class="container marketing">
       {{outlet}}
   </div>

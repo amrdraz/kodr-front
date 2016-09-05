@@ -1,0 +1,32 @@
+<div class="form-horizontal">
+    <div class="form-group has-feedback {{if item.isValid 'has-success'}}">
+        <label class="col-xs-2 control-label">Title </label>
+        <div class="col-sm-10">
+          {{input type="text" value=item.title class="form-control" placeholder=titlePlaceholder}}
+          {{#if item.isValid}}<span class="glyphicon glyphicon-ok form-control-feedback"></span>{{/if}}
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-xs-2 control-label">Text</label>
+        <div class="col-xs-10">
+            {{textarea value=item.text class="form-control" placeholder=textPlaceholder rows="8" }}
+        </div>
+    </div>
+    <div class="form-group">
+      <label class="col-xs-2 control-label"></label>
+      <div class="well col-xs-10">
+          <p>{{markdown-section content=item.text}}</p>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="col-xs-2 control-label">Tags</label>
+      <div class="col-xs-10">
+        <input class="tags">
+      </div>
+    </div>
+    <div class="form-group">
+        <div class="col-xs-offset-2 col-xs-10">
+            <button type="submit" class="btn btn-primary" {{action 'buttonClicked' item}} disabled="{{unless item.isValid 'disabled'}}">{{buttonLabel}}</button>
+        </div>
+    </div>
+</div>
